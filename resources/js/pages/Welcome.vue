@@ -154,7 +154,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { Head } from '@inertiajs/vue3'
 import CalendarIcon from '@/Components/Icons/CalendarIcon.vue'
 import ClockIcon from '@/Components/Icons/ClockIcon.vue'
