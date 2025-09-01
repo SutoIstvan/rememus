@@ -27,8 +27,8 @@ const nodes = [
     position: { x: 190, y: 170 },
     style: { width: '90px', height: '105px', padding: '5px', },
     data: {
-      label: 'Папа',
-      avatar: 'https://randomuser.me/api/portraits/men/46.jpg',
+      label: 'Paul Richardson',
+      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518291.jpg',
     }
   },
   {
@@ -36,8 +36,8 @@ const nodes = [
     position: { x: 345, y: 170 },
     style: { width: '90px', height: '105px', padding: '5px', },
     data: {
-      label: 'Мама',
-      avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
+      label: 'Margaret Clarkson',
+      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518299.jpg',
     }
   },
   {
@@ -45,8 +45,8 @@ const nodes = [
     position: { x: 265, y: 331 },
     style: { width: '90px', height: '105px', padding: '5px', },
     data: {
-      label: 'Я',
-      avatar: 'https://randomuser.me/api/portraits/lego/1.jpg',
+      label: 'Arnold Shannon',
+      avatar: 'http://rememus.test/images/front/testimonial-1.jpg',
     }
   },
   {
@@ -54,8 +54,8 @@ const nodes = [
     position: { x: 75, y: 8 },
     style: { width: '90px', height: '105px', padding: '5px', },
     data: {
-      label: 'Дедушка',
-      avatar: 'https://randomuser.me/api/portraits/men/65.jpg',
+      label: 'John Richardson',
+      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518264.jpg',
     }
   },
   {
@@ -63,8 +63,8 @@ const nodes = [
     position: { x: 200, y: 8 },
     style: { width: '90px', height: '105px', padding: '5px', },
     data: {
-      label: 'Бабушка',
-      avatar: 'https://randomuser.me/api/portraits/women/65.jpg',
+      label: 'Jacqueline Richardson',
+      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518272.jpg',
     }
   },
   {
@@ -72,8 +72,8 @@ const nodes = [
     position: { x: 330, y: 8 },
     style: { width: '90px', height: '105px', padding: '5px', },
     data: {
-      label: 'Дедушка',
-      avatar: 'https://randomuser.me/api/portraits/men/66.jpg',
+      label: 'Bradley Clarkson',
+      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518278.jpg',
     }
   },
   {
@@ -81,8 +81,8 @@ const nodes = [
     position: { x: 460, y: 8 },
     style: { width: '90px', height: '105px', padding: '5px', },
     data: {
-      label: 'Бабушка',
-      avatar: 'https://randomuser.me/api/portraits/women/66.jpg',
+      label: 'Emma Marie Clarkson',
+      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518285.jpg',
     }
   },
 
@@ -91,25 +91,25 @@ const nodes = [
     position: { x: 135, y: 331 }, // слева от 'you' (x: 265)
     style: { width: '90px', height: '105px', padding: '5px' },
     data: {
-      label: 'Жена',
-      avatar: 'https://randomuser.me/api/portraits/women/47.jpg',
+      label: 'Evelyn Lewis',
+      avatar: 'https://www.online-tribute.com/memorial/static/random1.jpg',
     }
   },
   {
     id: 'child',
-    position: { x: 245, y: 470 }, // ниже 'you'
+    position: { x: 245, y: 490 }, // ниже 'you'
     style: { width: '90px', height: '105px', padding: '5px' },
     data: {
-      label: 'Ребенок',
-      avatar: 'https://randomuser.me/api/portraits/men/35.jpg',
+      label: 'Ruby Shannon',
+      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518909.jpg',
     }
   },
   {
     id: 'child2',
-    position: { x: 135, y: 470 }, // ниже 'you'
+    position: { x: 135, y: 490 }, // ниже 'you'
     style: { width: '90px', height: '105px', padding: '5px' },
     data: {
-      label: 'Ребенок',
+      label: 'Ellia Liz Shannon',
       avatar: 'https://randomuser.me/api/portraits/women/5.jpg',
     }
   },
@@ -118,8 +118,8 @@ const nodes = [
     position: { x: 375, y: 331 },
     style: { width: '90px', height: '105px', padding: '5px', },
     data: {
-      label: 'Брат',
-      avatar: 'https://randomuser.me/api/portraits/men/76.jpg',
+      label: 'Robert Richardson',
+      avatar: 'https://randomuser.me/api/portraits/men/46.jpg',
     }
   },
 
@@ -128,8 +128,8 @@ const nodes = [
     position: { x: 485, y: 331 },
     style: { width: '90px', height: '105px', padding: '5px', },
     data: {
-      label: 'Брат',
-      avatar: 'https://randomuser.me/api/portraits/men/77.jpg',
+      label: 'Anabel Richardson',
+      avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
     }
   },
 
@@ -420,6 +420,14 @@ const edges = ref([
 </template>
 
 <style scoped>
+
+.special-node {
+  font-size: 14px;
+  cursor: pointer;
+  transition: border 0.3s ease;
+  border-color: aqua;
+}
+
 .vue-flow-container {
   position: relative;
   width: 100%;

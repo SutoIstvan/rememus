@@ -50,41 +50,45 @@ const y = computed(() => `${Math.round(props.position.y)}px`)
 </template>
 
 <style scoped>
+
+/* Стили для карточки с аватаркой */
 .node-with-avatar {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
-  border-radius: 8px;
-  padding: 5px;
+  border-radius: 4px;
+  padding: 6px;
   min-width: 80px;
-  min-height: 100px;
-  
+  min-height: 115px;
+  width: 90px;
+  border: 1px solid #cccccc;
+  cursor: pointer !important; /* палец-указатель */
 }
 
 .avatar {
-  width: 80px;
+  width: 70px;
   aspect-ratio: 1;
   object-fit: cover;
   border-radius: 50%;
-  border: 4px solid white;
-  box-shadow: 0rem 0.4rem 0.6rem 0rem rgba(32, 46, 66, 0.08);
-}
-
-.vue-flow__node-default {
-    --vf-handle: var(--vf-node-color, #1a192b);
-    --vf-box-shadow: var(--vf-node-color, #1a192b);
-    background: var(--vf-node-bg);
-    border-color: #e0e0e0 !;
+  border: 3px solid white;
+  box-shadow: 0rem 0.2rem 0.6rem 0rem rgba(32, 46, 66, 0.103);
 }
 
 .label {
+  margin-top: 4px;
   font-size: 12px;
-  font-weight: bold;
+  font-weight: 300;
   text-align: center;
-  margin-bottom: 2px;
+  color: #555;
+  height: 33px;              /* фиксированная высота */
+  display: flex;             /* делаем flex-контейнер */
+  align-items: center;       /* вертикальное выравнивание */
+  justify-content: center;   /* горизонтальное выравнивание */
+  /* margin-bottom: 2px; */
 }
+
 
 .coordinates {
   font-size: 10px;
@@ -101,10 +105,20 @@ const y = computed(() => `${Math.round(props.position.y)}px`)
 }
 
 /* Скрываем handles по умолчанию, показываем только при hover */
-.vue-flow__handle {
-  opacity: 0;
-  transition: opacity 0.2s;
+.node-with-avatar:hover {
+  border: 1px solid #a7dcff !important; /* голубая рамка */
+  background-color: rgba(100, 193, 255, 0.1); /* лёгкая голубая заливка */
 }
+
+/* Скрываем визуально, но handles остаются для edge анимации */
+.vue-flow__handle {
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important; /* чтобы не мешали кликам */
+}
+
+
 
 .node-with-avatar:hover .vue-flow__handle {
   opacity: 1;

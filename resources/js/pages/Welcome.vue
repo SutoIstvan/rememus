@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-background-2 dark:bg-background-5 overflow-x-hidden">
+  <div class="bg-white dark:bg-black overflow-x-hidden">
     <HeaderNavigation />
     <!-- Hero Section -->
     <section
@@ -73,12 +73,12 @@
       </div>
     </section>
 
-        <!-- Feature/Memorial Section -->
+    <!-- Feature/Memorial Section -->
     <section
       class="pt-16 md:pt-20 lg:pt-[70px] xl:pt-[80px] pb-16 md:pb-20 lg:pb-[90px] xl:pb-[100px] bg-white dark:bg-black"
     >
-      <div class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-        <div class="text-center space-y-5 mx-auto mb-10 md:mb-[70px]">
+      <div class="lp:!max-w-[1290px] xl:max-w-[1140px] lg:max-w-[960px] mx-auto px-4 md:px-6 lg:px-8">
+        <div class="text-center space-y-5 mx-auto">
           <span 
             v-scroll-animate="{ delay: 200 }"
             class="badge badge-green"

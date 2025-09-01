@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-7xl mx-auto p-4">
+  <div class="lp:!max-w-[1290px] xl:max-w-[1140px] lg:max-w-[960px] mx-auto p-4 bg-white dark:bg-black">
     <!-- Заголовок -->
     <div class="text-center space-y-5 mx-auto mb-10 md:mb-[30px]" v-scroll-animate="{ delay: 100, direction: 'down' }">
       <span class="badge badge-green">Gallery</span>
