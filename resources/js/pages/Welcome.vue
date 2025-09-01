@@ -113,54 +113,19 @@
 
     <FamilyTree />
 
-    <!-- Feature/Memorial Section -->
-    <section
-      class="pt-16 md:pt-20 lg:pt-[70px] xl:pt-[80px] pb-16 md:pb-20 lg:pb-[90px] xl:pb-[100px] bg-white dark:bg-black"
-    >
-      <div class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-        <div class="text-center space-y-5 mx-auto mb-10 md:mb-[70px]">
-          <span 
-            v-scroll-animate="{ delay: 200 }"
-            class="badge badge-green"
-          >
-            {{ memorial.badgeText }}
-          </span>
-          
-          <section class="max-w-2xl mx-auto mt-1">
-            <!-- Additional content можно добавить здесь -->
-          </section>
-          
-          <div class="text-gray-700">
-            <h4 
-              v-scroll-animate="{ delay: 250 }"
-              class="mb-3 max-w-[700px] mx-auto text-center mb-10"
-            >
-              {{ memorial.quote }}
-            </h4>
-            <p 
-              v-scroll-animate="{ delay: 300 }"
-              class="dropcap text-start text-lg" 
-              v-html="memorial.description"
-            >
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
+    <TimeLine />
 
-    
-
-    
   </div>
 </template>
 
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3'
-import CalendarIcon from '@/Components/Icons/CalendarIcon.vue'
-import ClockIcon from '@/Components/Icons/ClockIcon.vue'
+import CalendarIcon from '@/components/icons/CalendarIcon.vue'
+import ClockIcon from '@/components/icons/ClockIcon.vue'
 import HeaderNavigation from '@/components/icons/HeaderNavigation.vue'
 import Gallery from '@/components/icons/Gallery.vue'
 import FamilyTree from './FamilyTree.vue'
+import TimeLine from '@/components/icons/TimeLine.vue'
 
 // Директива для анимаций
 const vScrollAnimate = {
