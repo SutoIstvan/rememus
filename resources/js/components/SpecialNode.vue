@@ -43,9 +43,9 @@ const y = computed(() => `${Math.round(props.position.y)}px`)
     <div class="label">{{ props.data.label }}</div>
 
     <!-- Координаты -->
-    <div class="coordinates">
+    <!-- <div class="coordinates">
       {{ x }} {{ y }}
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -56,21 +56,27 @@ const y = computed(() => `${Math.round(props.position.y)}px`)
   align-items: center;
   justify-content: center;
   position: relative;
-  /* background: white; */
-  /* border: 2px solid #ddd; */
   border-radius: 8px;
   padding: 5px;
   min-width: 80px;
   min-height: 100px;
+  
 }
 
 .avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
+  width: 80px;
+  aspect-ratio: 1;
   object-fit: cover;
-  margin-bottom: 4px;
-  border: 2px solid #666;
+  border-radius: 50%;
+  border: 4px solid white;
+  box-shadow: 0rem 0.4rem 0.6rem 0rem rgba(32, 46, 66, 0.08);
+}
+
+.vue-flow__node-default {
+    --vf-handle: var(--vf-node-color, #1a192b);
+    --vf-box-shadow: var(--vf-node-color, #1a192b);
+    background: var(--vf-node-bg);
+    border-color: #e0e0e0 !;
 }
 
 .label {

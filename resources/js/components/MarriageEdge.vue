@@ -18,7 +18,7 @@
       text-anchor="middle"
       class="marriage-heart"
       font-size="10"
-      fill="#e74c3c"
+      fill="#b1b1b7"
     >
       ❤️
     </text>
@@ -39,7 +39,7 @@ const edgeClass = computed(() => {
 })
 
 const strokeColor = computed(() => {
-  if (props.type === 'marriage') return '#e74c3c'
+  if (props.type === 'marriage') return '#b1b1b7'
   if (props.type === 'sibling') return '#f39c12'
   return '#b1b1b7'
 })

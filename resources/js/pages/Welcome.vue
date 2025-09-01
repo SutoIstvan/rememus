@@ -73,7 +73,7 @@
       </div>
     </section>
 
-    <!-- Feature/Memorial Section -->
+        <!-- Feature/Memorial Section -->
     <section
       class="pt-16 md:pt-20 lg:pt-[70px] xl:pt-[80px] pb-16 md:pb-20 lg:pb-[90px] xl:pb-[100px] bg-white dark:bg-black"
     >
@@ -109,6 +109,48 @@
     </section>
 
     <Gallery />
+
+
+    <FamilyTree />
+
+    <!-- Feature/Memorial Section -->
+    <section
+      class="pt-16 md:pt-20 lg:pt-[70px] xl:pt-[80px] pb-16 md:pb-20 lg:pb-[90px] xl:pb-[100px] bg-white dark:bg-black"
+    >
+      <div class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+        <div class="text-center space-y-5 mx-auto mb-10 md:mb-[70px]">
+          <span 
+            v-scroll-animate="{ delay: 200 }"
+            class="badge badge-green"
+          >
+            {{ memorial.badgeText }}
+          </span>
+          
+          <section class="max-w-2xl mx-auto mt-1">
+            <!-- Additional content можно добавить здесь -->
+          </section>
+          
+          <div class="text-gray-700">
+            <h4 
+              v-scroll-animate="{ delay: 250 }"
+              class="mb-3 max-w-[700px] mx-auto text-center mb-10"
+            >
+              {{ memorial.quote }}
+            </h4>
+            <p 
+              v-scroll-animate="{ delay: 300 }"
+              class="dropcap text-start text-lg" 
+              v-html="memorial.description"
+            >
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+
+    
   </div>
 </template>
 
@@ -118,6 +160,7 @@ import CalendarIcon from '@/Components/Icons/CalendarIcon.vue'
 import ClockIcon from '@/Components/Icons/ClockIcon.vue'
 import HeaderNavigation from '@/components/icons/HeaderNavigation.vue'
 import Gallery from '@/components/icons/Gallery.vue'
+import FamilyTree from './FamilyTree.vue'
 
 // Директива для анимаций
 const vScrollAnimate = {
@@ -198,7 +241,11 @@ const props = defineProps({
       badgeText: 'Motto',
       quote: 'The comfort of having a friend may be taken away, but not that of having had one.',
       description: `Shannon Adams, a beloved wife, mother, and dedicated community member, peacefully passed away on March 25, 2023 - at the age of 73.
-      Born on March 10, 1950, Shannon grew up with strong family values and a deep sense of community.<br><br>`
+      Born on March 10, 1950, Shannon grew up with strong family values and a deep sense of community.<br><br>
+      She excelled academically and athletically in high school, eventually earning a Bachelor's degree in Business Administration. In 1975, Shannon married her love, George, and they shared 48 years of a loving marriage, raising two children, Emily and Michael, and becoming adoring grandparents to Grace, Ethan, and Lily. Professionally, Shannon had a distinguished career in finance, marked by her integrity and mentorship of young professionals. She also dedicated her time to various charitable causes, leaving a positive impact on her community. Shannon had a passion for the outdoors, often spending weekends camping, fishing, and hiking with her family, instilling a love for nature in her loved ones.
+      <br><br>
+      Shannon is survived by her wife, children, grandchildren, and siblings, Robert Jr. and Susan. A memorial service will be held on October 2, 2023, at St. Mary's Community Church at 2:00 PM. In lieu of flowers, the family requests donations to the Shannon Adams Memorial Scholarship Fund, supporting underprivileged youth's education in the community. Shannon's legacy lives on through the countless lives she touched, the values she upheld, and the love she shared. She will be deeply missed but forever cherished.
+    `
     })
   }
 })

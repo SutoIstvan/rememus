@@ -1,114 +1,244 @@
-<script setup lang="ts">
-import { ref } from "vue";
-import * as Masonry from "@/components/ui/masonry"; // shadcn-vue masonry
-import { Skeleton } from "@/components/ui/skeleton";
-
-// Галерея изображений
-const images = ref([
-  {
-    id: "1",
-    src: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image.jpg",
-    alt: "Gallery Image 1",
-  },
-  {
-    id: "2",
-    src: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-1.jpg",
-    alt: "Gallery Image 2",
-  },
-  {
-    id: "3",
-    src: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-2.jpg",
-    alt: "Gallery Image 3",
-  },
-  {
-    id: "4",
-    src: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-3.jpg",
-    alt: "Gallery Image 4",
-  },
-  {
-    id: "5",
-    src: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-4.jpg",
-    alt: "Gallery Image 5",
-  },
-  {
-    id: "6",
-    src: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-5.jpg",
-    alt: "Gallery Image 6",
-  },
-  {
-    id: "7",
-    src: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-6.jpg",
-    alt: "Gallery Image 7",
-  },
-  {
-    id: "8",
-    src: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-7.jpg",
-    alt: "Gallery Image 8",
-  },
-  {
-    id: "9",
-    src: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-8.jpg",
-    alt: "Gallery Image 9",
-  },
-]);
-
-// Заглушки для skeleton loader
-const skeletonIds = Array.from({ length: 6 }, () =>
-  `skeleton-${Math.random().toString(36).substring(2, 9)}`
-);
-</script>
-
 <template>
-  <div class="w-full max-w-6xl mx-auto px-4">
+  <div class="max-w-7xl mx-auto p-4">
     <!-- Заголовок -->
-    <div class="text-center space-y-5 mx-auto mb-10">
+    <div class="text-center space-y-5 mx-auto mb-10 md:mb-[30px]" v-scroll-animate="{ delay: 100, direction: 'down' }">
       <span class="badge badge-green">Gallery</span>
-      <h2 class="text-3xl font-bold">Masonry Image Gallery</h2>
-      <p class="text-muted-foreground text-base">
-        Красивая адаптивная галерея с Masonry Layout и shadcn-vue.
-      </p>
     </div>
 
-    <!-- Masonry Layout -->
-    <Masonry.Root
-      columnCount="3"
-      gap="{ column: 12, row: 12 }"
-      class="w-full"
-      fallback="loading"
+    <!-- Галерея -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+      <div v-for="(column, colIndex) in columns" :key="colIndex" class="grid gap-4">
+        <div 
+          v-for="(img, imgIndex) in column" 
+          :key="imgIndex"
+          v-scroll-animate="{ delay: (colIndex * 100) + (imgIndex * 150), direction: 'up' }"
+          class="group cursor-pointer relative overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300"
+          @click="openImage(img, colIndex * 3 + imgIndex + 1)"
+        >
+          <img
+            class="h-auto w-full rounded-lg transform group-hover:scale-105 transition-transform duration-500 ease-out object-cover"
+            :src="img"
+            :alt="`Image ${colIndex * 3 + imgIndex + 1}`"
+          />
+          <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-lg pointer-events-none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Modal Dialog -->
+    <div 
+      v-if="isDialogOpen"
+      class="fixed inset-0 z-50 flex items-center justify-center"
+      @click="closeDialog"
     >
-      <template #fallback>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          <div
-            v-for="id in skeletonIds"
-            :key="id"
-            class="rounded-lg overflow-hidden"
-          >
-            <Skeleton class="h-60 w-full" />
+      <!-- Backdrop -->
+      <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+      
+      <!-- Modal Content -->
+      <div 
+        class="relative max-w-4xl w-full mx-4overflow-hidden"
+        @click.stop
+      >
+        <!-- Кнопка закрытия -->
+        <button 
+          @click="closeDialog"
+          class="cursor-pointer hover:cursor-pointer absolute top-4 right-4 z-50 w-8 h-8 rounded-full bg-black/80 text-white hover:bg-black/90 flex items-center justify-center transition-colors"
+        >
+          ✕
+        </button>
+        
+        <!-- Навигация -->
+        <button 
+          v-if="currentImageIndex > 0"
+          @click="previousImage"
+          class="cursor-pointer hover:cursor-pointer absolute left-4 top-1/2 -translate-y-1/2 z-40 w-10 h-10 rounded-full bg-black/60 text-white hover:bg-black/80 flex items-center justify-center transition-colors"
+        >
+          ←
+        </button>
+        
+        <button 
+          v-if="currentImageIndex < images.length - 1"
+          @click="nextImage"
+          class="cursor-pointer hover:cursor-pointer absolute right-4 top-1/2 -translate-y-1/2 z-40 w-10 h-10 rounded-full bg-black/60 text-white hover:bg-black/80 flex items-center justify-center transition-colors"
+        >
+          →
+        </button>
+
+        <!-- Изображение -->
+        <div class="flex flex-col items-center p-6">
+          <img 
+            :src="currentImage" 
+            :alt="`Image ${currentImageIndex + 1}`"
+            class="max-w-full max-h-[80vh] object-contain rounded-lg shadow-lg"
+          />
+          
+          <!-- Информация об изображении -->
+          <div class="mt-4 text-center">
+            <p class="text-sm text-gray-600 mb-2">
+              Изображение {{ currentImageIndex + 1 }} из {{ images.length }}
+            </p>
+
           </div>
         </div>
-      </template>
-
-      <!-- Рендер изображений -->
-      <Masonry.Item
-        v-for="image in images"
-        :key="image.id"
-        class="relative overflow-hidden rounded-lg group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
-      >
-        <img
-          :src="image.src"
-          :alt="image.alt"
-          class="w-full h-auto object-cover rounded-lg transition-transform duration-500 group-hover:scale-105"
-        />
-      </Masonry.Item>
-    </Masonry.Root>
+      </div>
+    </div>
   </div>
 </template>
 
-<style scoped>
-.badge {
-  @apply inline-block px-3 py-1 text-xs font-medium rounded-full;
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+
+const images = [
+  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image.jpg",
+  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-1.jpg",
+  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-2.jpg",
+  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-3.jpg",
+  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-4.jpg",
+  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-5.jpg",
+  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-6.jpg",
+  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-7.jpg",
+  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-8.jpg",
+  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-9.jpg",
+  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-10.jpg",
+  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-11.jpg",
+];
+
+// Разделяем картинки на колонки по 3 штуки
+const columns = [];
+for (let i = 0; i < 4; i++) {
+  columns.push(images.slice(i * 3, i * 3 + 3));
 }
-.badge-green {
-  @apply bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200;
+
+// Состояние модального окна
+const isDialogOpen = ref(false)
+const currentImage = ref('')
+const currentImageIndex = ref(0)
+
+// Функции для работы с модальным окном
+const openImage = (imageSrc, index) => {
+  currentImage.value = imageSrc
+  currentImageIndex.value = index - 1 // Преобразуем в 0-based index
+  isDialogOpen.value = true
 }
-</style>
+
+const closeDialog = () => {
+  isDialogOpen.value = false
+}
+
+const nextImage = () => {
+  if (currentImageIndex.value < images.length - 1) {
+    currentImageIndex.value++
+    currentImage.value = images[currentImageIndex.value]
+  }
+}
+
+const previousImage = () => {
+  if (currentImageIndex.value > 0) {
+    currentImageIndex.value--
+    currentImage.value = images[currentImageIndex.value]
+  }
+}
+
+const downloadImage = async () => {
+  try {
+    const response = await fetch(currentImage.value)
+    const blob = await response.blob()
+    const url = window.URL.createObjectURL(blob)
+    
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `image-${currentImageIndex.value + 1}.jpg`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    
+    window.URL.revokeObjectURL(url)
+  } catch (error) {
+    console.error('Ошибка при скачивании изображения:', error)
+  }
+}
+
+// Обработка клавиш
+const handleKeydown = (event) => {
+  if (!isDialogOpen.value) return
+  
+  if (event.key === 'Escape') {
+    closeDialog()
+  } else if (event.key === 'ArrowRight') {
+    nextImage()
+  } else if (event.key === 'ArrowLeft') {
+    previousImage()
+  }
+}
+
+// Добавляем обработчик клавиш при монтировании
+
+onMounted(() => {
+  document.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleKeydown)
+})
+
+// Директива для анимаций
+const vScrollAnimate = {
+  mounted(el, binding) {
+    const { delay = 0, direction = 'up', offset = 100 } = binding.value || {}
+    
+    // Начальное состояние
+    el.style.opacity = '0'
+    el.style.transition = 'all 0.6s ease-out'
+    
+    switch (direction) {
+      case 'up':
+        el.style.transform = 'translateY(30px)'
+        break
+      case 'down':
+        el.style.transform = 'translateY(-30px)'
+        break
+      case 'left':
+        el.style.transform = 'translateX(-30px)'
+        break
+      case 'right':
+        el.style.transform = 'translateX(30px)'
+        break
+      default:
+        el.style.transform = 'translateY(30px)'
+    }
+    
+    if (delay > 0) {
+      el.style.transitionDelay = `${delay}ms`
+    }
+
+    // Создаем observer
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => {
+              entry.target.style.opacity = '1'
+              entry.target.style.transform = 'translate(0, 0)'
+            }, delay)
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      {
+        root: null,
+        rootMargin: `0px 0px -${offset}px 0px`,
+        threshold: 0.1
+      }
+    )
+    
+    observer.observe(el)
+    el._observer = observer
+  },
+  
+  unmounted(el) {
+    if (el._observer) {
+      el._observer.disconnect()
+    }
+  }
+}
+</script>

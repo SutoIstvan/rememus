@@ -148,7 +148,7 @@ const props = defineProps({
   ctaButton: {
     type: Object,
     default: () => ({
-      text: 'Get started',
+      text: 'Edit',
       route: 'register'
     })
   }

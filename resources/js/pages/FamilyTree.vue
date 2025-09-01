@@ -88,7 +88,7 @@ const nodes = [
 
   {
     id: 'wife',
-    position: { x: 125, y: 330 }, // слева от 'you' (x: 265)
+    position: { x: 135, y: 331 }, // слева от 'you' (x: 265)
     style: { width: '90px', height: '105px', padding: '5px' },
     data: {
       label: 'Жена',
@@ -115,7 +115,7 @@ const nodes = [
   },
   {
     id: 'brother',
-    position: { x: 375, y: 330 },
+    position: { x: 375, y: 331 },
     style: { width: '90px', height: '105px', padding: '5px', },
     data: {
       label: 'Брат',
@@ -125,7 +125,7 @@ const nodes = [
 
   {
     id: 'brother2',
-    position: { x: 485, y: 330 },
+    position: { x: 485, y: 331 },
     style: { width: '90px', height: '105px', padding: '5px', },
     data: {
       label: 'Брат',
@@ -306,40 +306,40 @@ const edges = ref([
   // Дополнительные горизонтальные связи (по желанию)
   
   // Связь между дедушкой и бабушкой по папиной линии
-  { 
-    id: 'grandpa_dad-grandma_dad', 
-    source: 'grandpa_dad', 
-    target: 'grandma_dad', 
-    type: 'marriage',
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-    sourceHandle: 'source-right',
-    targetHandle: 'target-left'
-  },
+  // { 
+  //   id: 'grandpa_dad-grandma_dad', 
+  //   source: 'grandpa_dad', 
+  //   target: 'grandma_dad', 
+  //   type: 'marriage',
+  //   sourcePosition: Position.Right,
+  //   targetPosition: Position.Left,
+  //   sourceHandle: 'source-right',
+  //   targetHandle: 'target-left'
+  // },
 
   // Связь между дедушкой и бабушкой по маминой линии
-  { 
-    id: 'grandpa_mom-grandma_mom', 
-    source: 'grandpa_mom', 
-    target: 'grandma_mom', 
-    type: 'marriage',
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-    sourceHandle: 'source-right',
-    targetHandle: 'target-left'
-  },
+  // { 
+  //   id: 'grandpa_mom-grandma_mom', 
+  //   source: 'grandpa_mom', 
+  //   target: 'grandma_mom', 
+  //   type: 'marriage',
+  //   sourcePosition: Position.Right,
+  //   targetPosition: Position.Left,
+  //   sourceHandle: 'source-right',
+  //   targetHandle: 'target-left'
+  // },
 
   // Связь между родителями (горизонтально)
-  { 
-    id: 'dad-mom', 
-    source: 'dad', 
-    target: 'mom', 
-    type: 'marriage',
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-    sourceHandle: 'source-right',
-    targetHandle: 'target-left'
-  },
+  // { 
+  //   id: 'dad-mom', 
+  //   source: 'dad', 
+  //   target: 'mom', 
+  //   type: 'marriage',
+  //   sourcePosition: Position.Right,
+  //   targetPosition: Position.Left,
+  //   sourceHandle: 'source-right',
+  //   targetHandle: 'target-left'
+  // },
 
   // Связи между братьями (горизонтально сверху к верху для визуального единства)
   // { 
@@ -371,37 +371,17 @@ const edges = ref([
 
 <template>
 
-  <Head title="Welcome">
-    <link rel="preconnect" href="https://rsms.me/" />
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
-  </Head>
+
   <div
     class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
-    <header class="mb-6 w-full max-w-[335px] text-sm not-has-[nav]:hidden lg:max-w-4xl">
-            <nav class="flex items-center justify-end gap-4">
-                <Link
-                    v-if="$page.props.auth.user"
-                    :href="dashboard()"
-                    class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
-                >
-                    Dashboard
-                </Link>
-                <template v-else>
-                    <Link
-                        :href="login()"
-                        class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
-                    >
-                        Log in
-                    </Link>
-                    <Link
-                        :href="register()"
-                        class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
-                    >
-                        Register
-                    </Link>
-                </template>
-            </nav>
-    </header>
+        <div class="text-center space-y-5 mx-auto mt-10 md:mt-[70px]">
+          <span 
+            v-scroll-animate="{ delay: 200 }"
+            class="badge badge-green"
+          >
+            Family Tree
+          </span>
+        </div>
     <div
       class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
 
@@ -430,8 +410,8 @@ const edges = ref([
           <template #node-default="nodeProps">
             <SpecialNode v-bind="nodeProps" />
           </template>
-          <Background />
-          <Controls />
+          <!-- <Background /> -->
+          <!-- <Controls /> -->
         </VueFlow>
       </div>
     </div>
