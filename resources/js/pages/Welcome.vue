@@ -1,584 +1,250 @@
-<script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
-import { dashboard, login, register } from '@/routes';
-import { ref } from 'vue'
-import { VueFlow } from '@vue-flow/core'
-import { Controls } from '@vue-flow/controls'
-import { Background } from '@vue-flow/background'
-import { markRaw } from 'vue'
-import { Position } from '@vue-flow/core'
-
-// these components are only shown as examples of how to use a custom node or edge
-// you can find many examples of how to create these custom components in the examples page of the docs
-import SpecialNode from '@/components/SpecialNode.vue'
-import SpecialEdge from '@/components/SpecialEdge.vue'
-import MarriageEdge from '@/components/MarriageEdge.vue'
-
-const edgeTypes = {
-  special: markRaw(SpecialEdge),
-  marriage: markRaw(MarriageEdge),
-
-}
-
-// these are our nodes
-const nodes = [
-  {
-    id: 'dad',
-    position: { x: 190, y: 170 },
-    style: { width: '90px', height: '105px', padding: '5px', },
-    data: {
-      label: 'Папа',
-      avatar: 'https://randomuser.me/api/portraits/men/46.jpg',
-    }
-  },
-  {
-    id: 'mom',
-    position: { x: 345, y: 170 },
-    style: { width: '90px', height: '105px', padding: '5px', },
-    data: {
-      label: 'Мама',
-      avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-    }
-  },
-  {
-    id: 'you',
-    position: { x: 265, y: 331 },
-    style: { width: '90px', height: '105px', padding: '5px', },
-    data: {
-      label: 'Я',
-      avatar: 'https://randomuser.me/api/portraits/lego/1.jpg',
-    }
-  },
-  {
-    id: 'grandpa_dad',
-    position: { x: 75, y: 8 },
-    style: { width: '90px', height: '105px', padding: '5px', },
-    data: {
-      label: 'Дедушка',
-      avatar: 'https://randomuser.me/api/portraits/men/65.jpg',
-    }
-  },
-  {
-    id: 'grandma_dad',
-    position: { x: 200, y: 8 },
-    style: { width: '90px', height: '105px', padding: '5px', },
-    data: {
-      label: 'Бабушка',
-      avatar: 'https://randomuser.me/api/portraits/women/65.jpg',
-    }
-  },
-  {
-    id: 'grandpa_mom',
-    position: { x: 330, y: 8 },
-    style: { width: '90px', height: '105px', padding: '5px', },
-    data: {
-      label: 'Дедушка',
-      avatar: 'https://randomuser.me/api/portraits/men/66.jpg',
-    }
-  },
-  {
-    id: 'grandma_mom',
-    position: { x: 460, y: 8 },
-    style: { width: '90px', height: '105px', padding: '5px', },
-    data: {
-      label: 'Бабушка',
-      avatar: 'https://randomuser.me/api/portraits/women/66.jpg',
-    }
-  },
-
-  {
-    id: 'wife',
-    position: { x: 125, y: 330 }, // слева от 'you' (x: 265)
-    style: { width: '90px', height: '105px', padding: '5px' },
-    data: {
-      label: 'Жена',
-      avatar: 'https://randomuser.me/api/portraits/women/47.jpg',
-    }
-  },
-  {
-    id: 'child',
-    position: { x: 245, y: 470 }, // ниже 'you'
-    style: { width: '90px', height: '105px', padding: '5px' },
-    data: {
-      label: 'Ребенок',
-      avatar: 'https://randomuser.me/api/portraits/men/35.jpg',
-    }
-  },
-  {
-    id: 'child2',
-    position: { x: 135, y: 470 }, // ниже 'you'
-    style: { width: '90px', height: '105px', padding: '5px' },
-    data: {
-      label: 'Ребенок',
-      avatar: 'https://randomuser.me/api/portraits/women/5.jpg',
-    }
-  },
-  {
-    id: 'brother',
-    position: { x: 375, y: 330 },
-    style: { width: '90px', height: '105px', padding: '5px', },
-    data: {
-      label: 'Брат',
-      avatar: 'https://randomuser.me/api/portraits/men/76.jpg',
-    }
-  },
-
-  {
-    id: 'brother2',
-    position: { x: 485, y: 330 },
-    style: { width: '90px', height: '105px', padding: '5px', },
-    data: {
-      label: 'Брат',
-      avatar: 'https://randomuser.me/api/portraits/men/77.jpg',
-    }
-  },
-
-
-]
-
-
-
-// Связи (ребра)
-const edges = ref([
-
-  // Родители → ты (сверху вниз)
-  { 
-    id: 'mom-you', 
-    source: 'mom', 
-    target: 'you', 
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-  { 
-    id: 'dad-you', 
-    source: 'dad', 
-    target: 'you', 
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-
-  // Бабушки и дедушки → мама (сверху вниз)
-  { 
-    id: 'grandma_mom-mom', 
-    source: 'grandma_mom', 
-    target: 'mom', 
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-  { 
-    id: 'grandpa_mom-mom', 
-    source: 'grandpa_mom', 
-    target: 'mom', 
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-
-  // Бабушки и дедушки → папа (сверху вниз)
-  { 
-    id: 'grandma_dad-dad', 
-    source: 'grandma_dad', 
-    target: 'dad', 
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-  { 
-    id: 'grandpa_dad-dad', 
-    source: 'grandpa_dad', 
-    target: 'dad', 
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-
-  // Супружеская связь (горизонтально слева направо)
-  { 
-    id: 'you-wife', 
-    source: 'you', 
-    target: 'wife', 
-    type: 'marriage',
-    sourcePosition: Position.Left,
-    targetPosition: Position.Right,
-    sourceHandle: 'source-left',
-    targetHandle: 'target-right'
-  },
-
-  // Ты и жена → дети (сверху вниз)
-  { 
-    id: 'you-child', 
-    source: 'you', 
-    target: 'child', 
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-  { 
-    id: 'you-child2', 
-    source: 'you', 
-    target: 'child2', 
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-  // { 
-  //   id: 'wife-child', 
-  //   source: 'wife', 
-  //   target: 'child', 
-  //   type: 'special',
-  //   sourcePosition: Position.Bottom,
-  //   targetPosition: Position.Top,
-  //   sourceHandle: 'source-bottom',
-  //   targetHandle: 'target-top'
-  // },
-  // { 
-  //   id: 'wife-child2', 
-  //   source: 'wife', 
-  //   target: 'child2', 
-  //   type: 'special',
-  //   sourcePosition: Position.Bottom,
-  //   targetPosition: Position.Top,
-  //   sourceHandle: 'source-bottom',
-  //   targetHandle: 'target-top'
-  // },
-
-  // Родители → братья (сверху вниз)
-  { 
-    id: 'mom-brother', 
-    source: 'mom', 
-    target: 'brother', 
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-  // { 
-  //   id: 'dad-brother', 
-  //   source: 'dad', 
-  //   target: 'brother', 
-  //   type: 'special',
-  //   sourcePosition: Position.Bottom,
-  //   targetPosition: Position.Top,
-  //   sourceHandle: 'source-bottom',
-  //   targetHandle: 'target-top'
-  // },
-  { 
-    id: 'mom-brother2', 
-    source: 'mom', 
-    target: 'brother2', 
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-  // { 
-  //   id: 'dad-brother2', 
-  //   source: 'dad', 
-  //   target: 'brother2', 
-  //   type: 'special',
-  //   sourcePosition: Position.Bottom,
-  //   targetPosition: Position.Top,
-  //   sourceHandle: 'source-bottom',
-  //   targetHandle: 'target-top'
-  // },
-
-  // Дополнительные горизонтальные связи (по желанию)
-  
-  // Связь между дедушкой и бабушкой по папиной линии
-  { 
-    id: 'grandpa_dad-grandma_dad', 
-    source: 'grandpa_dad', 
-    target: 'grandma_dad', 
-    type: 'marriage',
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-    sourceHandle: 'source-right',
-    targetHandle: 'target-left'
-  },
-
-  // Связь между дедушкой и бабушкой по маминой линии
-  { 
-    id: 'grandpa_mom-grandma_mom', 
-    source: 'grandpa_mom', 
-    target: 'grandma_mom', 
-    type: 'marriage',
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-    sourceHandle: 'source-right',
-    targetHandle: 'target-left'
-  },
-
-  // Связь между родителями (горизонтально)
-  { 
-    id: 'dad-mom', 
-    source: 'dad', 
-    target: 'mom', 
-    type: 'marriage',
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-    sourceHandle: 'source-right',
-    targetHandle: 'target-left'
-  },
-
-  // Связи между братьями (горизонтально сверху к верху для визуального единства)
-  // { 
-  //   id: 'you-brother', 
-  //   source: 'you', 
-  //   target: 'brother', 
-  //   // type: 'sibling',
-  //   sourcePosition: Position.Top,
-  //   targetPosition: Position.Top,
-  //   sourceHandle: 'source-top',
-  //   targetHandle: 'target-top'
-  // },
-  // { 
-  //   id: 'brother-brother2', 
-  //   source: 'brother', 
-  //   target: 'brother2', 
-  //   // type: 'sibling',
-  //   sourcePosition: Position.Right,
-  //   targetPosition: Position.Left,
-  //   sourceHandle: 'source-right',
-  //   targetHandle: 'target-left'
-  // }
-
-
-  // { id: 'dad-brother', source: 'dad', target: 'brother', type: 'special' },
-
-])
-</script>
-
 <template>
-
-  <Head title="Welcome">
-    <link rel="preconnect" href="https://rsms.me/" />
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
-  </Head>
-  <div
-    class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
-    <header class="mb-6 w-full max-w-[335px] text-sm not-has-[nav]:hidden lg:max-w-4xl">
-            <nav class="flex items-center justify-end gap-4">
-                <Link
-                    v-if="$page.props.auth.user"
-                    :href="dashboard()"
-                    class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
-                >
-                    Dashboard
-                </Link>
-                <template v-else>
-                    <Link
-                        :href="login()"
-                        class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
-                    >
-                        Log in
-                    </Link>
-                    <Link
-                        :href="register()"
-                        class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
-                    >
-                        Register
-                    </Link>
-                </template>
-            </nav>
-    </header>
-    <div
-      class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
-
-      <div style="width: 100%; height: 900px;">
-
-        <!-- 
-          :nodes-draggable="false"
-          :nodes-connectable="false"
-          :edges-draggable="false"
-          :pan-on-scroll="false"
-          :pan-on-drag="false"
-          :zoom-on-scroll="false"
-          :zoom-on-pinching="false" -->
-
-
-        <VueFlow :nodes="nodes" :edges="edges" fit-view-on-init :edge-types="edgeTypes"
-        
-            :zoom-on-scroll="false"
-            :zoom-on-pinch="false"
-            :zoom-on-double-click="false"
-            :pan-on-drag="false"
-            :nodes-draggable="false"
-            :nodes-connectable="false"
-            :elements-selectable="false"
-        >
-          <template #node-default="nodeProps">
-            <SpecialNode v-bind="nodeProps" />
-          </template>
-          <Background />
-          <Controls />
-        </VueFlow>
+  <div class="bg-background-2 dark:bg-background-5 overflow-x-hidden">
+    <HeaderNavigation />
+    <!-- Hero Section -->
+    <section
+      class="hero-section pt-[320px] md:pt-[200px] lg:pt-[200px] xl:pt-[220px] bg-[url('/images/front/hero-bg.png')] bg-no-repeat bg-cover bg-top relative z-0"
+    >
+      <!-- Hero Title Content -->
+      <div
+        class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 flex flex-col items-center space-y-[124px] relative z-10 mb-[100px] lg:mb-[150px] xl:mb-[220px]"
+      >
+        <!-- Дополнительный контент можно добавить здесь -->
       </div>
-    </div>
 
+      <!-- Hero Bottom Item -->
+      <div class="w-full bg-white dark:bg-black">
+        <div class="relative z-0">
+          <div class="relative w-full bg-gradient-to-t from-white dark:from-background-8 from-50% to-transparent"></div>
+          <div class="flex flex-col lg:flex-row">
+            <!-- Image Section -->
+            <div class="lg:flex-1/3 lg:pe-[42px]">
+              <div 
+                v-scroll-animate="{ direction: 'left', delay: 200 }"
+                class="relative h-full max-lg:max-w-[525px] max-lg:mx-auto"
+              >
+                <figure
+                  class="shadow-lg lg:absolute lg:right-0 lg:bottom-0 max-w-[300px] max-lg:mx-auto bg-white dark:bg-background-9 rounded-[20px] overflow-hidden p-2"
+                >
+                  <img 
+                    :src="person.image" 
+                    :alt="person.name"
+                    class="w-[300px] h-[300px] object-cover rounded-[20px] lg:w-[400px] lg:h-[400px]" 
+                  />
+                </figure>
+              </div>
+            </div>
+            
+            <!-- Person Info Section -->
+            <div class="lg:flex-1/2 pt-[30px] max-lg:px-5 max-lg:text-center">
+              <div 
+                v-scroll-animate="{ delay: 200 }"
+                class="mb-6"
+              >
+                <h2 class="mb-3">{{ person.name }}</h2>
+              </div>
+              
+              <ul class="list-none space-y-2 mb-14">
+                <!-- Birth/Death Dates -->
+                <li 
+                  v-scroll-animate="{ delay: 200 }"
+                  class="flex items-center gap-3 mb-3 justify-center lg:justify-start"
+                >
+                  <CalendarIcon />
+                  <p class="text-secondary dark:text-accent">
+                    {{ person.birthYear }} - {{ person.deathYear }}
+                  </p>
+                </li>
+                
+                <!-- Location -->
+                <li 
+                  v-scroll-animate="{ delay: 200 }"
+                  class="flex items-center gap-3 mb-3 justify-center lg:justify-start"
+                >
+                  <ClockIcon />
+                  <p class="text-secondary dark:text-accent">
+                    {{ person.location }}
+                  </p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature/Memorial Section -->
+    <section
+      class="pt-16 md:pt-20 lg:pt-[70px] xl:pt-[80px] pb-16 md:pb-20 lg:pb-[90px] xl:pb-[100px] bg-white dark:bg-black"
+    >
+      <div class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+        <div class="text-center space-y-5 mx-auto mb-10 md:mb-[70px]">
+          <span 
+            v-scroll-animate="{ delay: 200 }"
+            class="badge badge-green"
+          >
+            {{ memorial.badgeText }}
+          </span>
+          
+          <section class="max-w-2xl mx-auto mt-1">
+            <!-- Additional content можно добавить здесь -->
+          </section>
+          
+          <div class="text-gray-700">
+            <h4 
+              v-scroll-animate="{ delay: 250 }"
+              class="mb-3 max-w-[700px] mx-auto text-center mb-10"
+            >
+              {{ memorial.quote }}
+            </h4>
+            <p 
+              v-scroll-animate="{ delay: 300 }"
+              class="dropcap text-start text-lg" 
+              v-html="memorial.description"
+            >
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <Gallery />
   </div>
 </template>
 
-<style scoped>
-.vue-flow-container {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-}
+<script setup>
+import { Head } from '@inertiajs/vue3'
+import CalendarIcon from '@/Components/Icons/CalendarIcon.vue'
+import ClockIcon from '@/Components/Icons/ClockIcon.vue'
+import HeaderNavigation from '@/components/icons/HeaderNavigation.vue'
+import Gallery from '@/components/icons/Gallery.vue'
 
-.clouds-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  background: linear-gradient(135deg, 
-    rgba(135, 206, 235, 0.8) 0%,
-    rgba(176, 224, 230, 0.6) 50%,
-    rgba(230, 248, 255, 0.4) 100%);
-}
+// Директива для анимаций
+const vScrollAnimate = {
+  mounted(el, binding) {
+    const { delay = 0, direction = 'up', offset = 100 } = binding.value || {}
+    
+    // Начальное состояние
+    el.style.opacity = '0'
+    el.style.transition = 'all 0.6s ease-out'
+    
+    switch (direction) {
+      case 'up':
+        el.style.transform = 'translateY(30px)'
+        break
+      case 'down':
+        el.style.transform = 'translateY(-30px)'
+        break
+      case 'left':
+        el.style.transform = 'translateX(-30px)'
+        break
+      case 'right':
+        el.style.transform = 'translateX(30px)'
+        break
+      default:
+        el.style.transform = 'translateY(30px)'
+    }
+    
+    if (delay > 0) {
+      el.style.transitionDelay = `${delay}ms`
+    }
 
-.cloud-svg {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.vue-flow-main {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-}
-
-/* Анимации для облаков */
-.cloud {
-  transform-origin: center;
-}
-
-.cloud-1 {
-  animation: float-1 25s ease-in-out infinite;
-}
-
-.cloud-2 {
-  animation: float-2 30s ease-in-out infinite;
-}
-
-.cloud-3 {
-  animation: float-3 35s ease-in-out infinite;
-}
-
-.cloud-4 {
-  animation: float-4 28s ease-in-out infinite;
-}
-
-.cloud-5 {
-  animation: float-5 32s ease-in-out infinite;
-}
-
-.cloud-6 {
-  animation: float-6 22s ease-in-out infinite;
-}
-
-.cloud-7 {
-  animation: float-7 27s ease-in-out infinite;
-}
-
-.cloud-8 {
-  animation: float-8 31s ease-in-out infinite;
-}
-
-.cloud-9 {
-  animation: float-9 26s ease-in-out infinite;
-}
-
-/* Различные анимации плавания */
-@keyframes float-1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(30px, -20px) scale(1.05); }
-  50% { transform: translate(-20px, -10px) scale(0.95); }
-  75% { transform: translate(10px, 15px) scale(1.02); }
-}
-
-@keyframes float-2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(-25px, 20px) scale(1.08); }
-  66% { transform: translate(35px, -15px) scale(0.92); }
-}
-
-@keyframes float-3 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  20% { transform: translate(15px, -25px) scale(1.03); }
-  40% { transform: translate(-30px, 10px) scale(0.97); }
-  60% { transform: translate(20px, 25px) scale(1.06); }
-  80% { transform: translate(-10px, -15px) scale(0.94); }
-}
-
-@keyframes float-4 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  30% { transform: translate(-20px, -30px) scale(1.04); }
-  70% { transform: translate(25px, 20px) scale(0.96); }
-}
-
-@keyframes float-5 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(40px, 15px) scale(1.07); }
-  50% { transform: translate(-15px, -25px) scale(0.93); }
-  75% { transform: translate(-35px, 30px) scale(1.01); }
-}
-
-@keyframes float-6 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  40% { transform: translate(-40px, -10px) scale(1.1); }
-  80% { transform: translate(20px, -20px) scale(0.9); }
-}
-
-@keyframes float-7 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  35% { transform: translate(25px, 25px) scale(1.05); }
-  70% { transform: translate(-30px, -20px) scale(0.95); }
-}
-
-@keyframes float-8 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  45% { transform: translate(-25px, 35px) scale(1.08); }
-  85% { transform: translate(30px, -25px) scale(0.92); }
-}
-
-@keyframes float-9 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  30% { transform: translate(35px, -20px) scale(1.06); }
-  60% { transform: translate(-20px, 25px) scale(0.94); }
-}
-
-/* Адаптивность */
-@media (max-width: 768px) {
-  .cloud {
-    transform: scale(0.7);
+    // Создаем observer
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => {
+              entry.target.style.opacity = '1'
+              entry.target.style.transform = 'translate(0, 0)'
+            }, delay)
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      {
+        root: null,
+        rootMargin: `0px 0px -${offset}px 0px`,
+        threshold: 0.1
+      }
+    )
+    
+    observer.observe(el)
+    el._observer = observer
+  },
+  
+  unmounted(el) {
+    if (el._observer) {
+      el._observer.disconnect()
+    }
   }
 }
-</style>
+
+// Определяем props от Laravel контроллера
+const props = defineProps({
+  person: {
+    type: Object,
+    default: () => ({
+      name: 'Arnold Shannon',
+      image: '/images/front/testimonial-1.jpg',
+      birthYear: '1975',
+      deathYear: '2023',
+      location: 'Jacksonville, Florida'
+    })
+  },
+  memorial: {
+    type: Object,
+    default: () => ({
+      badgeText: 'Motto',
+      quote: 'The comfort of having a friend may be taken away, but not that of having had one.',
+      description: `Shannon Adams, a beloved wife, mother, and dedicated community member, peacefully passed away on March 25, 2023 - at the age of 73.
+      Born on March 10, 1950, Shannon grew up with strong family values and a deep sense of community.<br><br>`
+    })
+  }
+})
+</script>
+
+<!-- <style scoped>
+/* Добавь кастомные стили если нужно */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.badge-green {
+  background-color: rgb(220 252 231);
+  color: rgb(22 163 74);
+}
+
+@media (prefers-color-scheme: dark) {
+  .badge-green {
+    background-color: rgb(20 83 45);
+    color: rgb(187 247 208);
+  }
+}
+
+.dropcap::first-letter {
+  float: left;
+  font-size: 3.75rem;
+  font-weight: 700;
+  line-height: 1;
+  padding-right: 0.5rem;
+  padding-top: 0.25rem;
+}
+
+.badge {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+}
+
+.badge-green {
+  @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+}
+
+.dropcap::first-letter {
+  @apply float-left text-6xl font-bold leading-none pr-2 pt-1;
+}
+</style> -->
