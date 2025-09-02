@@ -24,19 +24,21 @@
                 class="relative h-full max-lg:max-w-[525px] max-lg:mx-auto"
               >
                 <figure
-                  class="shadow-lg lg:absolute lg:right-0 lg:bottom-0 max-w-[300px] max-lg:mx-auto bg-white dark:bg-background-9 rounded-[20px] overflow-hidden p-2"
+                  class="shadow-lg absolute lg:right-0 lg:bottom-0 max-w-[300px] 
+                    max-lg:left-1/2 max-lg:-translate-x-1/2 max-lg:top-[-100px]
+                  bg-white dark:bg-background-9 rounded-[20px] overflow-hidden p-2"
                 >
                   <img 
                     :src="person.image" 
                     :alt="person.name"
-                    class="w-[300px] h-[300px] object-cover rounded-[20px] lg:w-[400px] lg:h-[400px]" 
+                    class="w-[300px] h-[250px] object-cover rounded-[20px] lg:w-[400px] lg:h-[400px]" 
                   />
                 </figure>
               </div>
             </div>
             
             <!-- Person Info Section -->
-            <div class="lg:flex-1/2 pt-[30px] max-lg:px-5 max-lg:text-center">
+            <div class="lg:flex-1/2 pt-[30px] max-lg:px-5 max-lg:text-center max-lg:mt-[200px]">
               <div 
                 v-scroll-animate="{ delay: 200 }"
                 class="mb-6"
@@ -44,7 +46,7 @@
                 <h2 class="mb-3">{{ person.name }}</h2>
               </div>
               
-              <ul class="list-none space-y-2 mb-14">
+              <ul class="list-none space-y-2 mb-14 max-lg:!mb-0">
                 <!-- Birth/Death Dates -->
                 <li 
                   v-scroll-animate="{ delay: 200 }"
@@ -75,7 +77,7 @@
 
     <!-- Feature/Memorial Section -->
     <section
-      class="pt-16 md:pt-20 lg:pt-[70px] xl:pt-[80px] pb-16 md:pb-20 lg:pb-[90px] xl:pb-[100px] bg-white dark:bg-black"
+      class="pt-[30px] md:pt-10 lg:pt-[70px] xl:pt-[80px] pb-16 md:pb-20 lg:pb-[90px] xl:pb-[100px] bg-white dark:bg-black"
     >
       <div class="lp:!max-w-[1290px] xl:max-w-[1140px] lg:max-w-[960px] mx-auto px-4 md:px-6 lg:px-8">
         <div class="text-center space-y-5 mx-auto">

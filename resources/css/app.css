@@ -27592,6 +27592,7 @@ svg.leaflet-zoom-animated {
 
 .vue-flow__node-default {
   border: 0px solid #e5e5e5 !important;
+  padding: 0px !important;
   /* border: 2px solid #3498db !important; */
   /* border-radius: 2px !important;
   background: white !important; */

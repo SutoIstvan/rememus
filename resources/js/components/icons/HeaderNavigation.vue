@@ -8,24 +8,27 @@
       <div>
         <Link :href="'/dashboard'">
           <span class="sr-only">Home</span>
-          <figure class="lg:max-w-[198px] lg:block hidden">
+          <!-- <figure class="lg:max-w-[198px] lg:block hidden">
             <img 
               :src="logos.main" 
-              alt="NextSaaS" 
+              alt="Rememus.com" 
               class="dark:invert" 
             />
-          </figure>
-          <figure class="max-w-[44px] lg:hidden block">
+          </figure> -->
+          <figure class="max-w-[44px] flex items-center">
             <img 
               :src="logos.small" 
-              alt="NextSaaS" 
+              alt="Rememus.com" 
               class="w-full dark:hidden block" 
             />
             <img 
               :src="logos.smallDark" 
-              alt="NextSaaS" 
+              alt="Rememus.com" 
               class="w-full dark:block hidden" 
             />
+            <div class="ms-2 text-xl">
+              Rememus<span class="text-gray-500">.com</span>
+            </div>
           </figure>
         </Link>
       </div>
@@ -140,8 +143,8 @@ const props = defineProps({
   logos: {
     type: Object,
     default: () => ({
-      main: '/images/front/shared/main-logo.svg',
-      small: '/images/front/shared/logo.svg',
+      main: '/images/front/shared/main-logo-4.png',
+      small: '/images/front/shared/logo.png',
       smallDark: '/images/front/shared/logo-dark.svg'
     })
   },

@@ -63,8 +63,9 @@ const y = computed(() => `${Math.round(props.position.y)}px`)
   min-width: 80px;
   min-height: 115px;
   width: 90px;
-  border: 1px solid #cccccc;
-  cursor: pointer !important; /* палец-указатель */
+  border: 1px solid #e0e0e0;
+  cursor: pointer !important;
+  /* box-shadow: 0 0 5px #0003; */
 }
 
 .avatar {
