@@ -5,17 +5,10 @@
       class="header-one opacity-0 rounded-full lp:!max-w-[1290px] xl:max-w-[1140px] lg:max-w-[960px] md:max-w-[720px] sm:max-w-[540px] min-[500px]:max-w-[450px] min-[425px]:max-w-[375px] max-w-[320px] mx-auto w-full fixed left-1/2 -translate-x-1/2 z-50 top-5 flex items-center justify-between px-2.5 xl:py-0 py-2.5 bg-accent/60 border border-stroke-2 dark:border-stroke-6 dark:bg-background-9 backdrop-blur-lg"
     >
       <!-- Logo Section -->
-      <div>
-        <Link :href="'/dashboard'">
+      <div >
+        <Link :href="'/dashboard'" class=" flex items-center">
           <span class="sr-only">Home</span>
-          <!-- <figure class="lg:max-w-[198px] lg:block hidden">
-            <img 
-              :src="logos.main" 
-              alt="Rememus.com" 
-              class="dark:invert" 
-            />
-          </figure> -->
-          <figure class="max-w-[44px] flex items-center">
+          <figure class="max-w-[44px]">
             <img 
               :src="logos.small" 
               alt="Rememus.com" 
@@ -26,10 +19,13 @@
               alt="Rememus.com" 
               class="w-full dark:block hidden" 
             />
+
+          </figure>
+
             <div class="ms-2 text-xl">
               Rememus<span class="text-gray-500">.com</span>
             </div>
-          </figure>
+
         </Link>
       </div>
 
@@ -37,12 +33,16 @@
       <nav class="hidden xl:flex items-center">
         <ul class="flex items-center">
           <li v-for="(item, index) in navigationItems" :key="index" class="py-2.5">
-            <Link
-              href="/dashboard"
-              class="flex items-center gap-1 px-4 py-2 border border-transparent hover:border-stroke-2 dark:hover:border-stroke-7 rounded-full text-tagline-1 font-normal text-secondary/60 hover:text-secondary transition-all duration-200 dark:text-accent/60 dark:hover:text-accent"
+            <a
+              :href="`#${item.route}`"
+              @click="scrollToSection(item.route, $event)"
+              class="flex items-center gap-1 px-4 py-2 border border-transparent hover:border-stroke-2 dark:hover:border-stroke-7 rounded-full text-tagline-1 font-normal transition-all duration-200"
+              :class="isActiveSection(item.route) ? 
+                'text-primary border-primary/20 bg-primary/5 dark:text-accent dark:border-accent/20 dark:bg-accent/5' : 
+                'text-secondary/60 hover:text-secondary dark:text-accent/60 dark:hover:text-accent'"
             >
               {{ item.label }}
-            </Link>
+            </a>
           </li>
         </ul>
       </nav>
@@ -92,14 +92,17 @@
           <nav>
             <ul class="space-y-4">
               <li v-for="(item, index) in navigationItems" :key="index">
-                <Link
-                  href="/dashboard"
-                  @click="toggleMobileMenu"
-                  class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-background-3 dark:text-accent dark:hover:bg-background-8 transition-all duration-200"
+                <a
+                  :href="`#${item.route}`"
+                  @click="scrollToSection(item.route, $event)"
+                  class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200"
+                  :class="isActiveSection(item.route) ? 
+                    'text-primary bg-primary/10 dark:text-accent dark:bg-accent/10' : 
+                    'text-secondary hover:bg-background-3 dark:text-accent dark:hover:bg-background-8'"
                 >
                   <component v-if="item.icon" :is="item.icon" class="w-5 h-5" />
                   <span>{{ item.label }}</span>
-                </Link>
+                </a>
               </li>
             </ul>
             
@@ -121,11 +124,13 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'
 
 // Mobile menu state
 const isMobileMenuOpen = ref(false)
+const activeSection = ref('')
+const isScrolling = ref(false)
 
 // Props
 const props = defineProps({
@@ -134,10 +139,9 @@ const props = defineProps({
     default: () => [
       { label: 'History', route: 'history' },
       { label: 'Gallery', route: 'gallery' },
-      { label: 'Timelines', route: 'timelines' },
       { label: 'Family tree', route: 'family-tree' },
+      { label: 'Timelines', route: 'timelines' },
       { label: 'Commemorations', route: 'commemorations' },
-      { label: 'Contact Us', route: 'contact' }
     ]
   },
   logos: {
@@ -164,9 +168,113 @@ const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
 }
 
+// Check if section is active
+const isActiveSection = (sectionId) => {
+  return activeSection.value === sectionId
+}
+
+// Scroll to section with smooth animation
+const scrollToSection = (sectionId, event) => {
+  event.preventDefault()
+  isMobileMenuOpen.value = false
+  isScrolling.value = true
+  
+  const element = document.getElementById(sectionId)
+  if (element) {
+    // Calculate offset for fixed header
+    const headerHeight = 100 // Adjust based on your header height
+    const elementPosition = element.offsetTop - headerHeight
+    
+    window.scrollTo({
+      top: elementPosition,
+      behavior: 'smooth'
+    })
+    
+    // Set active section immediately for better UX
+    activeSection.value = sectionId
+    
+    // Reset scrolling flag after animation
+    setTimeout(() => {
+      isScrolling.value = false
+    }, 1000)
+  }
+}
+
+// Handle scroll events to determine active section
+const handleScroll = () => {
+  if (isScrolling.value) return // Don't update during programmatic scroll
+  
+  const headerHeight = 100
+  const sections = props.navigationItems.map(item => {
+    const element = document.getElementById(item.route)
+    if (element) {
+      const rect = element.getBoundingClientRect()
+      const top = rect.top + window.pageYOffset - headerHeight
+      const height = element.offsetHeight
+      return {
+        id: item.route,
+        top,
+        bottom: top + height
+      }
+    }
+    return null
+  }).filter(Boolean)
+  
+  const scrollPosition = window.pageYOffset + headerHeight + 50 // Small offset for better detection
+  
+  // Find the section that contains the scroll position
+  let currentSection = ''
+  for (const section of sections) {
+    if (scrollPosition >= section.top && scrollPosition < section.bottom) {
+      currentSection = section.id
+      break
+    }
+  }
+  
+  // If no section is found, check if we're at the top or bottom
+  if (!currentSection && sections.length > 0) {
+    if (scrollPosition < sections[0].top) {
+      currentSection = sections[0].id
+    } else {
+      currentSection = sections[sections.length - 1].id
+    }
+  }
+  
+  activeSection.value = currentSection
+}
+
+// Throttle scroll events for performance
+let scrollTimeout = null
+const throttledHandleScroll = () => {
+  if (scrollTimeout) return
+  scrollTimeout = setTimeout(() => {
+    handleScroll()
+    scrollTimeout = null
+  }, 10)
+}
+
 // Close mobile menu on route change
 watch(() => page.url, () => {
   isMobileMenuOpen.value = false
+})
+
+// Initialize scroll listener
+onMounted(() => {
+  nextTick(() => {
+    // Set initial active section
+    handleScroll()
+    
+    // Add scroll listener
+    window.addEventListener('scroll', throttledHandleScroll, { passive: true })
+  })
+})
+
+// Cleanup
+onUnmounted(() => {
+  window.removeEventListener('scroll', throttledHandleScroll)
+  if (scrollTimeout) {
+    clearTimeout(scrollTimeout)
+  }
 })
 
 // Animation directive
@@ -205,8 +313,7 @@ const vScrollAnimate = {
 }
 </script>
 
-
-<!-- <style scoped>
+<style scoped>
 /* Mobile menu transitions */
 .mobile-menu-enter-active {
   transition: all 0.3s ease-out;
@@ -226,7 +333,7 @@ const vScrollAnimate = {
   transform: scale(0.95) translateY(-20px);
 }
 
-/* Button styles - если не определены в основном CSS */
+/* Button styles */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -244,11 +351,11 @@ const vScrollAnimate = {
   font-size: 0.875rem;
 }
 
-.btn-secondary {
+/* .btn-secondary {
   background-color: rgb(243 244 246);
   color: rgb(55 65 81);
   border-color: rgb(209 213 219);
-}
+} */
 
 .btn-secondary:hover,
 .btn-primary {
@@ -277,4 +384,9 @@ const vScrollAnimate = {
 .nav-hamburger.active span:last-child {
   transform: rotate(-45deg) translateY(-8px);
 }
-</style> -->
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+</style>

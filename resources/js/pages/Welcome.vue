@@ -1,12 +1,12 @@
 <template>
-  <div class="bg-white dark:bg-black overflow-x-hidden">
+  <div  class="bg-white dark:bg-black overflow-x-hidden">
     <HeaderNavigation />
     <!-- Hero Section -->
     <section
       class="hero-section pt-[320px] md:pt-[200px] lg:pt-[200px] xl:pt-[220px] bg-[url('/images/front/hero-bg.png')] bg-no-repeat bg-cover bg-top relative z-0"
     >
       <!-- Hero Title Content -->
-      <div
+      <div 
         class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 flex flex-col items-center space-y-[124px] relative z-10 mb-[100px] lg:mb-[150px] xl:mb-[220px]"
       >
         <!-- Дополнительный контент можно добавить здесь -->
@@ -26,12 +26,12 @@
                 <figure
                   class="shadow-lg absolute lg:right-0 lg:bottom-0 max-w-[300px] 
                     max-lg:left-1/2 max-lg:-translate-x-1/2 max-lg:top-[-100px]
-                  bg-white dark:bg-background-9 rounded-[20px] overflow-hidden p-2"
+                  bg-white dark:bg-background-9 rounded-[10px] overflow-hidden p-1"
                 >
                   <img 
                     :src="person.image" 
                     :alt="person.name"
-                    class="w-[300px] h-[250px] object-cover rounded-[20px] lg:w-[400px] lg:h-[400px]" 
+                    class="w-[300px] h-[250px] object-cover rounded-[10px] lg:w-[400px] lg:h-[400px]" 
                   />
                 </figure>
               </div>
@@ -76,7 +76,7 @@
     </section>
 
     <!-- Feature/Memorial Section -->
-    <section
+    <section id="history"
       class="pt-[30px] md:pt-10 lg:pt-[70px] xl:pt-[80px] pb-16 md:pb-20 lg:pb-[90px] xl:pb-[100px] bg-white dark:bg-black"
     >
       <div class="lp:!max-w-[1290px] xl:max-w-[1140px] lg:max-w-[960px] mx-auto px-4 md:px-6 lg:px-8">
@@ -110,12 +110,12 @@
       </div>
     </section>
 
-    <Gallery />
+    <Gallery  id="gallery"/>
 
 
-    <FamilyTree />
+    <FamilyTree id="family-tree"/>
 
-    <TimeLine />
+    <TimeLine id="timelines"/>
 
   </div>
 </template>

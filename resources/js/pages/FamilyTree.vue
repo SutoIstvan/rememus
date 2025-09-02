@@ -407,7 +407,7 @@ const vScrollAnimate = {
 <template>
 
 
-  <div
+  <div 
     class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
         <div class="text-center space-y-5 mx-auto mt-10 md:mt-[70px]">
           <span 
@@ -420,7 +420,7 @@ const vScrollAnimate = {
     <div
       class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
 
-      <div style="width: 100%; height: 900px;">
+      <div style="width: 100%; height: 900px; ">
 
         <!-- 
           :nodes-draggable="false"
