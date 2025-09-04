@@ -132,8 +132,6 @@ const nodes = [
       avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
     }
   },
-
-
 ]
 
 
@@ -408,7 +406,7 @@ const vScrollAnimate = {
 
 
   <div 
-    class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
+    class="flex flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
         <div class="text-center space-y-5 mx-auto mt-10 md:mt-[70px]">
           <span 
             v-scroll-animate="{ delay: 200 }"
@@ -420,17 +418,7 @@ const vScrollAnimate = {
     <div
       class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
 
-      <div style="width: 100%; height: 900px; ">
-
-        <!-- 
-          :nodes-draggable="false"
-          :nodes-connectable="false"
-          :edges-draggable="false"
-          :pan-on-scroll="false"
-          :pan-on-drag="false"
-          :zoom-on-scroll="false"
-          :zoom-on-pinching="false" -->
-
+      <div class="w-full h-[500px] sm:h-[700px] md:h-[800px] lg:h-[1100px]">
 
         <VueFlow :nodes="nodes" :edges="edges" fit-view-on-init :edge-types="edgeTypes"
             
@@ -471,26 +459,7 @@ const vScrollAnimate = {
   overflow: hidden;
 }
 
-.clouds-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  background: linear-gradient(135deg, 
-    rgba(135, 206, 235, 0.8) 0%,
-    rgba(176, 224, 230, 0.6) 50%,
-    rgba(230, 248, 255, 0.4) 100%);
-}
 
-.cloud-svg {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
 
 .vue-flow-main {
   position: relative;
@@ -499,110 +468,5 @@ const vScrollAnimate = {
   height: 100%;
 }
 
-/* Анимации для облаков */
-.cloud {
-  transform-origin: center;
-}
 
-.cloud-1 {
-  animation: float-1 25s ease-in-out infinite;
-}
-
-.cloud-2 {
-  animation: float-2 30s ease-in-out infinite;
-}
-
-.cloud-3 {
-  animation: float-3 35s ease-in-out infinite;
-}
-
-.cloud-4 {
-  animation: float-4 28s ease-in-out infinite;
-}
-
-.cloud-5 {
-  animation: float-5 32s ease-in-out infinite;
-}
-
-.cloud-6 {
-  animation: float-6 22s ease-in-out infinite;
-}
-
-.cloud-7 {
-  animation: float-7 27s ease-in-out infinite;
-}
-
-.cloud-8 {
-  animation: float-8 31s ease-in-out infinite;
-}
-
-.cloud-9 {
-  animation: float-9 26s ease-in-out infinite;
-}
-
-/* Различные анимации плавания */
-@keyframes float-1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(30px, -20px) scale(1.05); }
-  50% { transform: translate(-20px, -10px) scale(0.95); }
-  75% { transform: translate(10px, 15px) scale(1.02); }
-}
-
-@keyframes float-2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(-25px, 20px) scale(1.08); }
-  66% { transform: translate(35px, -15px) scale(0.92); }
-}
-
-@keyframes float-3 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  20% { transform: translate(15px, -25px) scale(1.03); }
-  40% { transform: translate(-30px, 10px) scale(0.97); }
-  60% { transform: translate(20px, 25px) scale(1.06); }
-  80% { transform: translate(-10px, -15px) scale(0.94); }
-}
-
-@keyframes float-4 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  30% { transform: translate(-20px, -30px) scale(1.04); }
-  70% { transform: translate(25px, 20px) scale(0.96); }
-}
-
-@keyframes float-5 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(40px, 15px) scale(1.07); }
-  50% { transform: translate(-15px, -25px) scale(0.93); }
-  75% { transform: translate(-35px, 30px) scale(1.01); }
-}
-
-@keyframes float-6 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  40% { transform: translate(-40px, -10px) scale(1.1); }
-  80% { transform: translate(20px, -20px) scale(0.9); }
-}
-
-@keyframes float-7 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  35% { transform: translate(25px, 25px) scale(1.05); }
-  70% { transform: translate(-30px, -20px) scale(0.95); }
-}
-
-@keyframes float-8 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  45% { transform: translate(-25px, 35px) scale(1.08); }
-  85% { transform: translate(30px, -25px) scale(0.92); }
-}
-
-@keyframes float-9 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  30% { transform: translate(35px, -20px) scale(1.06); }
-  60% { transform: translate(-20px, 25px) scale(0.94); }
-}
-
-/* Адаптивность */
-@media (max-width: 768px) {
-  .cloud {
-    transform: scale(0.7);
-  }
-}
 </style>
