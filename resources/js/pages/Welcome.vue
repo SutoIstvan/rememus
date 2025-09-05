@@ -88,6 +88,7 @@
 
     <TimeLine id="timelines" />
 
+    <Footer />
   </div>
 </template>
 
@@ -99,6 +100,7 @@ import HeaderNavigation from '@/components/icons/HeaderNavigation.vue'
 import Gallery from '@/components/icons/Gallery.vue'
 import FamilyTree from './FamilyTree.vue'
 import TimeLine from '@/components/icons/TimeLine.vue'
+import Footer from '@/components/icons/Footer.vue'
 
 // Директива для анимаций
 const vScrollAnimate = {
