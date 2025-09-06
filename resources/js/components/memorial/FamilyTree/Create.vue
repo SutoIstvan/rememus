@@ -5,7 +5,7 @@ import { markRaw } from 'vue'
 import { Position } from '@vue-flow/core'
 import SpecialEdge from '@/components/SpecialEdge.vue'
 import MarriageEdge from '@/components/MarriageEdge.vue'
-import SpecialNodeEdit from '../SpecialNodeEdit.vue';
+import SpecialNodeEdit from '@/components/SpecialNodeEdit.vue';
 import { Controls } from '@vue-flow/controls'
 
 const edgeTypes = {

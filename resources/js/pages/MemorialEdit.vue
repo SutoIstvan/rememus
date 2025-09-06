@@ -14,5 +14,5 @@ import HeaderNavigation from '@/components/memorial/HeaderNavigation.vue'
 import Gallery from '@/components/memorial/Gallery.vue'
 import TimeLine from '@/components/memorial/TimeLine.vue'
 import Footer from '@/components/memorial/Footer.vue'
-import FamilyTreeEdit from '@/components/memorial/FamilyTreeEdit.vue'
+import FamilyTreeEdit from '@/components/memorial/FamilyTree/Edit.vue'
 </script>
