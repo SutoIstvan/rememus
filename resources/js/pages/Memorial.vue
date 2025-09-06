@@ -57,6 +57,17 @@
       </div>
     </section>
 
+    <!-- Кнопка редактировать -->
+    <!-- Кнопка редактировать -->
+    <div class="mt-6">
+      <a :href="edit.url()" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded">
+        Редактировать
+      </a>
+    </div>
+
+
+
+
     <!-- Feature/Memorial Section -->
     <section id="history"
       class="pt-[30px] md:pt-10 lg:pt-[70px] xl:pt-[80px] pb-16 md:pb-20 lg:pb-[90px] xl:pb-[100px] bg-white dark:bg-black">
@@ -94,13 +105,16 @@
 
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
 import CalendarIcon from '@/components/icons/CalendarIcon.vue'
 import ClockIcon from '@/components/icons/ClockIcon.vue'
-import HeaderNavigation from '@/components/icons/HeaderNavigation.vue'
-import Gallery from '@/components/icons/Gallery.vue'
-import FamilyTree from './FamilyTree.vue'
-import TimeLine from '@/components/icons/TimeLine.vue'
-import Footer from '@/components/icons/Footer.vue'
+import HeaderNavigation from '@/components/memorial/HeaderNavigation.vue'
+import Gallery from '@/components/memorial/Gallery.vue'
+import FamilyTree from '@/components/memorial/FamilyTree.vue'
+import TimeLine from '@/components/memorial/TimeLine.vue'
+import Footer from '@/components/memorial/Footer.vue'
+
+import { edit } from "@/routes/memorial";
 
 // Директива для анимаций
 const vScrollAnimate = {
