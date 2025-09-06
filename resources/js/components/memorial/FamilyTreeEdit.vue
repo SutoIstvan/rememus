@@ -1,27 +1,20 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
-import { dashboard, login, register } from '@/routes';
 import { ref } from 'vue'
 import { VueFlow } from '@vue-flow/core'
-import { Controls } from '@vue-flow/controls'
-import { Background } from '@vue-flow/background'
 import { markRaw } from 'vue'
 import { Position } from '@vue-flow/core'
-
-// these components are only shown as examples of how to use a custom node or edge
-import SpecialNode from '@/components/SpecialNode.vue'
 import SpecialEdge from '@/components/SpecialEdge.vue'
 import MarriageEdge from '@/components/MarriageEdge.vue'
 import SpecialNodeEdit from '../SpecialNodeEdit.vue';
+import { Controls } from '@vue-flow/controls'
 
 const edgeTypes = {
   special: markRaw(SpecialEdge),
   marriage: markRaw(MarriageEdge),
-
 }
 
 // these are our nodes
-const nodes = [
+const nodes = ref([
   {
     id: 'dad',
     position: { x: 190, y: 170 },
@@ -47,6 +40,7 @@ const nodes = [
     data: {
       label: 'Arnold Shannon',
       avatar: 'http://rememus.test/images/front/testimonial-1.jpg',
+      canAddChild: true, // может добавлять детей
     }
   },
   {
@@ -85,10 +79,9 @@ const nodes = [
       avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518285.jpg',
     }
   },
-
   {
     id: 'wife',
-    position: { x: 135, y: 331 }, // слева от 'you' (x: 265)
+    position: { x: 135, y: 331 },
     style: { width: '90px', height: '105px', padding: '5px' },
     data: {
       label: 'Evelyn Lewis',
@@ -97,20 +90,11 @@ const nodes = [
   },
   {
     id: 'child',
-    position: { x: 245, y: 490 }, // ниже 'you'
+    position: { x: 245, y: 490 },
     style: { width: '90px', height: '105px', padding: '5px' },
     data: {
       label: 'Ruby Shannon',
       avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518909.jpg',
-    }
-  },
-  {
-    id: 'child2',
-    position: { x: 135, y: 490 }, // ниже 'you'
-    style: { width: '90px', height: '105px', padding: '5px' },
-    data: {
-      label: 'Ellia Liz Shannon',
-      avatar: 'https://randomuser.me/api/portraits/women/5.jpg',
     }
   },
   {
@@ -120,27 +104,49 @@ const nodes = [
     data: {
       label: 'Robert Richardson',
       avatar: 'https://randomuser.me/api/portraits/men/46.jpg',
+      canAddBrother: true, // может добавлять братьев
     }
   },
-
+  // Кнопка для добавления новой жены
   {
-    id: 'brother2',
-    position: { x: 485, y: 331 },
-    style: { width: '90px', height: '105px', padding: '5px', },
+    id: 'add-wife-btn',
+    position: { x: 25, y: 331 },
+    style: { width: '90px', height: '105px', padding: '5px' },
+    type: 'input',
     data: {
-      label: 'Anabel Richardson',
-      avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
+      label: '+ Добавить жену',
+      isAddButton: true,
+      addType: 'wife'
     }
   },
-
-
-]
-
-
+  // Кнопка для добавления нового брата
+  {
+    id: 'add-brother-btn',
+    position: { x: 485, y: 331 },
+    style: { width: '90px', height: '105px', padding: '5px' },
+    type: 'input',
+    data: {
+      label: '+ Добавить брата',
+      isAddButton: true,
+      addType: 'brother'
+    }
+  },
+  // Кнопка для добавления нового ребенка
+  {
+    id: 'add-child-btn',
+    position: { x: 355, y: 490 },
+    style: { width: '90px', height: '105px', padding: '5px' },
+    type: 'input',
+    data: {
+      label: '+ Добавить ребенка',
+      isAddButton: true,
+      addType: 'child'
+    }
+  }
+])
 
 // Связи (ребра)
 const edges = ref([
-
   // Родители → ты (сверху вниз)
   { 
     id: 'mom-you', 
@@ -228,16 +234,6 @@ const edges = ref([
     targetHandle: 'target-top'
   },
   { 
-    id: 'you-child2', 
-    source: 'you', 
-    target: 'child2', 
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-  { 
     id: 'mom-brother', 
     source: 'mom', 
     target: 'brother', 
@@ -247,18 +243,161 @@ const edges = ref([
     sourceHandle: 'source-bottom',
     targetHandle: 'target-top'
   },
-  { 
-    id: 'mom-brother2', 
-    source: 'mom', 
-    target: 'brother2', 
+])
+
+// Обработчик нажатия на кнопку добавления
+function handleAddClick(nodeId) {
+  const node = nodes.value.find(n => n.id === nodeId)
+  if (!node || !node.data.isAddButton) return
+
+  if (node.data.addType === 'brother') {
+    addNewBrother()
+  } else if (node.data.addType === 'child') {
+    addNewChild()
+  } else if (node.data.addType === 'wife') {
+    addNewWife()
+  }
+}
+
+// Добавление новой жены
+function addNewWife() {
+  const wifeId = `wife-${Date.now()}`
+  const addButtonNode = nodes.value.find(n => n.id === 'add-wife-btn')
+  
+  // Создаем новую жену на месте кнопки
+  const newWife = {
+    id: wifeId,
+    position: { ...addButtonNode.position },
+    style: { width: '90px', height: '105px', padding: '5px' },
+    data: {
+      label: null,
+      avatar: null,
+    }
+  }
+
+  // Перемещаем кнопку добавления влево
+  addButtonNode.position.x -= 110
+
+  // Добавляем новую жену
+  nodes.value.splice(nodes.value.indexOf(addButtonNode), 0, newWife)
+
+  // Добавляем связь брака с вами
+  edges.value.push({
+    id: `you-${wifeId}`,
+    source: 'you',
+    target: wifeId,
+    type: 'marriage',
+    sourcePosition: Position.Left,
+    targetPosition: Position.Right,
+    sourceHandle: 'source-left',
+    targetHandle: 'target-right'
+  })
+}
+
+// Добавление нового брата
+function addNewBrother() {
+  const brotherId = `brother-${Date.now()}`
+  const addButtonNode = nodes.value.find(n => n.id === 'add-brother-btn')
+  
+  // Создаем нового брата на месте кнопки
+  const newBrother = {
+    id: brotherId,
+    position: { ...addButtonNode.position },
+    style: { width: '90px', height: '105px', padding: '5px' },
+    data: {
+      label: null,
+      avatar: null,
+    }
+  }
+
+  // Перемещаем кнопку добавления вправо
+  addButtonNode.position.x += 110
+
+  // Добавляем нового брата
+  nodes.value.splice(nodes.value.indexOf(addButtonNode), 0, newBrother)
+
+  // Добавляем связи с родителями
+  edges.value.push({
+    id: `mom-${brotherId}`,
+    source: 'mom',
+    target: brotherId,
     type: 'special',
     sourcePosition: Position.Bottom,
     targetPosition: Position.Top,
     sourceHandle: 'source-bottom',
     targetHandle: 'target-top'
-  },
+  })
+}
 
-])
+// Добавление нового ребенка
+function addNewChild() {
+  const childId = `child-${Date.now()}`
+  
+  // Находим все существующие узлы детей (исключая кнопку)
+  const existingChildren = nodes.value.filter(n => 
+    n.id.startsWith('child') && !n.data.isAddButton
+  )
+  
+  // Определяем позицию для нового ребенка
+  const baseX = 245 // позиция центрального ребенка (you)
+  const spacing = 110 // расстояние между детьми
+  
+  let newPosition
+  if (existingChildren.length === 1) {
+    // Если есть только один ребенок (Ruby Shannon по центру),
+    // добавляем слева
+    newPosition = { x: baseX - spacing, y: 490 }
+  } else {
+    // Для последующих детей чередуем справа и слева
+    const childrenCount = existingChildren.length
+    if (childrenCount % 2 === 0) {
+      // Четное количество - добавляем справа
+      const rightOffset = Math.ceil(childrenCount / 2) * spacing
+      newPosition = { x: baseX + rightOffset, y: 490 }
+    } else {
+      // Нечетное количество - добавляем слева
+      const leftOffset = Math.ceil(childrenCount / 2) * spacing
+      newPosition = { x: baseX - leftOffset, y: 490 }
+    }
+  }
+  
+  // Создаем нового ребенка
+  const newChild = {
+    id: childId,
+    position: newPosition,
+    style: { width: '90px', height: '105px', padding: '5px' },
+    data: {
+      label: null,
+      avatar: null,
+    }
+  }
+
+  // Находим кнопку добавления и обновляем её позицию
+  const addButtonNode = nodes.value.find(n => n.id === 'add-child-btn')
+  if (addButtonNode) {
+    // Размещаем кнопку справа от самого правого ребенка
+    const rightmostChild = Math.max(...nodes.value
+      .filter(n => n.id.startsWith('child') && !n.data.isAddButton)
+      .map(n => n.position.x))
+    addButtonNode.position.x = Math.max(rightmostChild + spacing, newPosition.x + spacing)
+  }
+
+  // Добавляем нового ребенка
+  const addButtonIndex = nodes.value.findIndex(n => n.id === 'add-child-btn')
+  nodes.value.splice(addButtonIndex, 0, newChild)
+
+  // Добавляем связь с вами
+  edges.value.push({
+    id: `you-${childId}`,
+    source: 'you',
+    target: childId,
+    type: 'special',
+    sourcePosition: Position.Bottom,
+    targetPosition: Position.Top,
+    sourceHandle: 'source-bottom',
+    targetHandle: 'target-top'
+  })
+}
 
 // Animation directive
 const vScrollAnimate = {
@@ -297,8 +436,6 @@ const vScrollAnimate = {
 </script>
 
 <template>
-
-
   <div 
     class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
         <div class="text-center space-y-5 mx-auto mt-10 md:mt-[70px]">
@@ -313,31 +450,33 @@ const vScrollAnimate = {
       class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
 
       <div style="width: 100%; height: 900px; ">
-        <VueFlow :nodes="nodes" :edges="edges" fit-view-on-init :edge-types="edgeTypes"
-            
-            v-scroll-animate="{ direction: 'up', offset: 200 }"
-            :zoom-on-scroll="false"
-            :zoom-on-pinch="false"
-            :zoom-on-double-click="false"
-            :pan-on-drag="false"
-            :nodes-draggable="false"
-            :nodes-connectable="false"
-            :elements-selectable="false"
+        <VueFlow 
+          :nodes="nodes" 
+          :edges="edges" 
+          fit-view-on-init 
+          :edge-types="edgeTypes"
+          v-scroll-animate="{ direction: 'up', offset: 200 }"
+          :zoom-on-scroll="false"
+          :zoom-on-pinch="false"
+          :zoom-on-double-click="false"
+          :pan-on-drag="false"
+          :nodes-draggable="false"
+          :nodes-connectable="false"
+          :elements-selectable="false"
+          @node-click="(event) => handleAddClick(event.node.id)"
         >
           <template #node-default="nodeProps">
             <SpecialNodeEdit v-bind="nodeProps" class="shadow-sm" />
           </template>
-          <!-- <Background /> -->
-          <!-- <Controls /> -->
+
+          <Controls />
         </VueFlow>
       </div>
     </div>
-
   </div>
 </template>
 
 <style scoped>
-
 .special-node {
   font-size: 14px;
   cursor: pointer;
