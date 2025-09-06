@@ -1,0 +1,165 @@
+<script setup lang="ts">
+import { ref, watch } from 'vue'
+import { Handle, Position } from '@vue-flow/core'
+
+// props с типами
+const props = defineProps<{ data: { label: string, avatar?: string } }>()
+
+// Лейбл
+const label = ref(props.data.label)
+watch(label, (newVal) => {
+  props.data.label = newVal // обновляем данные узла
+})
+
+// Аватар
+const avatarPreview = ref(props.data.avatar || null)
+
+function onFileChange(event: Event) {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (!file) return
+
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    avatarPreview.value = e.target?.result as string
+    props.data.avatar = avatarPreview.value
+  }
+  reader.readAsDataURL(file)
+}
+</script>
+
+<template>
+  <div class="node-with-avatar">
+    <!-- Handles для всех позиций -->
+    <!-- Top handles -->
+    <Handle type="target" :position="Position.Top" id="target-top" />
+    <Handle type="source" :position="Position.Top" id="source-top" />
+    
+    <!-- Left handles -->
+    <Handle type="target" :position="Position.Left" id="target-left" />
+    <Handle type="source" :position="Position.Left" id="source-left" />
+    
+    <!-- Right handles -->
+    <Handle type="target" :position="Position.Right" id="target-right" />
+    <Handle type="source" :position="Position.Right" id="source-right" />
+    
+    <!-- Bottom handles -->
+    <Handle type="target" :position="Position.Bottom" id="target-bottom" />
+    <Handle type="source" :position="Position.Bottom" id="source-bottom" />
+
+    <!-- Аватарка -->
+    <img v-if="props.data.avatar" :src="props.data.avatar" alt="avatar" class="avatar" />
+
+    <!-- Метка -->
+    <input 
+      type="text" 
+      v-model="label" 
+      class="label-input mt-1"
+      placeholder="Enter name"
+    />
+
+    <input 
+      type="text" 
+      v-model="code" 
+      class="label-input mt-1"
+      placeholder="Enter qr code"
+    />
+
+    </div>
+</template>
+
+<style scoped>
+
+/* Стили для карточки с аватаркой */
+.node-with-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: 4px;
+  padding: 6px;
+  min-width: 80px;
+  min-height: 115px;
+  width: 90px;
+  border: 1px solid #e0e0e0;
+  cursor: default !important;
+  /* box-shadow: 0 0 5px #0003; */
+}
+
+.label-input {
+    width: 100%;
+    font-size: 11px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 1px 2px 0px 2px;
+}
+
+.avatar {
+  width: 70px;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0rem 0.2rem 0.6rem 0rem rgba(32, 46, 66, 0.103);
+}
+
+.label {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 300;
+  text-align: center;
+  color: #555;
+  height: 33px;              /* фиксированная высота */
+  display: flex;             /* делаем flex-контейнер */
+  align-items: center;       /* вертикальное выравнивание */
+  justify-content: center;   /* горизонтальное выравнивание */
+  /* margin-bottom: 2px; */
+}
+
+
+.coordinates {
+  font-size: 10px;
+  color: #666;
+  text-align: center;
+}
+
+/* Стили для handles */
+.vue-flow__handle {
+  background: #555 !important;
+  border: 2px solid #fff !important;
+  width: 8px !important;
+  height: 8px !important;
+}
+
+/* Скрываем визуально, но handles остаются для edge анимации */
+.vue-flow__handle {
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important; /* чтобы не мешали кликам */
+}
+
+
+
+.node-with-avatar:hover .vue-flow__handle {
+  opacity: 1;
+}
+
+/* Позиционирование handles */
+.vue-flow__handle[data-handlepos="top"] {
+  top: -4px;
+}
+
+.vue-flow__handle[data-handlepos="bottom"] {
+  bottom: -4px;
+}
+
+.vue-flow__handle[data-handlepos="left"] {
+  left: -4px;
+}
+
+.vue-flow__handle[data-handlepos="right"] {
+  right: -4px;
+}
+</style>

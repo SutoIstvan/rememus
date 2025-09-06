@@ -50,10 +50,10 @@
       <!-- Desktop CTA Button -->
       <div class="xl:flex hidden items-center justify-center">
         <Link 
-          href="/register" 
+          :href="edit.url()" 
           class="btn btn-md btn-secondary hover:btn-primary dark:btn-accent"
         >
-          <span>{{ ctaButton.text }}</span>
+          <span>Edit</span>
         </Link>
       </div>
 
@@ -126,6 +126,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'
+import { edit } from "@/routes/memorial";
 
 // Mobile menu state
 const isMobileMenuOpen = ref(false)
