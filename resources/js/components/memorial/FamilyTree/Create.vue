@@ -20,8 +20,8 @@ const nodes = ref([
     position: { x: 190, y: 170 },
     style: { width: '90px', height: '105px', padding: '5px', },
     data: {
-      label: 'Paul Richardson',
-      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518291.jpg',
+      label: '',
+      avatar: '',
     }
   },
   {
@@ -29,8 +29,8 @@ const nodes = ref([
     position: { x: 345, y: 170 },
     style: { width: '90px', height: '105px', padding: '5px', },
     data: {
-      label: 'Margaret Clarkson',
-      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518299.jpg',
+      label: '',
+      avatar: '',
     }
   },
   {
@@ -38,8 +38,8 @@ const nodes = ref([
     position: { x: 265, y: 331 },
     style: { width: '90px', height: '105px', padding: '5px', },
     data: {
-      label: 'Arnold Shannon',
-      avatar: 'http://rememus.test/images/front/testimonial-1.jpg',
+      label: '',
+      avatar: '',
       canAddChild: true, // может добавлять детей
     }
   },
@@ -48,8 +48,8 @@ const nodes = ref([
     position: { x: 75, y: 8 },
     style: { width: '90px', height: '105px', padding: '5px', },
     data: {
-      label: 'John Richardson',
-      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518264.jpg',
+      label: '',
+      avatar: '',
     }
   },
   {
@@ -57,8 +57,8 @@ const nodes = ref([
     position: { x: 200, y: 8 },
     style: { width: '90px', height: '105px', padding: '5px', },
     data: {
-      label: 'Jacqueline Richardson',
-      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518272.jpg',
+      label: '',
+      avatar: '',
     }
   },
   {
@@ -66,8 +66,8 @@ const nodes = ref([
     position: { x: 330, y: 8 },
     style: { width: '90px', height: '105px', padding: '5px', },
     data: {
-      label: 'Bradley Clarkson',
-      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518278.jpg',
+      label: '',
+      avatar: '',
     }
   },
   {
@@ -75,8 +75,8 @@ const nodes = ref([
     position: { x: 460, y: 8 },
     style: { width: '90px', height: '105px', padding: '5px', },
     data: {
-      label: 'Emma Marie Clarkson',
-      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518285.jpg',
+      label: '',
+      avatar: '',
     }
   },
   {
@@ -84,8 +84,8 @@ const nodes = ref([
     position: { x: 135, y: 331 },
     style: { width: '90px', height: '105px', padding: '5px' },
     data: {
-      label: 'Evelyn Lewis',
-      avatar: 'https://www.online-tribute.com/memorial/static/random1.jpg',
+      label: '',
+      avatar: '',
     }
   },
   {
@@ -93,8 +93,8 @@ const nodes = ref([
     position: { x: 245, y: 490 },
     style: { width: '90px', height: '105px', padding: '5px' },
     data: {
-      label: 'Ruby Shannon',
-      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518909.jpg',
+      label: '',
+      avatar: '',
     }
   },
   {
@@ -102,8 +102,8 @@ const nodes = ref([
     position: { x: 375, y: 331 },
     style: { width: '90px', height: '105px', padding: '5px', },
     data: {
-      label: 'Robert Richardson',
-      avatar: 'https://randomuser.me/api/portraits/men/46.jpg',
+      label: '',
+      avatar: '',
       canAddBrother: true, // может добавлять братьев
     }
   },
