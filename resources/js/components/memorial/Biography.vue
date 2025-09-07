@@ -33,11 +33,11 @@ const props = defineProps({
             badgeText: 'Motto',
             quote: 'The comfort of having a friend may be taken away, but not that of having had one.',
             description: `Shannon Adams, a beloved wife, mother, and dedicated community member, peacefully passed away on March 25, 2023 - at the age of 73.
-      Born on March 10, 1950, Shannon grew up with strong family values and a deep sense of community.<br><br>
-      She excelled academically and athletically in high school, eventually earning a Bachelor's degree in Business Administration. In 1975, Shannon married her love, George, and they shared 48 years of a loving marriage, raising two children, Emily and Michael, and becoming adoring grandparents to Grace, Ethan, and Lily. Professionally, Shannon had a distinguished career in finance, marked by her integrity and mentorship of young professionals. She also dedicated her time to various charitable causes, leaving a positive impact on her community. Shannon had a passion for the outdoors, often spending weekends camping, fishing, and hiking with her family, instilling a love for nature in her loved ones.
-      <br><br>
-      Shannon is survived by her wife, children, grandchildren, and siblings, Robert Jr. and Susan. A memorial service will be held on October 2, 2023, at St. Mary's Community Church at 2:00 PM. In lieu of flowers, the family requests donations to the Shannon Adams Memorial Scholarship Fund, supporting underprivileged youth's education in the community. Shannon's legacy lives on through the countless lives she touched, the values she upheld, and the love she shared. She will be deeply missed but forever cherished.
-    `
+                Born on March 10, 1950, Shannon grew up with strong family values and a deep sense of community.<br><br>
+                She excelled academically and athletically in high school, eventually earning a Bachelor's degree in Business Administration. In 1975, Shannon married her love, George, and they shared 48 years of a loving marriage, raising two children, Emily and Michael, and becoming adoring grandparents to Grace, Ethan, and Lily. Professionally, Shannon had a distinguished career in finance, marked by her integrity and mentorship of young professionals. She also dedicated her time to various charitable causes, leaving a positive impact on her community. Shannon had a passion for the outdoors, often spending weekends camping, fishing, and hiking with her family, instilling a love for nature in her loved ones.
+                <br><br>
+                Shannon is survived by her wife, children, grandchildren, and siblings, Robert Jr. and Susan. A memorial service will be held on October 2, 2023, at St. Mary's Community Church at 2:00 PM. In lieu of flowers, the family requests donations to the Shannon Adams Memorial Scholarship Fund, supporting underprivileged youth's education in the community. Shannon's legacy lives on through the countless lives she touched, the values she upheld, and the love she shared. She will be deeply missed but forever cherished.
+                `
         })
     }
 })
