@@ -6,6 +6,10 @@ import type { DefineComponent } from 'vue';
 import { createApp, h } from 'vue';
 import { initializeTheme } from './composables/useAppearance';
 
+import 'vue-scroll-picker/style.css';
+import VueScrollPicker from 'vue-scroll-picker';
+
+
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
@@ -14,6 +18,7 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         createApp({ render: () => h(App, props) })
             .use(plugin)
+            .use(VueScrollPicker)
             .mount(el);
     },
     progress: {
