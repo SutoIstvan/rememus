@@ -3,7 +3,7 @@
     <HeaderNavigation />
     <HeaderCreate />
     <FamilyTreeEdit id="family-tree" />
-    <Footer />
+    <!-- <Footer /> -->
   </div>
 </template>
 

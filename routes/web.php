@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MemorialController;
+use App\Http\Controllers\AvatarUploadController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -29,6 +30,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/memorials', [MemorialController::class, 'store'])
         ->name('memorials.store');
 });
+
+Route::post('/upload', [AvatarUploadController::class, 'upload']);
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

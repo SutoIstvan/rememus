@@ -3,9 +3,10 @@ import { CalendarDate, DateFormatter, getLocalTimeZone, parseDate, today } from 
 import { CalendarIcon } from "lucide-vue-next"
 import { CalendarRoot, useDateFormatter } from "reka-ui"
 import { createDecade, createYear, toDate } from "reka-ui/date"
-import { computed, ref } from "vue"
+import { computed, ref, watch, nextTick } from "vue"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { 
   CalendarCell, 
   CalendarCellTrigger, 
@@ -26,8 +27,33 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+// Определяем props
+const props = defineProps({
+  name: {
+    type: String,
+    required: true
+  },
+  placeholder: {
+    type: String,
+    default: 'Выберите дату'
+  },
+  modelValue: {
+    type: String,
+    default: ''
+  }
+})
+
+// Определяем emits
+const emit = defineEmits(['update:modelValue'])
+
 // Внутреннее состояние выбранной даты
 const selectedDate = ref()
+
+// Состояние для ручного ввода
+const dayInput = ref("")
+const monthInput = ref("")
+const yearInput = ref("")
+const isOpen = ref(false)
 
 // Форматтер даты
 const df = new DateFormatter("en-US", {
@@ -40,31 +66,205 @@ const placeholder = ref(today(getLocalTimeZone()))
 // Форматтер для селектов
 const formatter = useDateFormatter("en")
 
-// Функция для обработки выбора даты
+// Генерация массива лет от 1900 до текущего года
+const generateYears = () => {
+  const currentYear = today(getLocalTimeZone()).year
+  const years = []
+  for (let year = 1900; year <= currentYear; year++) {
+    years.push(new CalendarDate(year, 1, 1))
+  }
+  return years.reverse() // Обратный порядок, чтобы текущий год был сверху
+}
+
+const years = computed(() => generateYears())
+
+// Функция для обработки выбора даты из календаря
 const handleDateSelect = (date) => {
   selectedDate.value = date
-  // Здесь можете добавить эмит события или другую логику
-  console.log('Selected date:', date)
+  if (date) {
+    dayInput.value = date.day.toString().padStart(2, '0')
+    monthInput.value = date.month.toString().padStart(2, '0')
+    yearInput.value = date.year.toString()
+    // Обновляем placeholder для синхронизации селектов
+    placeholder.value = date
+    // Эмитим дату в формате YYYY-MM-DD для Laravel
+    const formattedDate = `${date.year}-${date.month.toString().padStart(2, '0')}-${date.day.toString().padStart(2, '0')}`
+    emit('update:modelValue', formattedDate)
+  } else {
+    emit('update:modelValue', '')
+  }
+  // console.log('Selected date:', date)
 }
+
+// Функция для обработки ручного ввода
+const handleManualInput = () => {
+  const day = parseInt(dayInput.value)
+  const month = parseInt(monthInput.value)
+  const year = parseInt(yearInput.value)
+  
+  if (day && month && year && day > 0 && day <= 31 && month > 0 && month <= 12 && year >= 1900) {
+    try {
+      const newDate = new CalendarDate(year, month, day)
+      selectedDate.value = newDate
+      placeholder.value = newDate
+      // Эмитим дату в формате YYYY-MM-DD для Laravel
+      const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+      emit('update:modelValue', formattedDate)
+    } catch (error) {
+      console.log('Invalid date:', error)
+      emit('update:modelValue', '')
+    }
+  } else {
+    emit('update:modelValue', '')
+  }
+}
+
+// Рефы для полей ввода
+const dayInputRef = ref()
+const monthInputRef = ref()
+const yearInputRef = ref()
+
+// Автоматический переход к следующему полю
+const handleDayInput = (event) => {
+  const value = event.target.value
+  if (value.length === 2 && parseInt(value) <= 31) {
+    nextTick(() => {
+      const monthEl = monthInputRef.value?.$el || monthInputRef.value
+      if (monthEl && monthEl.focus) {
+        monthEl.focus()
+      } else if (monthEl && monthEl.querySelector) {
+        monthEl.querySelector('input')?.focus()
+      }
+    })
+  }
+  handleManualInput()
+}
+
+const handleMonthInput = (event) => {
+  const value = event.target.value
+  if (value.length === 2 && parseInt(value) <= 12) {
+    nextTick(() => {
+      const yearEl = yearInputRef.value?.$el || yearInputRef.value
+      if (yearEl && yearEl.focus) {
+        yearEl.focus()
+      } else if (yearEl && yearEl.querySelector) {
+        yearEl.querySelector('input')?.focus()
+      }
+    })
+  }
+  handleManualInput()
+}
+
+const handleYearInput = (event) => {
+  handleManualInput()
+}
+
+// Инициализация с текущей датой
+const initializeInputs = () => {
+  if (selectedDate.value) {
+    dayInput.value = selectedDate.value.day.toString().padStart(2, '0')
+    monthInput.value = selectedDate.value.month.toString().padStart(2, '0')
+    yearInput.value = selectedDate.value.year.toString()
+  } else {
+    dayInput.value = ""
+    monthInput.value = ""
+    yearInput.value = ""
+  }
+}
+
+// Инициализация компонента с переданным значением
+const initializeFromModelValue = () => {
+  if (props.modelValue) {
+    try {
+      // Парсим дату в формате YYYY-MM-DD
+      const parsedDate = parseDate(props.modelValue)
+      selectedDate.value = parsedDate
+      placeholder.value = parsedDate
+      dayInput.value = parsedDate.day.toString().padStart(2, '0')
+      monthInput.value = parsedDate.month.toString().padStart(2, '0')
+      yearInput.value = parsedDate.year.toString()
+    } catch (error) {
+      console.log('Error parsing initial date:', error)
+    }
+  }
+}
+
+// Отслеживание изменения modelValue извне
+watch(() => props.modelValue, () => {
+  initializeFromModelValue()
+}, { immediate: true })
+
+// Отслеживание изменений placeholder для обновления инпутов
+watch(placeholder, (newPlaceholder) => {
+  if (newPlaceholder && selectedDate.value) {
+    // Обновляем инпуты при изменении placeholder через селекты
+    if (selectedDate.value.year !== newPlaceholder.year || 
+        selectedDate.value.month !== newPlaceholder.month) {
+      try {
+        const updatedDate = selectedDate.value.set({
+          year: newPlaceholder.year,
+          month: newPlaceholder.month
+        })
+        selectedDate.value = updatedDate
+      } catch (error) {
+        console.log('Error updating date:', error)
+      }
+    }
+  }
+}, { deep: true })
 </script>
 
 <template>
   <div class="space-y-4">
     <div class="flex flex-col space-y-2">
-      <!-- <label class="text-sm font-medium">Date of birth</label> -->
-      <Popover>
-        <PopoverTrigger as-child>
-          <Button
-            variant="outline" 
-            :class="cn(
-              'w-[180px] ps-3 text-start text-lg',
-              !selectedDate && 'text-muted-foreground',
-            )"
-          >
-            <span>{{ selectedDate ? df.format(toDate(selectedDate)) : placeholder }}</span>
-            <CalendarIcon class="ms-auto h-4 w-4 opacity-50" />
-          </Button>
-        </PopoverTrigger>
+      <Popover v-model:open="isOpen">
+        <div class="relative">
+          <!-- Поля для ручного ввода -->
+          <div class="flex items-center space-x-0.5 border border-gray-200 shadow-sm rounded-md px-3 py-1 w-[187px] bg-background">
+            <!-- Скрытый input для формы -->
+            <input type="hidden" :name="props.name" :value="props.modelValue" />
+            
+            <Input
+              ref="dayInputRef"
+              v-model="dayInput"
+              placeholder="01"
+              maxlength="2"
+              class="w-8 h-6 p-0 text-center border-none focus-visible:ring-0 focus-visible:ring-offset-0"
+              @input="handleDayInput"
+              @keypress="(e) => { if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab') e.preventDefault() }"
+            />
+            <span class="text-muted-foreground">/</span>
+            <Input
+              ref="monthInputRef"
+              v-model="monthInput"
+              placeholder="01"
+              maxlength="2"
+              class="w-8 h-6 p-0 text-center border-none focus-visible:ring-0 focus-visible:ring-offset-0"
+              @input="handleMonthInput"
+              @keypress="(e) => { if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab') e.preventDefault() }"
+            />
+            <span class="text-muted-foreground">/</span>
+            <Input
+              ref="yearInputRef"
+              v-model="yearInput"
+              placeholder="2000"
+              maxlength="4"
+              class="w-12 h-6 p-0 text-center border-none focus-visible:ring-0 focus-visible:ring-offset-0"
+              @input="handleYearInput"
+              @keypress="(e) => { if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab') e.preventDefault() }"
+            />
+            <PopoverTrigger as-child>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                class="ml-auto h-6 w-6 p-0 cursor-pointer"
+              >
+                <CalendarIcon class="h-4 w-4 opacity-50 " />
+              </Button>
+            </PopoverTrigger>
+          </div>
+        </div>
+
         <PopoverContent class="w-auto p-0">
           <!-- Кастомный календарь с селектами -->
           <CalendarRoot
@@ -81,13 +281,12 @@ const handleDateSelect = (date) => {
               <CalendarHeading class="flex w-full items-center justify-between gap-2">
                 <!-- Селект месяца -->
                 <Select
-                  :default-value="placeholder.month.toString()"
+                  :model-value="placeholder.month.toString()"
                   @update:model-value="(v) => {
                     if (!v || !placeholder) return;
-                    if (Number(v) === placeholder?.month) return;
-                    placeholder = placeholder.set({
-                      month: Number(v),
-                    })
+                    const newMonth = Number(v);
+                    if (newMonth === placeholder?.month) return;
+                    placeholder = placeholder.set({ month: newMonth });
                   }"
                 >
                   <SelectTrigger aria-label="Select month" class="w-[60%]">
@@ -95,7 +294,7 @@ const handleDateSelect = (date) => {
                   </SelectTrigger>
                   <SelectContent class="max-h-[200px]">
                     <SelectItem
-                      v-for="month in createYear({ dateObj: date })"
+                      v-for="month in createYear({ dateObj: placeholder })"
                       :key="month.toString()" 
                       :value="month.month.toString()"
                     >
@@ -106,13 +305,12 @@ const handleDateSelect = (date) => {
 
                 <!-- Селект года -->
                 <Select
-                  :default-value="placeholder.year.toString()"
+                  :model-value="placeholder.year.toString()"
                   @update:model-value="(v) => {
                     if (!v || !placeholder) return;
-                    if (Number(v) === placeholder?.year) return;
-                    placeholder = placeholder.set({
-                      year: Number(v),
-                    })
+                    const newYear = Number(v);
+                    if (newYear === placeholder?.year) return;
+                    placeholder = placeholder.set({ year: newYear });
                   }"
                 >
                   <SelectTrigger aria-label="Select year" class="w-[40%]">
@@ -120,7 +318,7 @@ const handleDateSelect = (date) => {
                   </SelectTrigger>
                   <SelectContent class="max-h-[200px]">
                     <SelectItem
-                      v-for="yearValue in createDecade({ dateObj: date, startIndex: -10, endIndex: 10 })"
+                      v-for="yearValue in years"
                       :key="yearValue.toString()" 
                       :value="yearValue.year.toString()"
                     >
@@ -164,14 +362,6 @@ const handleDateSelect = (date) => {
           </CalendarRoot>
         </PopoverContent>
       </Popover>
-      <!-- <p class="text-sm text-muted-foreground">
-        Your date of birth is used to calculate your age.
-      </p> -->
     </div>
-
-    <!-- Кнопка для демонстрации выбранной даты -->
-    <!-- <Button @click="console.log('Selected:', selectedDate)" v-if="selectedDate">
-      Selected: {{ df.format(toDate(selectedDate)) }}
-    </Button> -->
   </div>
 </template>
