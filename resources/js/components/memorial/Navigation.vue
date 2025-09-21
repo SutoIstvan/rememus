@@ -123,7 +123,7 @@
   </header>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'
 import { edit } from "@/routes/memorial";
