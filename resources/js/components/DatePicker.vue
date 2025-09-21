@@ -1,217 +1,253 @@
 <script setup lang="ts">
-import { CalendarDate, DateFormatter, getLocalTimeZone, parseDate, today } from "@internationalized/date"
-import { CalendarIcon } from "lucide-vue-next"
-import { CalendarRoot, useDateFormatter } from "reka-ui"
-import { createDecade, createYear, toDate } from "reka-ui/date"
-import { computed, ref, watch, nextTick } from "vue"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { 
-  CalendarCell, 
-  CalendarCellTrigger, 
-  CalendarGrid, 
-  CalendarGridBody, 
-  CalendarGridHead, 
-  CalendarGridRow, 
-  CalendarHeadCell, 
-  CalendarHeader, 
-  CalendarHeading 
-} from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
+import { CalendarIcon } from "lucide-vue-next";
+import { CalendarRoot, useDateFormatter } from "reka-ui";
+import { createYear, toDate } from "reka-ui/date";
+import { computed, ref, watch, nextTick } from "vue";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  CalendarCell,
+  CalendarCellTrigger,
+  CalendarGrid,
+  CalendarGridBody,
+  CalendarGridHead,
+  CalendarGridRow,
+  CalendarHeadCell,
+  CalendarHeader,
+  CalendarHeading,
+} from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 
-// Определяем props
+// props (переименовал placeholder -> inputPlaceholder чтобы не конфликтовать с внутренним calendarPlaceholder)
 const props = defineProps({
   name: {
     type: String,
-    required: true
+    required: true,
   },
-  placeholder: {
+  inputPlaceholder: {
     type: String,
-    default: 'Выберите дату'
+    default: "Выберите дату",
   },
   modelValue: {
     type: String,
-    default: ''
-  }
-})
+    default: "",
+  },
+});
 
-// Определяем emits
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(["update:modelValue"]);
 
-// Внутреннее состояние выбранной даты
-const selectedDate = ref()
+// selected date — CalendarDate или null
+const selectedDate = ref<CalendarDate | null>(null);
 
-// Состояние для ручного ввода
-const dayInput = ref("")
-const monthInput = ref("")
-const yearInput = ref("")
-const isOpen = ref(false)
+// ручной ввод (dd / mm / yyyy)
+const dayInput = ref("");
+const monthInput = ref("");
+const yearInput = ref("");
+const isOpen = ref(false);
 
-// Форматтер даты
-const df = new DateFormatter("en-US", {
-  dateStyle: "long",
-})
+// локальный "placeholder" для календаря (CalendarDate) — чтобы не конфликтовать с props.inputPlaceholder
+const calendarPlaceholder = ref<CalendarDate>(today(getLocalTimeZone()));
 
-// Плейсхолдер для календаря
-const placeholder = ref(today(getLocalTimeZone()))
+// форматтер (используется для вывода названий месяцев в селекте)
+const formatter = useDateFormatter("en");
 
-// Форматтер для селектов
-const formatter = useDateFormatter("en")
-
-// Генерация массива лет от 1900 до текущего года
+// годы (1900..current)
 const generateYears = () => {
-  const currentYear = today(getLocalTimeZone()).year
-  const years = []
+  const currentYear = today(getLocalTimeZone()).year;
+  const yearsArr: CalendarDate[] = [];
   for (let year = 1900; year <= currentYear; year++) {
-    years.push(new CalendarDate(year, 1, 1))
+    yearsArr.push(new CalendarDate(year, 1, 1));
   }
-  return years.reverse() // Обратный порядок, чтобы текущий год был сверху
+  return yearsArr.reverse();
+};
+const years = computed(() => generateYears());
+
+// refs для полей ввода
+const dayInputRef = ref<HTMLInputElement | null>(null);
+const monthInputRef = ref<HTMLInputElement | null>(null);
+const yearInputRef = ref<HTMLInputElement | null>(null);
+
+// Вспомогательная: дни в месяце
+function daysInMonth(year: number, month: number) {
+  return new Date(year, month, 0).getDate();
 }
 
-const years = computed(() => generateYears())
-
-// Функция для обработки выбора даты из календаря
-const handleDateSelect = (date) => {
-  selectedDate.value = date
-  if (date) {
-    dayInput.value = date.day.toString().padStart(2, '0')
-    monthInput.value = date.month.toString().padStart(2, '0')
-    yearInput.value = date.year.toString()
-    // Обновляем placeholder для синхронизации селектов
-    placeholder.value = date
-    // Эмитим дату в формате YYYY-MM-DD для Laravel
-    const formattedDate = `${date.year}-${date.month.toString().padStart(2, '0')}-${date.day.toString().padStart(2, '0')}`
-    emit('update:modelValue', formattedDate)
-  } else {
-    emit('update:modelValue', '')
+// Обработчик выбора даты из календаря (CalendarRoot должен отдавать CalendarDate)
+function handleDateSelect(date: any) {
+  if (!date) {
+    selectedDate.value = null;
+    dayInput.value = "";
+    monthInput.value = "";
+    yearInput.value = "";
+    emit("update:modelValue", "");
+    return;
   }
-  // console.log('Selected date:', date)
+
+  // ожидаем, что date имеет { year, month, day }
+  selectedDate.value = date;
+  calendarPlaceholder.value = date;
+  dayInput.value = String(date.day).padStart(2, "0");
+  monthInput.value = String(date.month).padStart(2, "0");
+  yearInput.value = String(date.year);
+  const formattedDate = `${date.year}-${String(date.month).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
+  emit("update:modelValue", formattedDate);
 }
 
-// Функция для обработки ручного ввода
-const handleManualInput = () => {
-  const day = parseInt(dayInput.value)
-  const month = parseInt(monthInput.value)
-  const year = parseInt(yearInput.value)
-  
-  if (day && month && year && day > 0 && day <= 31 && month > 0 && month <= 12 && year >= 1900) {
+// Ручной ввод — собираем дату и валидируем
+function handleManualInput() {
+  const day = parseInt(dayInput.value || "", 10);
+  const month = parseInt(monthInput.value || "", 10);
+  const year = parseInt(yearInput.value || "", 10);
+
+  if (
+    Number.isInteger(day) &&
+    Number.isInteger(month) &&
+    Number.isInteger(year) &&
+    day >= 1 &&
+    month >= 1 &&
+    month <= 12 &&
+    year >= 1900
+  ) {
     try {
-      const newDate = new CalendarDate(year, month, day)
-      selectedDate.value = newDate
-      placeholder.value = newDate
-      // Эмитим дату в формате YYYY-MM-DD для Laravel
-      const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
-      emit('update:modelValue', formattedDate)
-    } catch (error) {
-      console.log('Invalid date:', error)
-      emit('update:modelValue', '')
-    }
-  } else {
-    emit('update:modelValue', '')
-  }
-}
-
-// Рефы для полей ввода
-const dayInputRef = ref()
-const monthInputRef = ref()
-const yearInputRef = ref()
-
-// Автоматический переход к следующему полю
-const handleDayInput = (event) => {
-  const value = event.target.value
-  if (value.length === 2 && parseInt(value) <= 31) {
-    nextTick(() => {
-      const monthEl = monthInputRef.value?.$el || monthInputRef.value
-      if (monthEl && monthEl.focus) {
-        monthEl.focus()
-      } else if (monthEl && monthEl.querySelector) {
-        monthEl.querySelector('input')?.focus()
-      }
-    })
-  }
-  handleManualInput()
-}
-
-const handleMonthInput = (event) => {
-  const value = event.target.value
-  if (value.length === 2 && parseInt(value) <= 12) {
-    nextTick(() => {
-      const yearEl = yearInputRef.value?.$el || yearInputRef.value
-      if (yearEl && yearEl.focus) {
-        yearEl.focus()
-      } else if (yearEl && yearEl.querySelector) {
-        yearEl.querySelector('input')?.focus()
-      }
-    })
-  }
-  handleManualInput()
-}
-
-const handleYearInput = (event) => {
-  handleManualInput()
-}
-
-// Инициализация с текущей датой
-const initializeInputs = () => {
-  if (selectedDate.value) {
-    dayInput.value = selectedDate.value.day.toString().padStart(2, '0')
-    monthInput.value = selectedDate.value.month.toString().padStart(2, '0')
-    yearInput.value = selectedDate.value.year.toString()
-  } else {
-    dayInput.value = ""
-    monthInput.value = ""
-    yearInput.value = ""
-  }
-}
-
-// Инициализация компонента с переданным значением
-const initializeFromModelValue = () => {
-  if (props.modelValue) {
-    try {
-      // Парсим дату в формате YYYY-MM-DD
-      const parsedDate = parseDate(props.modelValue)
-      selectedDate.value = parsedDate
-      placeholder.value = parsedDate
-      dayInput.value = parsedDate.day.toString().padStart(2, '0')
-      monthInput.value = parsedDate.month.toString().padStart(2, '0')
-      yearInput.value = parsedDate.year.toString()
-    } catch (error) {
-      console.log('Error parsing initial date:', error)
+      // скорректируем день под выбранный месяц/год
+      const maxDay = daysInMonth(year, month);
+      const safeDay = Math.min(day, maxDay);
+      const newDate = new CalendarDate(year, month, safeDay);
+      selectedDate.value = newDate;
+      calendarPlaceholder.value = newDate;
+      const formatted = `${year}-${String(month).padStart(2, "0")}-${String(safeDay).padStart(2, "0")}`;
+      emit("update:modelValue", formatted);
+      return;
+    } catch (e) {
+      // fallthrough -> emit empty
+      console.warn("Invalid manual date:", e);
     }
   }
+
+  // если невалидно — очистим
+  emit("update:modelValue", "");
 }
 
-// Отслеживание изменения modelValue извне
-watch(() => props.modelValue, () => {
-  initializeFromModelValue()
-}, { immediate: true })
+// Автофокус переходы
+function handleDayInput(event: Event) {
+  const v = (event.target as HTMLInputElement).value;
+  if (v.length === 2 && parseInt(v, 10) <= 31) {
+    nextTick(() => {
+      const el = monthInputRef.value;
+      el?.focus?.();
+    });
+  }
+  handleManualInput();
+}
 
-// Отслеживание изменений placeholder для обновления инпутов
-watch(placeholder, (newPlaceholder) => {
-  if (newPlaceholder && selectedDate.value) {
-    // Обновляем инпуты при изменении placeholder через селекты
-    if (selectedDate.value.year !== newPlaceholder.year || 
-        selectedDate.value.month !== newPlaceholder.month) {
+function handleMonthInput(event: Event) {
+  const v = (event.target as HTMLInputElement).value;
+  if (v.length === 2 && parseInt(v, 10) <= 12) {
+    nextTick(() => {
+      const el = yearInputRef.value;
+      el?.focus?.();
+    });
+  }
+  handleManualInput();
+}
+
+function handleYearInput() {
+  handleManualInput();
+}
+
+// Инициализация из modelValue (ожидаем формат YYYY-MM-DD)
+function initializeFromModelValue() {
+  const val = props.modelValue;
+  if (!val || typeof val !== "string") {
+    // очистка
+    selectedDate.value = null;
+    dayInput.value = "";
+    monthInput.value = "";
+    yearInput.value = "";
+    return;
+  }
+
+  const m = val.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (m) {
+    const year = parseInt(m[1], 10);
+    const month = parseInt(m[2], 10);
+    const day = parseInt(m[3], 10);
+    try {
+      const parsed = new CalendarDate(year, month, day);
+      selectedDate.value = parsed;
+      calendarPlaceholder.value = parsed;
+      dayInput.value = String(day).padStart(2, "0");
+      monthInput.value = String(month).padStart(2, "0");
+      yearInput.value = String(year);
+    } catch (e) {
+      console.warn("Error parsing initial date:", e);
+    }
+  }
+}
+
+// слежка за внешним modelValue
+watch(
+  () => props.modelValue,
+  () => {
+    initializeFromModelValue();
+  },
+  { immediate: true }
+);
+
+// При изменении calendarPlaceholder — синхронизируем selectedDate (если уже выбрана дата)
+// (мы не меняем modelValue пока не выбран день)
+watch(
+  calendarPlaceholder,
+  (newPlaceholder) => {
+    if (!newPlaceholder) return;
+    if (selectedDate.value) {
+      // сохраним день если возможно
+      const day = selectedDate.value.day ?? 1;
+      const max = daysInMonth(newPlaceholder.year, newPlaceholder.month);
+      const safeDay = Math.min(day, max);
       try {
-        const updatedDate = selectedDate.value.set({
-          year: newPlaceholder.year,
-          month: newPlaceholder.month
-        })
-        selectedDate.value = updatedDate
-      } catch (error) {
-        console.log('Error updating date:', error)
+        selectedDate.value = new CalendarDate(newPlaceholder.year, newPlaceholder.month, safeDay);
+      } catch (e) {
+        // ignore
       }
     }
-  }
-}, { deep: true })
+  },
+  { deep: true }
+);
+
+// Сеттеры для селектов месяца/года
+function setMonth(v: string | number | null) {
+  if (!v) return;
+  const newMonth = Number(v);
+  if (Number.isNaN(newMonth)) return;
+  if (calendarPlaceholder.value.month === newMonth) return;
+  const year = calendarPlaceholder.value.year;
+  const day = selectedDate.value?.day ?? 1;
+  const max = daysInMonth(year, newMonth);
+  const safeDay = Math.min(day, max);
+  calendarPlaceholder.value = new CalendarDate(year, newMonth, safeDay);
+}
+
+function setYear(v: string | number | null) {
+  if (!v) return;
+  const newYear = Number(v);
+  if (Number.isNaN(newYear)) return;
+  if (calendarPlaceholder.value.year === newYear) return;
+  const month = calendarPlaceholder.value.month;
+  const day = selectedDate.value?.day ?? 1;
+  const max = daysInMonth(newYear, month);
+  const safeDay = Math.min(day, max);
+  calendarPlaceholder.value = new CalendarDate(newYear, month, safeDay);
+}
 </script>
 
 <template>
@@ -223,7 +259,7 @@ watch(placeholder, (newPlaceholder) => {
           <div class="flex items-center space-x-0.5 border border-gray-200 shadow-sm rounded-md px-3 py-1 w-[187px] bg-background">
             <!-- Скрытый input для формы -->
             <input type="hidden" :name="props.name" :value="props.modelValue" />
-            
+
             <Input
               ref="dayInputRef"
               v-model="dayInput"
@@ -254,9 +290,9 @@ watch(placeholder, (newPlaceholder) => {
               @keypress="(e) => { if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab') e.preventDefault() }"
             />
             <PopoverTrigger as-child>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 class="ml-auto h-6 w-6 p-0 cursor-pointer"
               >
                 <CalendarIcon class="h-4 w-4 opacity-50 " />
@@ -269,7 +305,7 @@ watch(placeholder, (newPlaceholder) => {
           <!-- Кастомный календарь с селектами -->
           <CalendarRoot
             v-slot="{ date, grid, weekDays }"
-            v-model:placeholder="placeholder"
+            v-model:placeholder="calendarPlaceholder"
             :model-value="selectedDate"
             initial-focus
             :min-value="new CalendarDate(1900, 1, 1)"
@@ -281,21 +317,16 @@ watch(placeholder, (newPlaceholder) => {
               <CalendarHeading class="flex w-full items-center justify-between gap-2">
                 <!-- Селект месяца -->
                 <Select
-                  :model-value="placeholder.month.toString()"
-                  @update:model-value="(v) => {
-                    if (!v || !placeholder) return;
-                    const newMonth = Number(v);
-                    if (newMonth === placeholder?.month) return;
-                    placeholder = placeholder.set({ month: newMonth });
-                  }"
+                  :model-value="String(calendarPlaceholder.month)"
+                  @update:model-value="setMonth"
                 >
                   <SelectTrigger aria-label="Select month" class="w-[60%]">
                     <SelectValue placeholder="Select month" />
                   </SelectTrigger>
                   <SelectContent class="max-h-[200px]">
                     <SelectItem
-                      v-for="month in createYear({ dateObj: placeholder })"
-                      :key="month.toString()" 
+                      v-for="month in createYear({ dateObj: calendarPlaceholder })"
+                      :key="month.toString()"
                       :value="month.month.toString()"
                     >
                       {{ formatter.custom(toDate(month), { month: 'long' }) }}
@@ -305,13 +336,8 @@ watch(placeholder, (newPlaceholder) => {
 
                 <!-- Селект года -->
                 <Select
-                  :model-value="placeholder.year.toString()"
-                  @update:model-value="(v) => {
-                    if (!v || !placeholder) return;
-                    const newYear = Number(v);
-                    if (newYear === placeholder?.year) return;
-                    placeholder = placeholder.set({ year: newYear });
-                  }"
+                  :model-value="String(calendarPlaceholder.year)"
+                  @update:model-value="setYear"
                 >
                   <SelectTrigger aria-label="Select year" class="w-[40%]">
                     <SelectValue placeholder="Select year" />
@@ -319,7 +345,7 @@ watch(placeholder, (newPlaceholder) => {
                   <SelectContent class="max-h-[200px]">
                     <SelectItem
                       v-for="yearValue in years"
-                      :key="yearValue.toString()" 
+                      :key="yearValue.toString()"
                       :value="yearValue.year.toString()"
                     >
                       {{ yearValue.year }}
@@ -340,9 +366,9 @@ watch(placeholder, (newPlaceholder) => {
                   </CalendarGridRow>
                 </CalendarGridHead>
                 <CalendarGridBody class="grid">
-                  <CalendarGridRow 
-                    v-for="(weekDates, index) in month.rows" 
-                    :key="`weekDate-${index}`" 
+                  <CalendarGridRow
+                    v-for="(weekDates, index) in month.rows"
+                    :key="`weekDate-${index}`"
                     class="mt-2 w-full"
                   >
                     <CalendarCell
@@ -350,10 +376,7 @@ watch(placeholder, (newPlaceholder) => {
                       :key="weekDate.toString()"
                       :date="weekDate"
                     >
-                      <CalendarCellTrigger
-                        :day="weekDate"
-                        :month="month.value"
-                      />
+                      <CalendarCellTrigger :day="weekDate" :month="month.value" />
                     </CalendarCell>
                   </CalendarGridRow>
                 </CalendarGridBody>
