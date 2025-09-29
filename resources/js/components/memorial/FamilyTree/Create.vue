@@ -1,82 +1,110 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { VueFlow } from '@vue-flow/core'
 import { markRaw } from 'vue'
 import { Position } from '@vue-flow/core'
 import SpecialEdge from '@/components/SpecialEdge.vue'
 import MarriageEdge from '@/components/MarriageEdge.vue'
-import SpecialNodeEdit from '@/components/SpecialNodeEdit.vue';
+import SpecialNodeEdit from '@/components/SpecialNodeEdit.vue'
 import { Controls } from '@vue-flow/controls'
+
+// Props и emits
+const props = defineProps({
+  modelValue: {
+    type: Array,
+    default: () => []
+  }
+})
+
+const emit = defineEmits(['update:modelValue', 'update:avatarFiles'])
+
+// Храним File объекты отдельно
+const avatarFiles = ref<Map<string, File>>(new Map())
 
 const edgeTypes = {
   special: markRaw(SpecialEdge),
   marriage: markRaw(MarriageEdge),
 }
 
-// these are our nodes
+// ... остальной код nodes, edges без изменений ...
+
 const nodes = ref([
   {
     id: 'dad',
     position: { x: 190, y: 170 },
-    style: { width: '90px', height: '105px', padding: '5px', },
+    style: { width: '90px', height: '105px', padding: '5px' },
     data: {
       label: '',
       avatar: '',
+      qr_code: '',
+      role: 'father'
     }
   },
   {
     id: 'mom',
     position: { x: 345, y: 170 },
-    style: { width: '90px', height: '105px', padding: '5px', },
+    style: { width: '90px', height: '105px', padding: '5px' },
     data: {
       label: '',
       avatar: '',
+      qr_code: '',
+      role: 'mother'
     }
   },
   {
     id: 'you',
     position: { x: 265, y: 331 },
-    style: { width: '90px', height: '105px', padding: '5px', },
+    style: { width: '90px', height: '105px', padding: '5px' },
     data: {
       label: '',
       avatar: '',
-      canAddChild: true, // может добавлять детей
+      qr_code: '',
+      role: 'main_person',
+      canAddChild: true
     }
   },
   {
     id: 'grandpa_dad',
     position: { x: 75, y: 8 },
-    style: { width: '90px', height: '105px', padding: '5px', },
+    style: { width: '90px', height: '105px', padding: '5px' },
     data: {
       label: '',
       avatar: '',
+      qr_code: '',
+      role: 'grandfather_paternal'
     }
   },
   {
     id: 'grandma_dad',
     position: { x: 200, y: 8 },
-    style: { width: '90px', height: '105px', padding: '5px', },
+    style: { width: '90px', height: '105px', padding: '5px' },
     data: {
       label: '',
       avatar: '',
+      qr_code: '',
+      role: 'grandmother_paternal'
     }
   },
   {
     id: 'grandpa_mom',
     position: { x: 330, y: 8 },
-    style: { width: '90px', height: '105px', padding: '5px', },
+    style: { width: '90px', height: '105px', padding: '5px' },
     data: {
       label: '',
       avatar: '',
+      qr_code: '',
+      role: 'grandfather_maternal'
     }
   },
   {
     id: 'grandma_mom',
     position: { x: 460, y: 8 },
-    style: { width: '90px', height: '105px', padding: '5px', },
+    style: { width: '90px', height: '105px', padding: '5px' },
     data: {
       label: '',
       avatar: '',
+      qr_code: '',
+      role: 'grandmother_maternal'
     }
   },
   {
@@ -86,6 +114,8 @@ const nodes = ref([
     data: {
       label: '',
       avatar: '',
+      qr_code: '',
+      role: 'spouse'
     }
   },
   {
@@ -95,19 +125,23 @@ const nodes = ref([
     data: {
       label: '',
       avatar: '',
+      qr_code: '',
+      role: 'child'
     }
   },
   {
     id: 'brother',
     position: { x: 375, y: 331 },
-    style: { width: '90px', height: '105px', padding: '5px', },
+    style: { width: '90px', height: '105px', padding: '5px' },
     data: {
       label: '',
       avatar: '',
-      canAddBrother: true, // может добавлять братьев
+      qr_code: '',
+      role: 'sibling',
+      canAddBrother: true
     }
   },
-  // Кнопка для добавления новой жены
+  // Кнопки добавления
   {
     id: 'add-wife-btn',
     position: { x: 25, y: 331 },
@@ -119,7 +153,6 @@ const nodes = ref([
       addType: 'wife'
     }
   },
-  // Кнопка для добавления нового брата
   {
     id: 'add-brother-btn',
     position: { x: 485, y: 331 },
@@ -131,7 +164,6 @@ const nodes = ref([
       addType: 'brother'
     }
   },
-  // Кнопка для добавления нового ребенка
   {
     id: 'add-child-btn',
     position: { x: 355, y: 490 },
@@ -145,9 +177,7 @@ const nodes = ref([
   }
 ])
 
-// Связи (ребра)
 const edges = ref([
-  // Родители → ты (сверху вниз)
   { 
     id: 'mom-you', 
     source: 'mom', 
@@ -168,8 +198,6 @@ const edges = ref([
     sourceHandle: 'source-bottom',
     targetHandle: 'target-top'
   },
-
-  // Бабушки и дедушки → мама (сверху вниз)
   { 
     id: 'grandma_mom-mom', 
     source: 'grandma_mom', 
@@ -190,8 +218,6 @@ const edges = ref([
     sourceHandle: 'source-bottom',
     targetHandle: 'target-top'
   },
-
-  // Бабушки и дедушки → папа (сверху вниз)
   { 
     id: 'grandma_dad-dad', 
     source: 'grandma_dad', 
@@ -212,7 +238,6 @@ const edges = ref([
     sourceHandle: 'source-bottom',
     targetHandle: 'target-top'
   },
-
   { 
     id: 'you-wife', 
     source: 'you', 
@@ -245,7 +270,46 @@ const edges = ref([
   },
 ])
 
-// Обработчик нажатия на кнопку добавления
+// Функция для преобразования узлов в формат для сохранения
+const getFamilyMembersData = () => {
+  return nodes.value
+    .filter(node => !node.data.isAddButton && node.data.label)
+    .map(node => ({
+      id: node.id,
+      name: node.data.label,
+      role: node.data.role,
+      avatar: node.data.avatar || null, // Здесь будет маркер "has_file" если есть файл
+      qr_code: node.data.qr_code || null,
+      position: node.position
+    }))
+}
+
+// Отслеживаем изменения в узлах и отправляем данные наверх
+watch(nodes, () => {
+  const familyData = getFamilyMembersData()
+  emit('update:modelValue', familyData)
+}, { deep: true })
+
+// Отслеживаем изменения файлов аватаров
+watch(avatarFiles, () => {
+  emit('update:avatarFiles', avatarFiles.value)
+}, { deep: true })
+
+// Обработчик изменения данных узла
+const handleNodeDataChange = (nodeId, field, value) => {
+  const node = nodes.value.find(n => n.id === nodeId)
+  if (node && !node.data.isAddButton) {
+    if (field === 'avatar' && value instanceof File) {
+      // Если это File объект, сохраняем его отдельно
+      avatarFiles.value.set(nodeId, value)
+      node.data.avatar = 'has_file' // маркер что файл есть
+    } else {
+      node.data[field] = value
+    }
+  }
+}
+
+// Остальные функции без изменений...
 function handleAddClick(nodeId) {
   const node = nodes.value.find(n => n.id === nodeId)
   if (!node || !node.data.isAddButton) return
@@ -259,29 +323,24 @@ function handleAddClick(nodeId) {
   }
 }
 
-// Добавление новой жены
 function addNewWife() {
   const wifeId = `wife-${Date.now()}`
   const addButtonNode = nodes.value.find(n => n.id === 'add-wife-btn')
   
-  // Создаем новую жену на месте кнопки
   const newWife = {
     id: wifeId,
     position: { ...addButtonNode.position },
     style: { width: '90px', height: '105px', padding: '5px' },
     data: {
-      label: null,
-      avatar: null,
+      label: '',
+      avatar: '',
+      role: 'spouse'
     }
   }
 
-  // Перемещаем кнопку добавления влево
   addButtonNode.position.x -= 110
-
-  // Добавляем новую жену
   nodes.value.splice(nodes.value.indexOf(addButtonNode), 0, newWife)
 
-  // Добавляем связь брака с вами
   edges.value.push({
     id: `you-${wifeId}`,
     source: 'you',
@@ -294,29 +353,25 @@ function addNewWife() {
   })
 }
 
-// Добавление нового брата
 function addNewBrother() {
   const brotherId = `brother-${Date.now()}`
   const addButtonNode = nodes.value.find(n => n.id === 'add-brother-btn')
   
-  // Создаем нового брата на месте кнопки
   const newBrother = {
     id: brotherId,
     position: { ...addButtonNode.position },
     style: { width: '90px', height: '105px', padding: '5px' },
     data: {
-      label: null,
-      avatar: null,
+      label: '',
+      avatar: '',
+      qr_code: '',
+      role: 'sibling'
     }
   }
 
-  // Перемещаем кнопку добавления вправо
   addButtonNode.position.x += 110
-
-  // Добавляем нового брата
   nodes.value.splice(nodes.value.indexOf(addButtonNode), 0, newBrother)
 
-  // Добавляем связи с родителями
   edges.value.push({
     id: `mom-${brotherId}`,
     source: 'mom',
@@ -329,64 +384,53 @@ function addNewBrother() {
   })
 }
 
-// Добавление нового ребенка
 function addNewChild() {
   const childId = `child-${Date.now()}`
   
-  // Находим все существующие узлы детей (исключая кнопку)
   const existingChildren = nodes.value.filter(n => 
     n.id.startsWith('child') && !n.data.isAddButton
   )
   
-  // Определяем позицию для нового ребенка
-  const baseX = 245 // позиция центрального ребенка (you)
-  const spacing = 110 // расстояние между детьми
+  const baseX = 245
+  const spacing = 110
   
   let newPosition
   if (existingChildren.length === 1) {
-    // Если есть только один ребенок (Ruby Shannon по центру),
-    // добавляем слева
     newPosition = { x: baseX - spacing, y: 490 }
   } else {
-    // Для последующих детей чередуем справа и слева
     const childrenCount = existingChildren.length
     if (childrenCount % 2 === 0) {
-      // Четное количество - добавляем справа
       const rightOffset = Math.ceil(childrenCount / 2) * spacing
       newPosition = { x: baseX + rightOffset, y: 490 }
     } else {
-      // Нечетное количество - добавляем слева
       const leftOffset = Math.ceil(childrenCount / 2) * spacing
       newPosition = { x: baseX - leftOffset, y: 490 }
     }
   }
   
-  // Создаем нового ребенка
   const newChild = {
     id: childId,
     position: newPosition,
     style: { width: '90px', height: '105px', padding: '5px' },
     data: {
-      label: null,
-      avatar: null,
+      label: '',
+      avatar: '',
+      qr_code: '',
+      role: 'child'
     }
   }
 
-  // Находим кнопку добавления и обновляем её позицию
   const addButtonNode = nodes.value.find(n => n.id === 'add-child-btn')
   if (addButtonNode) {
-    // Размещаем кнопку справа от самого правого ребенка
     const rightmostChild = Math.max(...nodes.value
       .filter(n => n.id.startsWith('child') && !n.data.isAddButton)
       .map(n => n.position.x))
     addButtonNode.position.x = Math.max(rightmostChild + spacing, newPosition.x + spacing)
   }
 
-  // Добавляем нового ребенка
   const addButtonIndex = nodes.value.findIndex(n => n.id === 'add-child-btn')
   nodes.value.splice(addButtonIndex, 0, newChild)
 
-  // Добавляем связь с вами
   edges.value.push({
     id: `you-${childId}`,
     source: 'you',
@@ -433,23 +477,27 @@ const vScrollAnimate = {
     if (el._observer) el._observer.disconnect()
   }
 }
+
+// Экспортируем функцию для получения данных семьи
+defineExpose({
+  getFamilyMembersData,
+  getAvatarFiles: () => avatarFiles.value
+})
 </script>
 
 <template>
   <div 
     class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
-        <div class="text-center space-y-5 mx-auto mt-10 md:mt-[70px]">
-          <span 
-            v-scroll-animate="{ delay: 200 }"
-            class="badge badge-green"
-          >
-            Family Tree
-          </span>
-        </div>
-    <div
-      class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
-
-      <div style="width: 100%; height: 900px; ">
+    <div class="text-center space-y-5 mx-auto mt-10 md:mt-[70px]">
+      <span 
+        v-scroll-animate="{ delay: 200 }"
+        class="badge badge-green"
+      >
+        Family Tree
+      </span>
+    </div>
+    <div class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
+      <div style="width: 100%; height: 900px;">
         <VueFlow 
           :nodes="nodes" 
           :edges="edges" 
@@ -466,7 +514,11 @@ const vScrollAnimate = {
           @node-click="(event) => handleAddClick(event.node.id)"
         >
           <template #node-default="nodeProps">
-            <SpecialNodeEdit v-bind="nodeProps" class="shadow-sm" />
+            <SpecialNodeEdit 
+              v-bind="nodeProps" 
+              class="shadow-sm"
+              @update-node-data="handleNodeDataChange"
+            />
           </template>
 
           <Controls />

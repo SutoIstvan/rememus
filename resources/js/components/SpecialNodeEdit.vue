@@ -4,36 +4,47 @@ import { Handle, Position } from '@vue-flow/core'
 
 // props с типами
 const props = defineProps<{ 
+  id: string,
   data: { 
     label: string, 
     avatar?: string,
+    qr_code?: string,
     isAddButton?: boolean,
     addType?: string
   } 
 }>()
 
+// emit для обновления данных
+const emit = defineEmits(['update-node-data'])
+
 // Лейбл
 const label = ref(props.data.label)
 watch(label, (newVal) => {
-  props.data.label = newVal // обновляем данные узла
+  emit('update-node-data', props.id, 'label', newVal)
 })
 
 // QR код
-const code = ref('')
+const code = ref(props.data.qr_code || '')
+watch(code, (newVal) => {
+  emit('update-node-data', props.id, 'qr_code', newVal)
+})
 
-// Аватар
+// Аватар - теперь храним File объект отдельно
 const avatarPreview = ref(props.data.avatar || null)
+const avatarFile = ref<File | null>(null)
 
 function onFileChange(event: Event) {
   const file = (event.target as HTMLInputElement).files?.[0]
   if (!file) return
 
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    avatarPreview.value = e.target?.result as string
-    props.data.avatar = avatarPreview.value
-  }
-  reader.readAsDataURL(file)
+  // Создаём превью через URL.createObjectURL
+  avatarPreview.value = URL.createObjectURL(file)
+  
+  // Сохраняем File объект
+  avatarFile.value = file
+  
+  // Отправляем File в родительский компонент
+  emit('update-node-data', props.id, 'avatar', file)
 }
 </script>
 

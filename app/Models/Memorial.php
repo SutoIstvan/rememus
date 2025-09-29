@@ -95,4 +95,66 @@ class Memorial extends Model
     // {
     //     return $this->hasMany(Timeline::class);
     // }
+
+
+    /**
+     * Получить членов семьи для этого мемориала
+     */
+    public function families(): HasMany
+    {
+        return $this->hasMany(Family::class);
+    }
+
+    /**
+     * Получить главное лицо мемориала
+     */
+    public function mainPerson()
+    {
+        return $this->families()->where('role', 'main_person')->first();
+    }
+
+    /**
+     * Получить родителей
+     */
+    public function parents(): HasMany
+    {
+        return $this->families()->whereIn('role', ['father', 'mother']);
+    }
+
+    /**
+     * Получить детей
+     */
+    public function children(): HasMany
+    {
+        return $this->families()->where('role', 'child');
+    }
+
+    /**
+     * Получить супругов
+     */
+    public function spouses(): HasMany
+    {
+        return $this->families()->where('role', 'spouse');
+    }
+
+    /**
+     * Получить братьев и сестер
+     */
+    public function siblings(): HasMany
+    {
+        return $this->families()->where('role', 'sibling');
+    }
+
+    /**
+     * Получить бабушек и дедушек
+     */
+    public function grandparents(): HasMany
+    {
+        return $this->families()->whereIn('role', [
+            'grandfather_paternal',
+            'grandmother_paternal', 
+            'grandfather_maternal',
+            'grandmother_maternal'
+        ]);
+    }
 }

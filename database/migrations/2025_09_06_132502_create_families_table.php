@@ -15,11 +15,26 @@ return new class extends Migration
             $table->id();
             $table->foreignId('memorial_id')->constrained('memorials')->onDelete('cascade');
             $table->string('name');
-            $table->string('role')->nullable();
-            $table->date('birth_date')->nullable();
-            $table->string('photo')->nullable();
             $table->string('qr_code')->nullable();
+            $table->enum('role', [
+                'main_person',
+                'father', 
+                'mother',
+                'grandfather_paternal',
+                'grandmother_paternal', 
+                'grandfather_maternal',
+                'grandmother_maternal',
+                'spouse',
+                'sibling',
+                'child'
+            ]);
+            $table->string('avatar')->nullable();
+            $table->json('position')->nullable(); // для сохранения позиции в дереве
+            $table->string('node_id')->nullable(); // ID узла в дереве для связи
             $table->timestamps();
+
+            // Индексы для оптимизации запросов
+            $table->index(['memorial_id', 'role']);
         });
     }
 
