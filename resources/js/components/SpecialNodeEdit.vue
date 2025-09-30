@@ -10,7 +10,8 @@ const props = defineProps<{
     avatar?: string,
     qr_code?: string,
     isAddButton?: boolean,
-    addType?: string
+    addType?: string,
+    isMainPerson?: boolean // НОВОЕ: флаг главного персонажа
   } 
 }>()
 
@@ -20,7 +21,15 @@ const emit = defineEmits(['update-node-data'])
 // Лейбл
 const label = ref(props.data.label)
 watch(label, (newVal) => {
-  emit('update-node-data', props.id, 'label', newVal)
+  // ИСПРАВЛЕНО: не отправляем изменения для главного персонажа
+  if (!props.data.isMainPerson) {
+    emit('update-node-data', props.id, 'label', newVal)
+  }
+})
+
+// Синхронизация label с props (для главного персонажа)
+watch(() => props.data.label, (newVal) => {
+  label.value = newVal
 })
 
 // QR код
@@ -33,7 +42,15 @@ watch(code, (newVal) => {
 const avatarPreview = ref(props.data.avatar || null)
 const avatarFile = ref<File | null>(null)
 
+// Синхронизация аватара с props (для главного персонажа)
+watch(() => props.data.avatar, (newVal) => {
+  avatarPreview.value = newVal
+})
+
 function onFileChange(event: Event) {
+  // ИСПРАВЛЕНО: блокируем для главного персонажа
+  if (props.data.isMainPerson) return
+  
   const file = (event.target as HTMLInputElement).files?.[0]
   if (!file) return
 
@@ -58,7 +75,7 @@ function onFileChange(event: Event) {
   </div>
 
   <!-- Обычная карточка семьи -->
-  <div v-else class="node-with-avatar">
+  <div v-else class="node-with-avatar" :class="{ 'main-person': props.data.isMainPerson }">
     <!-- Handles для всех позиций -->
     <Handle type="target" :position="Position.Top" id="target-top" />
     <Handle type="source" :position="Position.Top" id="source-top" />
@@ -70,73 +87,68 @@ function onFileChange(event: Event) {
     <Handle type="source" :position="Position.Bottom" id="source-bottom" />
 
     <!-- Аватарка -->
-    <img v-if="avatarPreview" :src="avatarPreview" alt="avatar" class="avatar" />
-    
-    <!-- Загрузка аватара если его нет -->
-    <div v-else class="avatar-placeholder">
-      <input 
-        type="file" 
-        @change="onFileChange" 
-        accept="image/*"
-        class="avatar-input"
-        :id="`avatar-upload-${props.id}`"
-      />
-      <label :for="`avatar-upload-${props.id}`" class="avatar-label">📷</label>
+    <div class="avatar-container">
+      <img v-if="avatarPreview" :src="avatarPreview" alt="avatar" class="avatar" />
+      
+      <!-- Загрузка аватара если его нет -->
+      <div v-else class="avatar-placeholder">
+        <!-- ИСПРАВЛЕНО: отключаем input для главного персонажа -->
+        <input 
+          v-if="!props.data.isMainPerson"
+          type="file" 
+          @change="onFileChange" 
+          accept="image/*"
+          class="avatar-input"
+          :id="`avatar-upload-${props.id}`"
+        />
+        <label 
+          v-if="!props.data.isMainPerson"
+          :for="`avatar-upload-${props.id}`" 
+          class="avatar-label"
+        >
+          
+        <svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" viewBox="0 0 24 24" fill="none">
+        <path d="M7 11C8.10457 11 9 10.1046 9 9C9 7.89543 8.10457 7 7 7C5.89543 7 5 7.89543 5 9C5 10.1046 5.89543 11 7 11Z" stroke="#dbdbdb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M5.56055 21C11.1305 11.1 15.7605 9.35991 21.0005 15.7899" stroke="#dbdbdb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12.28 3H5C3.93913 3 2.92172 3.42136 2.17157 4.17151C1.42142 4.92165 1 5.93913 1 7V17C1 18.0609 1.42142 19.0782 2.17157 19.8284C2.92172 20.5785 3.93913 21 5 21H17C18.0609 21 19.0783 20.5785 19.8284 19.8284C20.5786 19.0782 21 18.0609 21 17V12" stroke="#dbdbdb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M18.75 8.82996V0.829956" stroke="#dbdbdb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M15.5508 4.02996L18.7508 0.829956L21.9508 4.02996" stroke="#dbdbdb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+
+        </label>
+        <!-- Заглушка для главного персонажа -->
+        <div v-else class="avatar-label disabled">👤</div>
+      </div>
+
+      <!-- Бейдж "Главный" -->
+      <!-- <div v-if="props.data.isMainPerson" class="main-badge">Главный</div> -->
     </div>
 
     <!-- Метка -->
     <input 
       type="text" 
       v-model="label" 
-      class="label-input mt-1"
-      placeholder="Enter name"
+      class="label-input mt-2"
+      placeholder="Name"
+      :readonly="props.data.isMainPerson"
+      :disabled="props.data.isMainPerson"
+      :class="{ 'readonly': props.data.isMainPerson }"
     />
 
     <input 
       type="text" 
       v-model="code" 
       class="label-input mt-1"
-      placeholder="Enter qr code"
+      placeholder="Qr Code"
+      :readonly="props.data.isMainPerson"
+      :disabled="props.data.isMainPerson"
+      :class="{ 'readonly': props.data.isMainPerson }"
     />    
   </div>
 </template>
 
 <style scoped>
-/* Стили для кнопки добавления */
-.add-button-node {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 90px;
-  height: 105px;
-  border: 2px dashed #28a745;
-  border-radius: 8px;
-  background: #f8f9fa;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
 
-.add-button-node:hover {
-  background: #e9f7ef;
-  border-color: #20c938;
-}
-
-.add-button-content {
-  text-align: center;
-  color: #28a745;
-}
-
-.add-icon {
-  font-size: 32px;
-  font-weight: bold;
-  margin-bottom: 4px;
-}
-
-.add-text {
-  font-size: 10px;
-  font-weight: 500;
-  line-height: 1.2;
-}
 
 /* Стили для карточки с аватаркой */
 .node-with-avatar {
@@ -155,13 +167,48 @@ function onFileChange(event: Event) {
   background: white;
 }
 
+/* НОВОЕ: Стили для главного персонажа */
+.node-with-avatar.main-person {
+  border: 1px solid #7da30237;
+  box-shadow: #73e7391c 0px 0px 0px 3px;
+  border-radius: 5px;
+  background: #ffffff;
+}
+
+.avatar-container {
+  position: relative;
+  width: 70px;
+}
+
+/* НОВОЕ: Бейдж "Главный" */
+.main-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #4CAF50;
+  color: white;
+  font-size: 8px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: bold;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
 .label-input {
   width: 100%;
   font-size: 11px;
-  text-align: center;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1px solid #dbdbdb;
+  border-radius: 2px;
   padding: 1px 2px 0px 2px;
+}
+
+/* НОВОЕ: Стили для readonly инпута */
+.label-input.readonly {
+  background: #f5f5f5;
+  cursor: not-allowed;
+  color: #666;
+  border-color: #ddd;
 }
 
 .avatar {
@@ -177,7 +224,7 @@ function onFileChange(event: Event) {
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  border: 2px dashed #ccc;
+  border: 1.4px dashed #dbdbdb;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -195,6 +242,12 @@ function onFileChange(event: Event) {
 .avatar-label {
   font-size: 24px;
   cursor: pointer;
+}
+
+/* НОВОЕ: Отключенная загрузка для главного персонажа */
+.avatar-label.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 /* Стили для handles */

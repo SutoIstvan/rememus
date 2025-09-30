@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { VueFlow } from '@vue-flow/core'
 import { markRaw } from 'vue'
 import { Position } from '@vue-flow/core'
@@ -13,6 +13,14 @@ const props = defineProps({
   modelValue: {
     type: Array,
     default: () => []
+  },
+  mainPersonName: {
+    type: String,
+    default: ''
+  },
+  mainPersonAvatar: {
+    type: [File, String, null],
+    default: null
   }
 })
 
@@ -21,12 +29,28 @@ const emit = defineEmits(['update:modelValue', 'update:avatarFiles'])
 // Храним File объекты отдельно
 const avatarFiles = ref<Map<string, File>>(new Map())
 
+// Превью аватара главного персонажа
+const mainPersonAvatarPreview = ref<string>('')
+
+// Следим за изменением аватара главного персонажа
+watch(() => props.mainPersonAvatar, (newAvatar) => {
+  if (newAvatar instanceof File) {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      mainPersonAvatarPreview.value = e.target?.result as string
+    }
+    reader.readAsDataURL(newAvatar)
+  } else if (typeof newAvatar === 'string') {
+    mainPersonAvatarPreview.value = newAvatar
+  } else {
+    mainPersonAvatarPreview.value = ''
+  }
+}, { immediate: true })
+
 const edgeTypes = {
   special: markRaw(SpecialEdge),
   marriage: markRaw(MarriageEdge),
 }
-
-// ... остальной код nodes, edges без изменений ...
 
 const nodes = ref([
   {
@@ -60,7 +84,8 @@ const nodes = ref([
       avatar: '',
       qr_code: '',
       role: 'main_person',
-      canAddChild: true
+      canAddChild: true,
+      isMainPerson: true // НОВОЕ: флаг для отключения редактирования
     }
   },
   {
@@ -145,13 +170,15 @@ const nodes = ref([
   {
     id: 'add-wife-btn',
     position: { x: 25, y: 331 },
-    style: { width: '90px', height: '105px', padding: '5px' },
+    style: { width: '90px', height: '105px', padding: '5px', border: 'none',},
     type: 'input',
     data: {
       label: '+ Добавить жену',
       isAddButton: true,
       addType: 'wife'
-    }
+    },
+    connectable: false,
+    
   },
   {
     id: 'add-brother-btn',
@@ -176,6 +203,22 @@ const nodes = ref([
     }
   }
 ])
+
+// НОВОЕ: Синхронизация имени главного персонажа
+watch(() => props.mainPersonName, (newName) => {
+  const youNode = nodes.value.find(n => n.id === 'you')
+  if (youNode) {
+    youNode.data.label = newName
+  }
+}, { immediate: true })
+
+// НОВОЕ: Синхронизация аватара главного персонажа
+watch(mainPersonAvatarPreview, (newPreview) => {
+  const youNode = nodes.value.find(n => n.id === 'you')
+  if (youNode) {
+    youNode.data.avatar = newPreview
+  }
+})
 
 const edges = ref([
   { 
@@ -273,13 +316,13 @@ const edges = ref([
 // Функция для преобразования узлов в формат для сохранения
 const getFamilyMembersData = () => {
   return nodes.value
-    .filter(node => !node.data.isAddButton && node.data.label)
+    .filter(node => !node.data.isAddButton)
     .map(node => ({
       id: node.id,
-      name: node.data.label,
+      name: node.data.label || '',
       role: node.data.role,
-      avatar: node.data.avatar || null, // Здесь будет маркер "has_file" если есть файл
-      qr_code: node.data.qr_code || null,
+      avatar: node.data.avatar || '',
+      qr_code: node.data.qr_code || '',
       position: node.position
     }))
 }
@@ -298,11 +341,23 @@ watch(avatarFiles, () => {
 // Обработчик изменения данных узла
 const handleNodeDataChange = (nodeId, field, value) => {
   const node = nodes.value.find(n => n.id === nodeId)
+  
+  // НОВОЕ: Блокируем редактирование для главного персонажа
+  if (node?.data.isMainPerson) {
+    return
+  }
+  
   if (node && !node.data.isAddButton) {
     if (field === 'avatar' && value instanceof File) {
       // Если это File объект, сохраняем его отдельно
       avatarFiles.value.set(nodeId, value)
-      node.data.avatar = 'has_file' // маркер что файл есть
+      
+      // Создаем preview URL для отображения
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        node.data.avatar = e.target?.result as string
+      }
+      reader.readAsDataURL(value)
     } else {
       node.data[field] = value
     }
