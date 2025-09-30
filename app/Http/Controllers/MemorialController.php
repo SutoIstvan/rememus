@@ -27,7 +27,7 @@ public function store(Request $request)
         'family_tree' => 'nullable|array',
         'family_tree.*.id' => 'required|string',
         'family_tree.*.name' => 'required|string|max:255',
-        'family_tree.*.role' => 'required|string|in:main_person,father,mother,grandfather_paternal,grandmother_paternal,grandfather_maternal,grandmother_maternal,spouse,sibling,child',
+        'family_tree.*.role' => 'required|string|in:main_person,father,mother,grandfather_paternal,grandmother_paternal,grandfather_maternal,grandmother_maternal,spouse,sibling,child,other',
         'family_tree.*.avatar' => 'nullable|file|image|mimes:jpeg,png,jpg,gif|max:5120',
         'family_tree.*.qr_code' => 'nullable|string',
         'family_tree.*.position' => 'nullable|string', // JSON строка

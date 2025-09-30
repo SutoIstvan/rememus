@@ -166,42 +166,66 @@ const nodes = ref([
       canAddBrother: true
     }
   },
-  // Кнопки добавления
+  // Кнопки добавления остаются как узлы
   {
     id: 'add-wife-btn',
     position: { x: 25, y: 331 },
-    style: { width: '90px', height: '105px', padding: '5px', border: 'none',},
-    type: 'input',
+    style: { width: '80px', height: '80px' },
+    type: 'addButton',
     data: {
-      label: '+ Добавить жену',
+      label: 'Add wife',
       isAddButton: true,
       addType: 'wife'
     },
     connectable: false,
-    
   },
   {
     id: 'add-brother-btn',
     position: { x: 485, y: 331 },
-    style: { width: '90px', height: '105px', padding: '5px' },
-    type: 'input',
+    style: { width: '80px', height: '80px' },
+    type: 'addButton',
     data: {
-      label: '+ Добавить брата',
+      label: 'Add sibling',
       isAddButton: true,
       addType: 'brother'
-    }
+    },
+    connectable: false,
   },
   {
     id: 'add-child-btn',
     position: { x: 355, y: 490 },
-    style: { width: '90px', height: '105px', padding: '5px' },
-    type: 'input',
+    style: { width: '80px', height: '80px' },
+    type: 'addButton',
     data: {
-      label: '+ Добавить ребенка',
+      label: 'Add child',
       isAddButton: true,
       addType: 'child'
+    },
+    connectable: false,
+  },
+  {
+    id: 'other-member-1',
+    position: { x: 1, y: 650 },
+    style: { width: '90px', height: '105px', padding: '5px' },
+    data: {
+      label: '',
+      avatar: '',
+      qr_code: '',
+      role: 'other'
     }
-  }
+  },
+  {
+  id: 'add-other-member-btn',
+  position: { x: 115, y: 650 }, // по центру внизу
+  style: { width: '60px', height: '80px' },
+  type: 'addButton',
+  data: {
+    label: 'Add member',
+    isAddButton: true,
+    addType: 'other'
+  },
+  connectable: false,
+}
 ])
 
 // НОВОЕ: Синхронизация имени главного персонажа
@@ -221,90 +245,90 @@ watch(mainPersonAvatarPreview, (newPreview) => {
 })
 
 const edges = ref([
-  { 
-    id: 'mom-you', 
-    source: 'mom', 
-    target: 'you', 
+  {
+    id: 'mom-you',
+    source: 'mom',
+    target: 'you',
     type: 'special',
     sourcePosition: Position.Bottom,
     targetPosition: Position.Top,
     sourceHandle: 'source-bottom',
     targetHandle: 'target-top'
   },
-  { 
-    id: 'dad-you', 
-    source: 'dad', 
-    target: 'you', 
+  {
+    id: 'dad-you',
+    source: 'dad',
+    target: 'you',
     type: 'special',
     sourcePosition: Position.Bottom,
     targetPosition: Position.Top,
     sourceHandle: 'source-bottom',
     targetHandle: 'target-top'
   },
-  { 
-    id: 'grandma_mom-mom', 
-    source: 'grandma_mom', 
-    target: 'mom', 
+  {
+    id: 'grandma_mom-mom',
+    source: 'grandma_mom',
+    target: 'mom',
     type: 'special',
     sourcePosition: Position.Bottom,
     targetPosition: Position.Top,
     sourceHandle: 'source-bottom',
     targetHandle: 'target-top'
   },
-  { 
-    id: 'grandpa_mom-mom', 
-    source: 'grandpa_mom', 
-    target: 'mom', 
+  {
+    id: 'grandpa_mom-mom',
+    source: 'grandpa_mom',
+    target: 'mom',
     type: 'special',
     sourcePosition: Position.Bottom,
     targetPosition: Position.Top,
     sourceHandle: 'source-bottom',
     targetHandle: 'target-top'
   },
-  { 
-    id: 'grandma_dad-dad', 
-    source: 'grandma_dad', 
-    target: 'dad', 
+  {
+    id: 'grandma_dad-dad',
+    source: 'grandma_dad',
+    target: 'dad',
     type: 'special',
     sourcePosition: Position.Bottom,
     targetPosition: Position.Top,
     sourceHandle: 'source-bottom',
     targetHandle: 'target-top'
   },
-  { 
-    id: 'grandpa_dad-dad', 
-    source: 'grandpa_dad', 
-    target: 'dad', 
+  {
+    id: 'grandpa_dad-dad',
+    source: 'grandpa_dad',
+    target: 'dad',
     type: 'special',
     sourcePosition: Position.Bottom,
     targetPosition: Position.Top,
     sourceHandle: 'source-bottom',
     targetHandle: 'target-top'
   },
-  { 
-    id: 'you-wife', 
-    source: 'you', 
-    target: 'wife', 
+  {
+    id: 'you-wife',
+    source: 'you',
+    target: 'wife',
     type: 'marriage',
     sourcePosition: Position.Left,
     targetPosition: Position.Right,
     sourceHandle: 'source-left',
     targetHandle: 'target-right'
   },
-  { 
-    id: 'you-child', 
-    source: 'you', 
-    target: 'child', 
+  {
+    id: 'you-child',
+    source: 'you',
+    target: 'child',
     type: 'special',
     sourcePosition: Position.Bottom,
     targetPosition: Position.Top,
     sourceHandle: 'source-bottom',
     targetHandle: 'target-top'
   },
-  { 
-    id: 'mom-brother', 
-    source: 'mom', 
-    target: 'brother', 
+  {
+    id: 'mom-brother',
+    source: 'mom',
+    target: 'brother',
     type: 'special',
     sourcePosition: Position.Bottom,
     targetPosition: Position.Top,
@@ -341,17 +365,17 @@ watch(avatarFiles, () => {
 // Обработчик изменения данных узла
 const handleNodeDataChange = (nodeId, field, value) => {
   const node = nodes.value.find(n => n.id === nodeId)
-  
+
   // НОВОЕ: Блокируем редактирование для главного персонажа
   if (node?.data.isMainPerson) {
     return
   }
-  
+
   if (node && !node.data.isAddButton) {
     if (field === 'avatar' && value instanceof File) {
       // Если это File объект, сохраняем его отдельно
       avatarFiles.value.set(nodeId, value)
-      
+
       // Создаем preview URL для отображения
       const reader = new FileReader()
       reader.onload = (e) => {
@@ -375,13 +399,39 @@ function handleAddClick(nodeId) {
     addNewChild()
   } else if (node.data.addType === 'wife') {
     addNewWife()
+  } else if (node.data.addType === 'other') {
+    addNewOtherMember()
   }
+}
+function addNewOtherMember() {
+  const memberId = `other-${Date.now()}`
+  const addButtonNode = nodes.value.find(n => n.id === 'add-other-member-btn')
+  
+  const newMember = {
+    id: memberId,
+    position: { ...addButtonNode.position },
+    style: { width: '90px', height: '105px', padding: '5px' },
+    data: {
+      label: '',
+      avatar: '',
+      qr_code: '',
+      role: 'other'
+    }
+  }
+
+  // Сдвигаем кнопку вправо для следующего добавления
+  addButtonNode.position.x += 110
+
+  // Вставляем нового члена перед кнопкой
+  const btnIndex = nodes.value.findIndex(n => n.id === 'add-other-member-btn')
+  nodes.value.splice(btnIndex, 0, newMember)
+
 }
 
 function addNewWife() {
   const wifeId = `wife-${Date.now()}`
   const addButtonNode = nodes.value.find(n => n.id === 'add-wife-btn')
-  
+
   const newWife = {
     id: wifeId,
     position: { ...addButtonNode.position },
@@ -411,7 +461,7 @@ function addNewWife() {
 function addNewBrother() {
   const brotherId = `brother-${Date.now()}`
   const addButtonNode = nodes.value.find(n => n.id === 'add-brother-btn')
-  
+
   const newBrother = {
     id: brotherId,
     position: { ...addButtonNode.position },
@@ -441,14 +491,14 @@ function addNewBrother() {
 
 function addNewChild() {
   const childId = `child-${Date.now()}`
-  
-  const existingChildren = nodes.value.filter(n => 
+
+  const existingChildren = nodes.value.filter(n =>
     n.id.startsWith('child') && !n.data.isAddButton
   )
-  
+
   const baseX = 245
   const spacing = 110
-  
+
   let newPosition
   if (existingChildren.length === 1) {
     newPosition = { x: baseX - spacing, y: 490 }
@@ -462,7 +512,7 @@ function addNewChild() {
       newPosition = { x: baseX - leftOffset, y: 490 }
     }
   }
-  
+
   const newChild = {
     id: childId,
     position: newPosition,
@@ -541,39 +591,39 @@ defineExpose({
 </script>
 
 <template>
-  <div 
-    class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
-    <div class="text-center space-y-5 mx-auto mt-10 md:mt-[70px]">
-      <span 
-        v-scroll-animate="{ delay: 200 }"
-        class="badge badge-green"
-      >
+  <div
+    class="flex min-h-screen flex-col items-center p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
+    <div class="text-center space-y-5 mx-auto mt-10 md:mt-[7px]">
+      <span v-scroll-animate="{ delay: 200 }" class="badge badge-green">
         Family Tree
       </span>
     </div>
-    <div class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
-      <div style="width: 100%; height: 900px;">
-        <VueFlow 
-          :nodes="nodes" 
-          :edges="edges" 
-          fit-view-on-init 
-          :edge-types="edgeTypes"
-          v-scroll-animate="{ direction: 'up', offset: 200 }"
-          :zoom-on-scroll="false"
-          :zoom-on-pinch="false"
-          :zoom-on-double-click="false"
-          :pan-on-drag="false"
-          :nodes-draggable="false"
-          :nodes-connectable="false"
-          :elements-selectable="false"
-          @node-click="(event) => handleAddClick(event.node.id)"
-        >
+    <div
+      class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
+      <div style="width: 100%; height: 1000px;">
+        <VueFlow :nodes="nodes" :edges="edges" fit-view-on-init :edge-types="edgeTypes"
+          v-scroll-animate="{ direction: 'up', offset: 200 }" :zoom-on-scroll="false" :zoom-on-pinch="false"
+          :zoom-on-double-click="false" :pan-on-drag="false" :nodes-draggable="false" :nodes-connectable="false"
+          :elements-selectable="false" @node-click="(event) => handleAddClick(event.node.id)">
           <template #node-default="nodeProps">
-            <SpecialNodeEdit 
-              v-bind="nodeProps" 
-              class="shadow-sm"
-              @update-node-data="handleNodeDataChange"
-            />
+            <SpecialNodeEdit v-bind="nodeProps" class="shadow-sm" @update-node-data="handleNodeDataChange" />
+          </template>
+
+          <!-- Кастомный узел для кнопок добавления -->
+          <template #node-addButton="nodeProps">
+            <div class="flex flex-col items-center justify-start w-full h-full cursor-pointer"
+              @click.stop="handleAddClick(nodeProps.id)">
+              <!-- Круглая кнопка "+" -->
+              <div style="margin-top: 45px;"
+                class="w-7 h-7 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center shadow-md transition-transform duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 mt-1">
+                <span class="text-white text-lg">+</span>
+              </div>
+
+              <!-- Подпись под кнопкой -->
+              <span class="mt-2 text-xs text-gray-700 dark:text-gray-300 text-center px-1 leading-tight">
+                {{ nodeProps.data.label }}
+              </span>
+            </div>
           </template>
 
           <Controls />
