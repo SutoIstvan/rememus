@@ -26,7 +26,8 @@ return new class extends Migration
                 'grandmother_maternal',
                 'spouse',
                 'sibling',
-                'child'
+                'child',
+                'other'
             ]);
             $table->string('avatar')->nullable();
             $table->json('position')->nullable(); // для сохранения позиции в дереве

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Image extends Model
 {
-    protected $fillable = ['memorial_id', 'image_path', 'image_date', 'image_description'];
+    protected $fillable = ['memorial_id', 'image_path', 'image_date', 'image_description', 'order'];
 
     public function memorial()
     {

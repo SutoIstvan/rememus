@@ -5,6 +5,8 @@ import { ref, watch } from 'vue'
 // Подкомпоненты
 import HeaderCreate from '@/components/memorial/Header/Create.vue'
 import FamilyTreeCreate from '@/components/memorial/FamilyTree/Create.vue'
+import GalleryCreate from '@/components/memorial/Gallery/Create.vue'
+
 import { Button } from '@/components/ui/button'
 import { store as memorialsStore } from '@/routes/memorials'
 
@@ -20,7 +22,7 @@ const form = useForm({
   image: null as File | null,
   background_image: null as File | null,
   family_tree: [],
-  gallery: [],
+  gallery: [] as File[], // ИЗМЕНЕНО: указываем тип File[]
   timeline: [],
 })
 
@@ -78,6 +80,13 @@ const submit = () => {
     formData.append('background_image', form.background_image)
   }
   
+  // ДОБАВЛЕНО: Добавляем фотографии галереи
+  if (form.gallery && form.gallery.length > 0) {
+    form.gallery.forEach((file, index) => {
+      formData.append(`gallery[${index}]`, file)
+    })
+  }
+  
   // ИСПРАВЛЕНО: Фильтруем family_tree - исключаем main_person
   const familyTreeWithoutMainPerson = form.family_tree.filter(
     (member: any) => member.role !== 'main_person' && member.name
@@ -129,6 +138,11 @@ const handleAvatarFilesUpdate = (files: Map<string, File>) => {
     }
   })
 }
+
+// ДОБАВЛЕНО: Обработчик обновления галереи
+const handleGalleryUpdate = (galleryFiles: File[]) => {
+  form.gallery = galleryFiles
+}
 </script>
 
 <template>
@@ -153,6 +167,9 @@ const handleAvatarFilesUpdate = (files: Map<string, File>) => {
         @update:model-value="handleFamilyTreeUpdate"
         @update:avatar-files="handleAvatarFilesUpdate"
       />
+
+      <!-- ИЗМЕНЕНО: Добавлен обработчик события -->
+      <GalleryCreate @update:gallery-files="handleGalleryUpdate" />
 
       <!-- Кнопка сохранения -->
       <div class="mt-8 px-4 md:px-6 lg:px-8 pb-12">

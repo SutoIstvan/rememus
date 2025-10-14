@@ -17,6 +17,7 @@ return new class extends Migration
             $table->date('image_date')->nullable();
             $table->string('image_description')->nullable();
             $table->foreignId('memorial_id')->constrained('memorials')->onDelete('cascade');
+            $table->integer('order')->default(0);
             $table->timestamps();
         });
     }
