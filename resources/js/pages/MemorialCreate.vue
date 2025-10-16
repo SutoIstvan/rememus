@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
+import { toast } from "vue-sonner"
+import { Toaster } from '@/components/ui/sonner'
+import 'vue-sonner/style.css'
 
 // Подкомпоненты
 import HeaderCreate from '@/components/memorial/Header/Create.vue'
@@ -9,6 +12,7 @@ import GalleryCreate from '@/components/memorial/Gallery/Create.vue'
 
 import { Button } from '@/components/ui/button'
 import { store as memorialsStore } from '@/routes/memorials'
+
 
 // Храним File объекты аватаров отдельно
 const avatarFiles = ref<Map<string, File>>(new Map())
@@ -121,7 +125,16 @@ const submit = () => {
       avatarFiles.value.clear()
     },
     onError: (errors) => {
-      console.error('Ошибки валидации:', errors)
+      console.log('Type errors:', typeof errors)
+      console.log('Content errors:', errors)
+      
+      if (typeof errors !== 'object' || errors === null) {
+        toast.error('Unknown error')
+        return
+      }
+
+      const errorMessages = Object.values(errors).join('\n')
+      toast.error(errorMessages, { duration: 8000 })
     }
   })
 }
@@ -149,6 +162,7 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
   <div class="bg-white dark:bg-black min-h-screen">
     <form @submit.prevent="submit" class="space-y-8">
       <!-- Главная информация -->
+
       <HeaderCreate
         v-model:name="form.name"
         v-model:birth_date="form.birth_date"
@@ -177,6 +191,10 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
           {{ form.processing ? 'Сохранение...' : 'Сохранить мемориал' }}
         </Button>
       </div>
+
+      <Toaster class="pointer-events-auto" position="top-center" />
+
     </form>
+
   </div>
 </template>

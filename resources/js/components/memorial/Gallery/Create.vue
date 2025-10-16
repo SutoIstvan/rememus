@@ -39,7 +39,7 @@
                             <!-- Rotate Icon -->
                             <button
                                 type="button"
-                                class="absolute top-1 left-1 bg-blue-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-blue-600"
+                                class="absolute top-1 left-1 bg-gray-200 text-grey rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:text-white hover:bg-blue-600 hover:cursor-pointer"
                                 @click="rotateImage(element.id)"
                                 title="Rotate 90°">
                                 <RotateCw class="w-4 h-4" />
@@ -47,7 +47,7 @@
                             <!-- Delete Icon -->
                             <button
                                 type="button"
-                                class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                                class="absolute top-1 right-1 bg-gray-200 text-grey rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:text-white hover:bg-red-600 hover:cursor-pointer"
                                 @click="removeImage(element.id)"
                                 title="Delete">
                                 <Trash2 class="w-4 h-4" />
