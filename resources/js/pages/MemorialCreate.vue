@@ -9,6 +9,7 @@ import 'vue-sonner/style.css'
 import HeaderCreate from '@/components/memorial/Header/Create.vue'
 import FamilyTreeCreate from '@/components/memorial/FamilyTree/Create.vue'
 import GalleryCreate from '@/components/memorial/Gallery/Create.vue'
+import TimelineCreate from '@/components/memorial/TimeLine/Create.vue'
 
 import { Button } from '@/components/ui/button'
 import { store as memorialsStore } from '@/routes/memorials'
@@ -184,6 +185,9 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
 
       <!-- ИЗМЕНЕНО: Добавлен обработчик события -->
       <GalleryCreate @update:gallery-files="handleGalleryUpdate" />
+
+      <TimelineCreate
+      />
 
       <!-- Кнопка сохранения -->
       <div class="mt-8 px-4 md:px-6 lg:px-8 pb-12">
