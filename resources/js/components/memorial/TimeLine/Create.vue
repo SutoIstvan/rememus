@@ -1,227 +1,366 @@
 <template>
-  <div class="overflow-hidden">
-    <section class="container mx-auto space-y-8 px-4 py-24 md:px-6 2xl:max-w-[1400px]">
-      <div class="mx-auto max-w-3xl space-y-4 text-center">
-        <h2 class="text-3xl font-bold">Our Journey</h2>
-        <p class="text-muted-foreground">
-          From humble beginnings to industry leader — explore the milestones that have shaped our company's growth and success over the years.
-        </p>
-      </div>
+  <div class="container">
+    <div 
+      v-for="(feature, index) in features" 
+      :key="index"
+      class="feature-item"
+    >
+      <div 
+        class="feature-content"
+        :class="{ 'reverse': feature.reverse }"
+      >
+        <!-- Text Section -->
+        <div class="text-section desktop-only">
+                      <p class="text-muted-foreground mb-3 text-sm">January 15, 2024</p>
 
-      <!-- Desktop Timeline -->
-      <div class="relative mx-auto hidden max-w-4xl pt-10 md:block">
-        <div class="bg-border absolute left-1/2 h-[calc(100%-6rem)] w-0.5 -translate-x-1/2 transform z-0 top-24"></div>
-        <div class="space-y-12">
-          <div
-            v-for="(milestone, index) in visibleMilestones"
-            :key="milestone.year"
-            :class="[
-              'relative flex items-center gap-8',
-              index % 2 === 0 ? 'flex-row-reverse' : ''
-            ]"
-          >
-            <div class="absolute left-1/2 z-10 -translate-x-1/2 transform">
-              <div
-                class="bg-primary text-primary-foreground flex h-12 w-12 items-center justify-center rounded-full font-bold"
-              >
-                {{ milestone.year }}
-              </div>
+          <h3 class="title">{{ feature.title }}</h3>
+          <p class="description" :class="{ 'ml-auto': !feature.reverse }">
+            {{ feature.description }}
+          </p>
+        </div>
+
+        <!-- Icon Badge -->
+        <div class="icon-badge">
+          <div class="icon-container">
+            <div class="icon-wrapper">
+              <component :is="feature.icon" class="icon" />
             </div>
-            <div :class="['w-1/2', index % 2 === 0 ? 'pr-16 text-right' : 'pl-16']">
-              <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl shadow-sm p-0">
-                <div v-if="!milestone.isPhoto" class="space-y-2 p-5">
-                  <div :class="['flex items-center gap-2', index % 2 === 0 ? 'justify-end' : '']">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-badge-check text-primary h-5 w-5"
-                    >
-                      <path
-                        d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"
-                      ></path>
-                      <path d="m9 12 2 2 4-4"></path>
-                    </svg>
-                    <h6 class="font-bold">{{ milestone.title }}</h6>
-                  </div>
-                  <p class="text-muted-foreground text-sm">{{ milestone.desc }}</p>
-                </div>
-                <div v-else class="relative h-54 overflow-hidden rounded-xl md:h-62 lg:h-70">
-                  <img
-                    :src="milestone.image"
-                    :alt="milestone.title"
-                    class="absolute h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <div class="absolute inset-0 h-full bg-[linear-gradient(transparent_20%,var(--primary)_100%)] mix-blend-multiply"></div>
-                  <div class="absolute inset-x-0 bottom-0 flex flex-col p-4 text-primary-foreground md:p-6">
-                    <div class="mb-2 pt-2 text-lg font-semibold md:mb-3 md:pt-3">{{ milestone.title }}</div>
-                    <div class="mb-1 line-clamp-2 text-sm md:mb-2">{{ milestone.desc }}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="w-1/2"></div>
           </div>
         </div>
-        <div v-if="visibleCount < milestones.length" class="z-50 flex justify-center pt-8 relative">
-          <button
-            @click="loadMore"
-            class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Показать больше
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="lucide lucide-chevron-down"
-            >
-              <path d="m6 9 6 6 6-6" />
-            </svg>
-          </button>
+
+        <!-- Image Section -->
+        <div class="image-section">
+          <!-- Mobile Text -->
+          <div class="text-section mobile-only">
+            <p class="text-muted-foreground lg:mt-10 text-sm">January 15, 2024</p>
+            <h3 class="title">{{ feature.title }}</h3>
+            <p class="description">{{ feature.description }}</p>
+          </div>
+
+          <!-- Image Container -->
+          <div class="image-container" :class="{ 'ml-auto': feature.reverse }">
+            <div :class="{ 'icon-container image-grid lg:ml-auto': feature.reverse }">
+              <img 
+                :src="feature.image" 
+                :alt="feature.title"
+                class="feature-image"
+              />
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Mobile Timeline -->
-      <div class="relative mx-auto max-w-md pt-4 md:hidden">
-        <div class="bg-border absolute top-0 bottom-0 left-6 w-0.5 z-0"></div>
-        <div class="space-y-8">
-          <div v-for="milestone in visibleMilestones" :key="milestone.year" class="relative pl-10">
-            <div class="absolute pt-5 left-0 z-10">
-              <div
-                class="bg-primary text-primary-foreground flex h-12 w-12 items-center justify-center rounded-full font-bold"
-              >
-                {{ milestone.year }}
-              </div>
-            </div>
-            <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl shadow-sm p-0">
-              <div v-if="!milestone.isPhoto" class="space-y-2 p-4">
-                <div class="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="lucide lucide-badge-check text-primary h-5 w-5"
-                  >
-                    <path
-                      d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"
-                    ></path>
-                    <path d="m9 12 2 2 4-4"></path>
-                  </svg>
-                  <h6 class="font-bold">{{ milestone.title }}</h6>
-                </div>
-                <p class="text-muted-foreground text-sm">{{ milestone.desc }}</p>
-              </div>
-              <div v-else class="relative h-58 overflow-hidden rounded-xl">
-                <img
-                  :src="milestone.image"
-                  :alt="milestone.title"
-                  class="absolute h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
-                />
-                <div class="absolute inset-0 h-full bg-[linear-gradient(transparent_20%,var(--primary)_100%)] mix-blend-multiply"></div>
-                <div class="absolute inset-x-0 bottom-0 flex flex-col items-start p-3 text-primary-foreground">
-                  <div class="mb-1 pt-1 text-base font-semibold">{{ milestone.title }}</div>
-                  <div class="mb-3 line-clamp-2 text-xs">{{ milestone.desc }}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div v-if="visibleCount < milestones.length" class="z-50 relative flex justify-center pt-6 pl-10">
-          <div class="absolute left-0 top-0 z-20">
-            <div class="bg-border h-6 w-0.5"></div>
-          </div>
-          <button
-            @click="loadMore"
-            class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-primary-foreground transition-colors hover:bg-primary/90 ml-4"
-          >
-            Показать больше
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="lucide lucide-chevron-down"
-            >
-              <path d="m6 9 6 6 6-6" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </section>
+      <!-- Timeline Line -->
+      <div class="timeline-line" :class="feature.lineClass"></div>
+    </div>
   </div>
 </template>
 
-<script setup>
-import { ref, computed } from 'vue'
-
-const milestones = [
-  {
-    year: '2010',
-    title: 'Company Founded',
-    desc: 'Started with a team of 3 in a small office in San Francisco.',
-    isPhoto: false
+<script>
+export default {
+  name: 'TimelineFeatures',
+  data() {
+    return {
+      features: [
+        {
+          title: 'Get Organized',
+          description: 'Start strong by syncing your calendars and tools like Google Calendar, Trello, and Slack in one place.',
+          icon: 'IconLayoutList',
+          image: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=400&h=500&fit=crop',
+          reverse: false,
+          lineClass: 'line-fade-top'
+        },
+        {
+          title: 'Track Progress',
+          description: 'Monitor your performance with real-time dashboards and detailed analytics. Stay ahead with automated reports.',
+          icon: 'IconLocateFixed',
+          image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=500&fit=crop',
+          reverse: true,
+          lineClass: ''
+        },
+        {
+          title: 'Collaborate Seamlessly',
+          description: 'Empower your team with shared dashboards and instant communication tools. Keep everyone aligned with integrated platforms.',
+          icon: 'IconUsers',
+          image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=500&fit=crop',
+          reverse: false,
+          lineClass: ''
+        },
+        {
+          title: 'Integrate Seamlessly',
+          description: 'Integrate seamlessly across multiple platforms to enable smooth, automated task handovers.',
+          icon: 'IconCpu',
+          image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=500&fit=crop',
+          reverse: true,
+          lineClass: 'line-fade-bottom'
+        }
+      ]
+    };
   },
-  {
-    year: '2013',
-    title: 'First Major Product Launch',
-    desc: 'Released our flagship product that changed the industry.',
-    isPhoto: true,
-    image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w2NDI3NzN8MHwxfGFsbHwxMjN8fHx8fHwyfHwxNzIzODA2OTM5fA&ixlib=rb-4.0.3&q=80&w=1080'
-  },
-  {
-    year: '2015',
-    title: 'International Expansion',
-    desc: 'Opened our first international offices in London and Tokyo.',
-    isPhoto: false
-  },
-  {
-    year: '2018',
-    title: '100,000 Customers',
-    desc: 'Reached a milestone of 100,000 active customers worldwide.',
-    isPhoto: false
-  },
-  {
-    year: '2020',
-    title: 'Major Acquisition',
-    desc: 'Acquired our biggest competitor to expand our market reach.',
-    isPhoto: true,
-    image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w2NDI3NzN8MHwxfGFsbHwxMjN8fHx8fHwyfHwxNzIzODA2OTM5fA&ixlib=rb-4.0.3&q=80&w=1080'
-  },
-  {
-    year: '2023',
-    title: 'Sustainability Initiative',
-    desc: 'Launched our commitment to be carbon neutral by 2025.',
-    isPhoto: false
+  components: {
+    IconLayoutList: {
+      template: `
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+          <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+          <path d="M14 4h7"></path>
+          <path d="M14 9h7"></path>
+          <path d="M14 15h7"></path>
+          <path d="M14 20h7"></path>
+        </svg>
+      `
+    },
+    IconLocateFixed: {
+      template: `
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="2" x2="5" y1="12" y2="12"></line>
+          <line x1="19" x2="22" y1="12" y2="12"></line>
+          <line x1="12" x2="12" y1="2" y2="5"></line>
+          <line x1="12" x2="12" y1="19" y2="22"></line>
+          <circle cx="12" cy="12" r="7"></circle>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+      `
+    },
+    IconUsers: {
+      template: `
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+          <path d="M16 3.128a4 4 0 0 1 0 7.744"></path>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+        </svg>
+      `
+    },
+    IconCpu: {
+      template: `
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20v2"></path>
+          <path d="M12 2v2"></path>
+          <path d="M17 20v2"></path>
+          <path d="M17 2v2"></path>
+          <path d="M2 12h2"></path>
+          <path d="M2 17h2"></path>
+          <path d="M2 7h2"></path>
+          <path d="M20 12h2"></path>
+          <path d="M20 17h2"></path>
+          <path d="M20 7h2"></path>
+          <path d="M7 20v2"></path>
+          <path d="M7 2v2"></path>
+          <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+          <rect x="8" y="8" width="8" height="8" rx="1"></rect>
+        </svg>
+      `
+    }
   }
-]
-
-const visibleCount = ref(5)
-const visibleMilestones = computed(() => milestones.slice(0, visibleCount.value))
-
-const loadMore = () => {
-  visibleCount.value = Math.min(visibleCount.value + 5, milestones.length)
-}
+};
 </script>
+
+<style scoped>
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+  padding-bottom: 10rem;
+}
+
+.feature-item {
+  position: relative;
+}
+
+.feature-content {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding: 0.25rem;
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+  text-align: end;
+  gap: 2.5rem;
+}
+
+/* На мобильных убираем reverse */
+.text-section {
+  flex: 1;
+}
+
+.desktop-only {
+  display: none;
+}
+
+.mobile-only {
+  text-align: start;
+  margin-bottom: 2.5rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.96px;
+  margin-bottom: 0.625rem;
+}
+
+.description {
+  color: #6b7280;
+  max-width: 300px;
+  letter-spacing: -0.32px;
+  line-height: 1.5;
+}
+
+.ml-auto {
+  margin-left: auto;
+}
+
+.icon-badge {
+  background: white;
+  z-index: 10;
+  width: fit-content;
+  height: fit-content;
+  transform: translateY(-1.25rem);
+  padding: 1rem;
+}
+
+.icon-container {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 5px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.icon-wrapper {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 0.25rem;
+  width: fit-content;
+}
+
+.icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.image-section {
+  flex: 1;
+  transform: translateX(-1rem);
+}
+
+.image-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.border-top,
+.border-bottom {
+  width: 100%;
+  border: 2px dashed #e5e7eb;
+  height: 1.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg width='7' height='7' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.15' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: stretch;
+}
+
+.border-left,
+.border-right {
+  border: 2px dashed #e5e7eb;
+  height: 100%;
+  width: 1.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg width='7' height='7' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.15' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.feature-image {
+  width: 400px;
+  height: 250px;
+  max-width: 100%;
+  /* height: auto; */
+  object-fit: cover;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-line {
+  position: absolute;
+  z-index: 1;
+  height: 100%;
+  width: 3px;
+  left: 2.3rem;
+  top: 0;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.line-fade-top::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 1rem;
+  transform: translateY(-100%);
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.1));
+}
+
+.line-fade-bottom {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1), transparent);
+}
+
+/* Десктопные стили - применяем reverse только здесь */
+@media (min-width: 1024px) {
+  .container {
+    padding-top: 5rem;
+  }
+
+  .feature-content {
+    gap: 2.5rem;
+  }
+
+  /* Reverse применяется только на десктопе */
+  .feature-content.reverse {
+    flex-direction: row-reverse;
+    text-align: start;
+  }
+
+  .desktop-only {
+    display: block;
+  }
+
+  .mobile-only {
+    display: none;
+  }
+
+  .text-section {
+    padding-top: 0.5rem;
+  }
+
+  .icon-badge {
+    transform: translateX(0) translateY(-1.25rem);
+  }
+
+  .image-section {
+    transform: translateX(0);
+  }
+
+  .border-top,
+  .border-bottom {
+    height: 2.5rem;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+
+  .border-left,
+  .border-right {
+    width: 2.5rem;
+  }
+
+  .timeline-line {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+</style>
