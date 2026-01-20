@@ -44,7 +44,7 @@ watch(() => form.image, (newImage) => {
   if (newImage) {
     // Добавляем файл в Map
     avatarFiles.value.set('you', newImage)
-    
+
     // Обновляем узел в дереве
     const youNode = form.family_tree.find((node: any) => node.id === 'you')
     if (youNode) {
@@ -70,13 +70,13 @@ watch(() => form.image, (newImage) => {
 const submit = () => {
   // Создаём FormData вручную
   const formData = new FormData()
-  
+
   // Добавляем основные поля
   formData.append('name', form.name)
   formData.append('birth_date', form.birth_date)
   formData.append('death_date', form.death_date)
   formData.append('grave_location', form.grave_location)
-  
+
   // Добавляем изображения
   if (form.image) {
     formData.append('image', form.image)
@@ -84,38 +84,70 @@ const submit = () => {
   if (form.background_image) {
     formData.append('background_image', form.background_image)
   }
-  
+
   // ДОБАВЛЕНО: Добавляем фотографии галереи
   if (form.gallery && form.gallery.length > 0) {
     form.gallery.forEach((file, index) => {
       formData.append(`gallery[${index}]`, file)
     })
   }
-  
+
   // ИСПРАВЛЕНО: Фильтруем family_tree - исключаем main_person
   const familyTreeWithoutMainPerson = form.family_tree.filter(
     (member: any) => member.role !== 'main_person' && member.name
   )
-  
+
   // Добавляем family_tree данные
   familyTreeWithoutMainPerson.forEach((member: any, index: number) => {
     formData.append(`family_tree[${index}][id]`, member.id)
     formData.append(`family_tree[${index}][name]`, member.name || '')
     formData.append(`family_tree[${index}][role]`, member.role)
     formData.append(`family_tree[${index}][qr_code]`, member.qr_code || '')
-    
+
     // Конвертируем position в JSON строку
     if (member.position) {
       formData.append(`family_tree[${index}][position]`, JSON.stringify(member.position))
     }
-    
+
     // Добавляем файл аватара напрямую из Map (кроме 'you')
     const avatarFile = avatarFiles.value.get(member.id)
     if (avatarFile && member.id !== 'you') {
       formData.append(`family_tree[${index}][avatar]`, avatarFile, avatarFile.name)
     }
   })
-  
+
+  // 🔥 TIMELINE
+  if (form.timeline && form.timeline.length > 0) {
+    form.timeline.forEach((item: any, index: number) => {
+      formData.append(`timeline[${index}][id]`, item.id)
+      formData.append(`timeline[${index}][title]`, item.title)
+      formData.append(`timeline[${index}][description]`, item.description || '')
+      formData.append(`timeline[${index}][type]`, item.type || '')
+      formData.append(`timeline[${index}][location]`, item.location || '')
+      formData.append(`timeline[${index}][related_person]`, item.related_person || '')
+
+      if (item.date) {
+        formData.append(`timeline[${index}][date]`, item.date)
+      }
+
+      if (item.date_from) {
+        formData.append(`timeline[${index}][date_from]`, item.date_from)
+      }
+
+      if (item.date_to) {
+        formData.append(`timeline[${index}][date_to]`, item.date_to)
+      }
+
+      // ⚠️ order НЕ отправляем — он считается по дате на бэке
+
+      if (item.media instanceof File) {
+        formData.append(`timeline[${index}][media]`, item.media)
+      }
+    })
+  }
+
+
+
   // Отправляем через обычный POST
   form.transform(() => formData).post(memorialsStore(), {
     forceFormData: true,
@@ -128,7 +160,7 @@ const submit = () => {
     onError: (errors) => {
       console.log('Type errors:', typeof errors)
       console.log('Content errors:', errors)
-      
+
       if (typeof errors !== 'object' || errors === null) {
         toast.error('Unknown error')
         return
@@ -164,30 +196,18 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
     <form @submit.prevent="submit" class="space-y-8">
       <!-- Главная информация -->
 
-      <HeaderCreate
-        v-model:name="form.name"
-        v-model:birth_date="form.birth_date"
-        v-model:death_date="form.death_date"
-        v-model:grave_location="form.grave_location"
-        v-model:image="form.image"
-        v-model:background_image="form.background_image"
-        :errors="form.errors"
-      />
+      <HeaderCreate v-model:name="form.name" v-model:birth_date="form.birth_date" v-model:death_date="form.death_date"
+        v-model:grave_location="form.grave_location" v-model:image="form.image"
+        v-model:background_image="form.background_image" :errors="form.errors" />
 
       <!-- Семейное дерево -->
-      <FamilyTreeCreate 
-        :model-value="form.family_tree"
-        :main-person-name="form.name"
-        :main-person-avatar="form.image"
-        @update:model-value="handleFamilyTreeUpdate"
-        @update:avatar-files="handleAvatarFilesUpdate"
-      />
+      <FamilyTreeCreate :model-value="form.family_tree" :main-person-name="form.name" :main-person-avatar="form.image"
+        @update:model-value="handleFamilyTreeUpdate" @update:avatar-files="handleAvatarFilesUpdate" />
 
       <!-- ИЗМЕНЕНО: Добавлен обработчик события -->
       <GalleryCreate @update:gallery-files="handleGalleryUpdate" />
 
-      <TimelineCreate
-      />
+      <TimelineCreate v-model="form.timeline" :birth-date="form.birth_date" :death-date="form.death_date" />
 
       <!-- Кнопка сохранения -->
       <div class="mt-8 px-4 md:px-6 lg:px-8 pb-12">
