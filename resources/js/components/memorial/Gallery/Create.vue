@@ -1,7 +1,7 @@
 <template>
     <div class="mx-auto max-w-3xl space-y-4 pt-1 text-center">
         <div class="text-center space-y-5 mx-auto mt-10 md:mt-[7px]">
-            <span v-scroll-animate="{ delay: 200 }" class="badge badge-green">
+            <span class="badge badge-green">
                 Gallery
             </span>
         </div>

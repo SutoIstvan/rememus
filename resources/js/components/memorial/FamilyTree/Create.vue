@@ -594,7 +594,7 @@ defineExpose({
   <div
     class="flex min-h-screen flex-col items-center p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
     <div class="text-center space-y-5 mx-auto mt-10 md:mt-[7px]">
-      <span v-scroll-animate="{ delay: 200 }" class="badge badge-green">
+      <span class="badge badge-green">
         Family Tree
       </span>
     </div>

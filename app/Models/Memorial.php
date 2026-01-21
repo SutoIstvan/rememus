@@ -36,6 +36,20 @@ class Memorial extends Model
         'virtual_code',
         'admin_id',
         'generation_attempts_left',
+
+        'characteristics',
+        'custom_traits',
+        'hobbies',
+        'additional_hobbies',
+        'retirement',
+        'habits',
+        'stories',
+        'wisdom',
+    ];
+
+    protected $casts = [
+        'characteristics' => 'array',
+        'hobbies' => 'array',
     ];
 
     // Указываем, что для маршрутов используется slug
@@ -152,7 +166,7 @@ class Memorial extends Model
     {
         return $this->families()->whereIn('role', [
             'grandfather_paternal',
-            'grandmother_paternal', 
+            'grandmother_paternal',
             'grandfather_maternal',
             'grandmother_maternal'
         ]);
