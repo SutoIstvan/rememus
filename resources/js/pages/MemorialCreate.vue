@@ -26,6 +26,7 @@ const form = useForm({
   grave_location: '',
   image: null as File | null,
   background_image: null as File | null,
+  background_url: null,
 
   family_tree: [],
   gallery: [] as File[],
@@ -87,6 +88,9 @@ const submit = () => {
     formData.append('background_image', form.background_image)
   }
 
+  if (form.background_url) formData.append('background_url', form.background_url)
+
+
   // Галерея
   if (form.gallery.length > 0) {
     form.gallery.forEach((file, index) => {
@@ -143,7 +147,7 @@ const submit = () => {
   }
 
   // 🔥 FEATURES - ПРАВИЛЬНАЯ ОТПРАВКА МАССИВОВ
-  
+
   // Characteristics - отправляем каждый элемент массива
   if (form.characteristics && form.characteristics.length > 0) {
     form.characteristics.forEach((char, index) => {
@@ -214,42 +218,22 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
   <div class="bg-white dark:bg-black min-h-screen">
     <form @submit.prevent="submit" class="space-y-8">
 
-      <HeaderCreate
-        v-model:name="form.name"
-        v-model:birth_date="form.birth_date"
-        v-model:death_date="form.death_date"
-        v-model:grave_location="form.grave_location"
-        v-model:image="form.image"
-        v-model:background_image="form.background_image"
-        :errors="form.errors"
-      />
+      <HeaderCreate v-model:name="form.name" v-model:birth_date="form.birth_date" v-model:death_date="form.death_date"
+        v-model:grave_location="form.grave_location" v-model:image="form.image"
+        v-model:background_image="form.background_image" v-model:background_url="form.background_url"
+        :errors="form.errors" />
 
-      <FamilyTreeCreate
-        :model-value="form.family_tree"
-        :main-person-name="form.name"
-        :main-person-avatar="form.image"
-        @update:model-value="handleFamilyTreeUpdate"
-        @update:avatar-files="handleAvatarFilesUpdate"
-      />
+      <FamilyTreeCreate :model-value="form.family_tree" :main-person-name="form.name" :main-person-avatar="form.image"
+        @update:model-value="handleFamilyTreeUpdate" @update:avatar-files="handleAvatarFilesUpdate" />
 
       <GalleryCreate @update:gallery-files="handleGalleryUpdate" />
 
-      <TimelineCreate
-        v-model="form.timeline"
-        :birth-date="form.birth_date"
-        :death-date="form.death_date"
-      />
+      <TimelineCreate v-model="form.timeline" :birth-date="form.birth_date" :death-date="form.death_date" />
 
-      <FeaturesCreate
-        v-model:characteristics="form.characteristics"
-        v-model:hobbies="form.hobbies"
-        v-model:custom-traits="form.customTraits"
-        v-model:additional-hobbies="form.additionalHobbies"
-        v-model:retirement="form.retirement"
-        v-model:habits="form.habits"
-        v-model:stories="form.stories"
-        v-model:wisdom="form.wisdom"
-      />
+      <FeaturesCreate v-model:characteristics="form.characteristics" v-model:hobbies="form.hobbies"
+        v-model:custom-traits="form.customTraits" v-model:additional-hobbies="form.additionalHobbies"
+        v-model:retirement="form.retirement" v-model:habits="form.habits" v-model:stories="form.stories"
+        v-model:wisdom="form.wisdom" />
 
       <div class="mt-8 px-4 md:px-6 lg:px-8 pb-12">
         <Button type="submit" class="w-full" :disabled="form.processing">

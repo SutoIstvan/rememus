@@ -17,7 +17,6 @@ class MemorialController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request);
         $validated = $request->validate([
             'name'           => 'required|string|max:255',
             'birth_date'     => 'nullable|date',
@@ -26,6 +25,7 @@ class MemorialController extends Controller
 
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
             'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+            'background_url' => 'nullable|string|max:500', // 🔥 URL предустановленного фона
 
             'family_tree' => 'nullable|array',
             'family_tree.*.id' => 'required|string',
@@ -53,10 +53,10 @@ class MemorialController extends Controller
             'timeline.*.order' => 'nullable|integer',
 
             // 🔥 FEATURES / BIOGRAPHY
-    'characteristics' => 'nullable|array',
-    'hobbies' => 'nullable|array',
-    'characteristics.*' => 'string|max:255',
-    'hobbies.*' => 'string|max:255',
+            'characteristics' => 'nullable|array',
+            'hobbies' => 'nullable|array',
+            'characteristics.*' => 'string|max:255',
+            'hobbies.*' => 'string|max:255',
 
             'custom_traits' => 'nullable|string',
             'additional_hobbies' => 'nullable|string',
@@ -68,11 +68,17 @@ class MemorialController extends Controller
 
         // Основные изображения
         $imagePath = $request->file('image')?->store('memorials', 'public');
-        $backgroundImagePath = $request->file('background_image')
-            ?->store('memorials/backgrounds', 'public');
-
-
-
+        
+        // 🔥 Обработка фона: либо загруженный файл, либо URL предустановленного
+        $backgroundImagePath = null;
+        if ($request->hasFile('background_image')) {
+            // Пользователь загрузил свой фон
+            $backgroundImagePath = $request->file('background_image')
+                ->store('memorials/backgrounds', 'public');
+        } elseif (!empty($validated['background_url'])) {
+            // Пользователь выбрал предустановленный фон
+            $backgroundImagePath = $validated['background_url'];
+        }
 
         $memorial = Memorial::create([
             'name' => $validated['name'],
@@ -93,7 +99,7 @@ class MemorialController extends Controller
             'qr_code' => Str::uuid(),
             'admin_id' => Auth::id(),
             'photo' => $imagePath,
-            'background_image' => $backgroundImagePath,
+            'background_image' => $backgroundImagePath, // 🔥 Сохраняем либо путь к файлу, либо URL
         ]);
 
         // Семья
