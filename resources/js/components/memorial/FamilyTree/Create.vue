@@ -49,7 +49,7 @@ watch(() => props.mainPersonAvatar, (newAvatar) => {
 
 const edgeTypes = {
   special: markRaw(SpecialEdge),
-  marriage: markRaw(MarriageEdge),
+  marriage: markRaw(SpecialEdge),
 }
 
 const nodes = ref([
@@ -215,17 +215,17 @@ const nodes = ref([
     }
   },
   {
-  id: 'add-other-member-btn',
-  position: { x: 115, y: 650 }, // по центру внизу
-  style: { width: '60px', height: '80px' },
-  type: 'addButton',
-  data: {
-    label: 'Add member',
-    isAddButton: true,
-    addType: 'other'
-  },
-  connectable: false,
-}
+    id: 'add-other-member-btn',
+    position: { x: 115, y: 650 }, // по центру внизу
+    style: { width: '60px', height: '80px' },
+    type: 'addButton',
+    data: {
+      label: 'Add member',
+      isAddButton: true,
+      addType: 'other'
+    },
+    connectable: false,
+  }
 ])
 
 // НОВОЕ: Синхронизация имени главного персонажа
@@ -406,7 +406,7 @@ function handleAddClick(nodeId) {
 function addNewOtherMember() {
   const memberId = `other-${Date.now()}`
   const addButtonNode = nodes.value.find(n => n.id === 'add-other-member-btn')
-  
+
   const newMember = {
     id: memberId,
     position: { ...addButtonNode.position },
@@ -591,16 +591,15 @@ defineExpose({
 </script>
 
 <template>
-  <div
-    class="flex min-h-screen flex-col items-center p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
+  <div class="flex min-h-screen flex-col items-center p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
     <div class="text-center space-y-5 mx-auto mt-0 md:mt-[7px]">
       <!-- <span class="badge badge-green">
         Family Tree
       </span> -->
-        <p class="text-muted-foreground">
-          Here you can add a family member by entering their name and uploading their photo. <br>
-          You can easily manage and update family members at any time.
-        </p>
+      <p class="text-muted-foreground">
+        Here you can add a family member by entering their name and uploading their photo. <br>
+        You can easily manage and update family members at any time.
+      </p>
     </div>
     <div
       class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">

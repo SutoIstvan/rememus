@@ -3,10 +3,10 @@
     <path :id="id" :class="edgeClass" :d="edgePath" fill="none" stroke-width="1" :stroke="strokeColor"
       :stroke-dasharray="strokeDashArray" :marker-end="markerEnd" />
     <!-- Сердечко для супружеских связей -->
-    <text v-if="props.type === 'marriage'" :x="centerX" :y="centerY + 4" text-anchor="middle" class="marriage-heart"
+    <!-- <text v-if="props.type === 'marriage'" :x="centerX" :y="centerY + 4" text-anchor="middle" class="marriage-heart"
       font-size="10" fill="#b1b1b7">
       ❤️
-    </text>
+    </text> -->
   </g>
 </template>
 
