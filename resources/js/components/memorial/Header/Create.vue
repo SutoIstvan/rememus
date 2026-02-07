@@ -86,7 +86,7 @@
                               const d = v.toDate(getLocalTimeZone())
                               birthDate = d
                               birthInput = formatDate(d)
-                              emit('update:birth_date', d.toISOString().split('T')[0])
+                              emit('update:birth_date', formatDateISO(d))
                               openBirth = false
                             }
                           }" />
@@ -118,7 +118,7 @@
                               const d = v.toDate(getLocalTimeZone())
                               deathDate = d
                               deathInput = formatDate(d)
-                              emit('update:death_date', d.toISOString().split('T')[0])
+                              emit('update:death_date', formatDateISO(d))
                               openDeath = false
                             }
                           }" />
@@ -349,6 +349,14 @@ watch(openDeath, (isOpen) => {
 const formatDate = (d: Date) =>
   d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })
 
+// Форматирует Date в YYYY-MM-DD без сдвига таймзоны
+const formatDateISO = (d: Date) => {
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 const formatDateInput = (value: string) => {
   const numbers = value.replace(/\D/g, '')
 
@@ -393,7 +401,7 @@ const handleBirthInput = (value: string) => {
     if (parsed) {
       birthDate.value = parsed
       birthInput.value = formatDate(parsed)
-      emit('update:birth_date', parsed.toISOString().split('T')[0])
+      emit('update:birth_date', formatDateISO(parsed))
     }
   }
 }
@@ -414,7 +422,7 @@ const handleDeathInput = (value: string) => {
     if (parsed) {
       deathDate.value = parsed
       deathInput.value = formatDate(parsed)
-      emit('update:death_date', parsed.toISOString().split('T')[0])
+      emit('update:death_date', formatDateISO(parsed))
     }
   }
 }
