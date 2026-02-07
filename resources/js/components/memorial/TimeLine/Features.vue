@@ -1,14 +1,7 @@
 <template>
   <div class="container">
-    <div 
-      v-for="(feature, index) in features" 
-      :key="feature.id ?? index"
-      class="feature-item"
-    >
-      <div 
-        class="feature-content"
-        :class="{ 'reverse': feature.reverse }"
-      >
+    <div v-for="(feature, index) in features" :key="feature.id ?? index" class="feature-item">
+      <div class="feature-content" :class="{ 'reverse': feature.reverse }">
         <!-- Text Section -->
         <div class="text-section desktop-only">
           <p class="text-muted-foreground mb-3 text-sm">
@@ -44,12 +37,8 @@
           <!-- Image Container -->
           <div class="image-container" :class="{ 'ml-auto': feature.reverse }">
             <div :class="{ 'image-grid lg:ml-auto': feature.reverse }">
-              <img 
-                v-if="resolveImage(feature)"
-                :src="resolveImage(feature)"
-                :alt="feature.title"
-                class="feature-image rounded-lg"
-              />
+              <img v-if="resolveImage(feature)" :src="resolveImage(feature)" :alt="feature.title"
+                class="feature-image rounded-lg" />
             </div>
           </div>
         </div>
@@ -84,44 +73,44 @@ export default {
 
   methods: {
     /* ===== ДАТА ===== */
-formatDate(feature) {
-  console.log('formatDate called with:', feature)
-  console.log('All keys:', Object.keys(feature))
-  console.log('date:', feature.date)
-  console.log('date_from:', feature.date_from)
-  console.log('date_to:', feature.date_to)
-  
-  // Приоритет 1: одиночная дата
-  if (feature.date) {
-    console.log('Using date:', feature.date)
-    return this.formatSingleDate(feature.date)
-  }
+    formatDate(feature) {
+      console.log('formatDate called with:', feature)
+      console.log('All keys:', Object.keys(feature))
+      console.log('date:', feature.date)
+      console.log('date_from:', feature.date_from)
+      console.log('date_to:', feature.date_to)
 
-  // Приоритет 2: период (date_from - date_to)
-  if (feature.date_from && feature.date_to) {
-    console.log('Using range:', feature.date_from, feature.date_to)
-    return `${this.formatSingleDate(feature.date_from)} – ${this.formatSingleDate(feature.date_to)}`
-  }
+      // Приоритет 1: одиночная дата
+      if (feature.date) {
+        console.log('Using date:', feature.date)
+        return this.formatSingleDate(feature.date)
+      }
 
-  // Приоритет 3: только date_from
-  if (feature.date_from) {
-    console.log('Using date_from:', feature.date_from)
-    return this.formatSingleDate(feature.date_from)
-  }
+      // Приоритет 2: период (date_from - date_to)
+      if (feature.date_from && feature.date_to) {
+        console.log('Using range:', feature.date_from, feature.date_to)
+        return `${this.formatSingleDate(feature.date_from)} – ${this.formatSingleDate(feature.date_to)}`
+      }
 
-  console.log('No date found')
-  return ''
-},
+      // Приоритет 3: только date_from
+      if (feature.date_from) {
+        console.log('Using date_from:', feature.date_from)
+        return this.formatSingleDate(feature.date_from)
+      }
+
+      console.log('No date found')
+      return ''
+    },
 
     formatSingleDate(dateString) {
       if (!dateString) return ''
 
       // Убираем время если оно есть, берем только дату
       const dateOnly = dateString.split('T')[0]
-      
+
       // Разбиваем на части YYYY-MM-DD
       const [year, month, day] = dateOnly.split('-').map(Number)
-      
+
       // Создаем дату без временной зоны
       const date = new Date(year, month - 1, day)
 
@@ -200,7 +189,7 @@ formatDate(feature) {
   max-width: 1200px;
   margin: 0 auto;
   overflow: hidden;
-  padding-bottom: 10rem;
+  padding-bottom: 1rem;
 }
 
 .feature-item {

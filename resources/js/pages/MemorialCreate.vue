@@ -175,6 +175,71 @@ const syncFamilyToTimeline = () => {
   }
 }
 
+// НОВОЕ: Синхронизация Header -> Timeline (Основной персонаж)
+const syncHeaderToTimeline = () => {
+  if (!form.name || !form.birth_date) return
+
+  const timelineId = 'timeline-main-birth'
+  const newTimeline = [...form.timeline]
+  const existingEventIndex = newTimeline.findIndex(
+    (event: any) => event.id === timelineId
+  )
+
+  const eventTitle = 'Born'
+  const eventDescription = `Born ${form.name}`
+  const eventDate = form.birth_date
+
+  // Фото берем из avatarFiles ('you') или form.image
+  let media: File | null = null
+  if (avatarFiles.value.has('you')) {
+    media = avatarFiles.value.get('you') as File
+  } else if (form.image) {
+    media = form.image
+  }
+
+  if (existingEventIndex !== -1) {
+    // ОБНОВЛЕНИЕ
+    const event = newTimeline[existingEventIndex]
+    let hasChanges = false
+
+    if (event.description !== eventDescription) {
+      event.description = eventDescription
+      hasChanges = true
+    }
+    if (event.date !== eventDate) {
+      event.date = eventDate
+      hasChanges = true
+    }
+    if (media && event.media !== media) {
+      event.media = media
+      hasChanges = true
+    }
+
+    if (hasChanges) {
+      form.timeline = newTimeline
+    }
+  } else {
+    // СОЗДАНИЕ
+    const newEvent = {
+      id: timelineId,
+      title: eventTitle,
+      description: eventDescription,
+      type: 'birth',
+      location: '', // Можно добавить место рождения если будет поле
+      date: eventDate,
+      related_person: 'you',
+      media: media
+    }
+    newTimeline.push(newEvent)
+    form.timeline = newTimeline
+  }
+}
+
+// Следим за изменениями в хедере
+watch(() => [form.name, form.birth_date, form.image], () => {
+  syncHeaderToTimeline()
+})
+
 // Следим за изменениями в дереве (добавление/удаление/изменение имен)
 watch(() => form.family_tree, () => {
   syncFamilyToTimeline()
@@ -359,7 +424,7 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
               </div>
 
               <!-- Правая часть -->
-              <div class="flex justify-end items-center space-x-2 pr-40">
+              <div class="flex justify-end items-center space-x-1 pr-20">
                 <Switch id="family-tree-toggle" v-model="sectionsEnabled.familyTree" />
                 <Label for="family-tree-toggle" class="cursor-pointer">
                   {{ sectionsEnabled.familyTree ? 'Active' : 'Disabled' }}
@@ -391,10 +456,10 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
                   Gallery
                 </span>
               </div>
-              <div class="flex justify-end items-center space-x-2 pr-40">
+              <div class="flex justify-end items-center space-x-1 pr-20">
                 <Switch id="gallery-toggle" v-model="sectionsEnabled.gallery" />
                 <Label for="gallery-toggle" class="cursor-pointer">
-                  {{ sectionsEnabled.gallery ? 'Активно' : 'Отключено' }}
+                  {{ sectionsEnabled.gallery ? 'Active' : 'Disabled' }}
                 </Label>
               </div>
             </div>
@@ -419,16 +484,17 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
                   Timeline
                 </span>
               </div>
-              <div class="flex justify-end items-center space-x-2 pr-40">
+              <div class="flex justify-end items-center space-x-1 pr-20">
                 <Switch id="timeline-toggle" v-model="sectionsEnabled.timeline" />
                 <Label for="timeline-toggle" class="cursor-pointer">
-                  {{ sectionsEnabled.timeline ? 'Активно' : 'Отключено' }}
+                  {{ sectionsEnabled.timeline ? 'Active' : 'Disabled' }}
                 </Label>
               </div>
             </div>
           </div>
         </div>
-        <div class="relative">
+        <div class="relative transition-all duration-300"
+          :class="sectionsEnabled.timeline ? 'h-auto' : 'h-[490px] overflow-hidden'">
           <div v-if="!sectionsEnabled.timeline" class="absolute inset-0 bg-white/10 z-10 cursor-not-allowed"></div>
           <div :class="{ 'opacity-70 blur-sm': !sectionsEnabled.timeline }">
             <TimelineCreate v-model="form.timeline" :birth-date="form.birth_date" :death-date="form.death_date"
@@ -448,7 +514,7 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
                   Memories
                 </span>
               </div>
-              <div class="flex justify-end items-center space-x-2 pr-40">
+              <div class="flex justify-end items-center space-x-1 pr-40">
                 <Switch id="features-toggle" v-model="sectionsEnabled.features" />
                 <Label for="features-toggle" class="cursor-pointer">
                   {{ sectionsEnabled.features ? 'Активно' : 'Отключено' }}

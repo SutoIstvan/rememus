@@ -69,7 +69,7 @@ const removeItem = (id: string) => {
 
 <template>
   <section class="px-4 md:px-6 lg:px-8">
-    <div class="text-center space-y-5 mx-auto mt-10 md:mt-[70px]">
+    <div class="text-center space-y-5 mx-auto mt-1 md:mt-[10px]">
       <!-- <span class="badge badge-green">
         Timeline
       </span> -->
