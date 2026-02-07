@@ -52,6 +52,13 @@ class MemorialController extends Controller
             'timeline.*.media' => 'nullable|image|max:10240',
             'timeline.*.order' => 'nullable|integer',
 
+            // 🔥 BURIAL LOCATION
+            'grave_parcel' => 'nullable|string|max:255',
+            'grave_line' => 'nullable|string|max:255',
+            'grave_number' => 'nullable|string|max:255',
+            'coordinates' => 'nullable|string|max:255',
+            'grave_photo' => 'nullable|image|max:20480',
+
             // 🔥 FEATURES / BIOGRAPHY
             'characteristics' => 'nullable|array',
             'hobbies' => 'nullable|array',
@@ -68,7 +75,7 @@ class MemorialController extends Controller
 
         // Основные изображения
         $imagePath = $request->file('image')?->store('memorials', 'public');
-        
+
         // 🔥 Обработка фона: либо загруженный файл, либо URL предустановленного
         $backgroundImagePath = null;
         if ($request->hasFile('background_image')) {
@@ -79,6 +86,9 @@ class MemorialController extends Controller
             // Пользователь выбрал предустановленный фон
             $backgroundImagePath = $validated['background_url'];
         }
+
+        // 🔥 Обработка фото могилы
+        $gravePhotoPath = $request->file('grave_photo')?->store('memorials/grave', 'public');
 
         $memorial = Memorial::create([
             'name' => $validated['name'],
@@ -95,6 +105,12 @@ class MemorialController extends Controller
             'habits' => $validated['habits'] ?? null,
             'stories' => $validated['stories'] ?? null,
             'wisdom' => $validated['wisdom'] ?? null,
+
+            // 🔥 BURIAL LOCATION
+            'grave_parcel' => $validated['grave_parcel'] ?? null,
+            'grave_line' => $validated['grave_line'] ?? null,
+            'grave_number' => $validated['grave_number'] ?? null,
+            'grave_coordinates' => $validated['coordinates'] ?? null,
 
             'qr_code' => Str::uuid(),
             'admin_id' => Auth::id(),

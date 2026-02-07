@@ -13,6 +13,7 @@ import FamilyTreeCreate from '@/components/memorial/FamilyTree/Create.vue'
 import GalleryCreate from '@/components/memorial/Gallery/Create.vue'
 import TimelineCreate from '@/components/memorial/TimeLine/Create.vue'
 import FeaturesCreate from '@/components/memorial/Features/Create.vue'
+import BurialLocationCreate from '@/components/memorial/BurialLocation/Create.vue'
 
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
@@ -28,6 +29,7 @@ const sectionsEnabled = ref({
   gallery: true,
   timeline: true,
   features: true,
+  burialLocation: true,
 })
 
 // Форма
@@ -54,11 +56,19 @@ const form = useForm({
   stories: '',
   wisdom: '',
 
+  // BURIAL LOCATION
+  graveParcel: '',
+  graveLine: '',
+  graveNumber: '',
+  coordinates: '',
+  gravePhoto: null as File | null,
+
   // Флаги активности секций
   family_tree_enabled: true,
   gallery_enabled: true,
   timeline_enabled: true,
   features_enabled: true,
+  burial_location_enabled: true,
 })
 
 // Синхронизация состояния переключателей с формой
@@ -67,6 +77,7 @@ watch(sectionsEnabled, (newVal) => {
   form.gallery_enabled = newVal.gallery
   form.timeline_enabled = newVal.timeline
   form.features_enabled = newVal.features
+  form.burial_location_enabled = newVal.burialLocation
 }, { deep: true })
 
 // Синхронизация имени с деревом
@@ -358,6 +369,18 @@ const submit = () => {
     formData.append('wisdom', form.wisdom || '')
   }
 
+  // BURIAL LOCATION (только если секция активна)
+  if (form.burial_location_enabled) {
+    formData.append('grave_parcel', form.graveParcel || '')
+    formData.append('grave_line', form.graveLine || '')
+    formData.append('grave_number', form.graveNumber || '')
+    formData.append('coordinates', form.coordinates || '')
+
+    if (form.gravePhoto instanceof File) {
+      formData.append('grave_photo', form.gravePhoto)
+    }
+  }
+
   // 🔍 ОТЛАДКА: Проверяем что попало в FormData
   console.log('=== FORMDATA CONTENTS ===')
   for (let pair of formData.entries()) {
@@ -530,6 +553,43 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
               v-model:custom-traits="form.customTraits" v-model:additional-hobbies="form.additionalHobbies"
               v-model:retirement="form.retirement" v-model:habits="form.habits" v-model:stories="form.stories"
               v-model:wisdom="form.wisdom" :disabled="!sectionsEnabled.features" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Burial Location Section -->
+      <div class="space-y-4">
+        <div class="px-4 md:px-6 lg:px-8 flex items-center justify-between">
+          <div class="mx-auto mt-10 md:mt-[7px] max-w-3xl">
+            <div class="grid grid-cols-3 items-center">
+              <!-- Левая пустая колонка -->
+              <div></div>
+              <!-- Центр -->
+              <div class="text-center">
+                <span class="badge badge-green">
+                  Burial Location
+                </span>
+              </div>
+
+              <!-- Правая часть -->
+              <div class="flex justify-end items-center space-x-1 pr-20">
+                <Switch id="burial-location-toggle" v-model="sectionsEnabled.burialLocation" />
+                <Label for="burial-location-toggle" class="cursor-pointer">
+                  {{ sectionsEnabled.burialLocation ? 'Active' : 'Disabled' }}
+                </Label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="relative transition-all duration-300"
+          :class="sectionsEnabled.burialLocation ? 'h-auto' : 'h-[300px] overflow-hidden'">
+          <div v-if="!sectionsEnabled.burialLocation" class="absolute inset-0 bg-white/10 z-10 cursor-not-allowed">
+          </div>
+          <div :class="{ 'opacity-80 blur-sm': !sectionsEnabled.burialLocation }">
+            <BurialLocationCreate v-model:grave-location="form.grave_location" v-model:grave-parcel="form.graveParcel"
+              v-model:grave-line="form.graveLine" v-model:grave-number="form.graveNumber"
+              v-model:coordinates="form.coordinates" v-model:grave-photo="form.gravePhoto"
+              :disabled="!sectionsEnabled.burialLocation" />
           </div>
         </div>
       </div>
