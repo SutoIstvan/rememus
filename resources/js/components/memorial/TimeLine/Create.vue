@@ -70,20 +70,20 @@ const removeItem = (id: string) => {
 <template>
   <section class="px-4 md:px-6 lg:px-8">
     <div class="text-center space-y-5 mx-auto mt-10 md:mt-[70px]">
-      <span class="badge badge-green">
+      <!-- <span class="badge badge-green">
         Timeline
-      </span>
+      </span> -->
 
-        <p class="text-muted-foreground">
-          The timeline allows you to record key life events, including education, family milestones, <br> professional life, and other significant moments.
-        </p>
+      <p class="text-muted-foreground">
+        The timeline allows you to record key life events, including education, family milestones, <br> professional
+        life, and other significant moments.
+      </p>
 
     </div>
     <div class="text-center space-y-5 mx-auto mt-5 md:mt-[10px]">
 
       <Button type="button" @click="openCreate"
-      class="items-center gap-2 cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-      >
+        class="items-center gap-2 cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
         Add Event
       </Button>
     </div>

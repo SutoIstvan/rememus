@@ -3,6 +3,8 @@ import { useForm } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
 import { toast } from "vue-sonner"
 import { Toaster } from '@/components/ui/sonner'
+import { Head } from '@inertiajs/vue3';
+
 import 'vue-sonner/style.css'
 
 // Подкомпоненты
@@ -13,10 +15,20 @@ import TimelineCreate from '@/components/memorial/TimeLine/Create.vue'
 import FeaturesCreate from '@/components/memorial/Features/Create.vue'
 
 import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
 import { store as memorialsStore } from '@/routes/memorials'
 
 // Храним File объекты аватаров отдельно
 const avatarFiles = ref<Map<string, File>>(new Map())
+
+// Состояния активности секций
+const sectionsEnabled = ref({
+  familyTree: true,
+  gallery: true,
+  timeline: true,
+  features: true,
+})
 
 // Форма
 const form = useForm({
@@ -28,9 +40,9 @@ const form = useForm({
   background_image: null as File | null,
   background_url: null,
 
-  family_tree: [],
+  family_tree: [] as any[],
   gallery: [] as File[],
-  timeline: [],
+  timeline: [] as any[],
 
   // FEATURES
   characteristics: [] as string[],
@@ -41,7 +53,21 @@ const form = useForm({
   habits: '',
   stories: '',
   wisdom: '',
+
+  // Флаги активности секций
+  family_tree_enabled: true,
+  gallery_enabled: true,
+  timeline_enabled: true,
+  features_enabled: true,
 })
+
+// Синхронизация состояния переключателей с формой
+watch(sectionsEnabled, (newVal) => {
+  form.family_tree_enabled = newVal.familyTree
+  form.gallery_enabled = newVal.gallery
+  form.timeline_enabled = newVal.timeline
+  form.features_enabled = newVal.features
+}, { deep: true })
 
 // Синхронизация имени с деревом
 watch(() => form.name, (newName) => {
@@ -71,6 +97,94 @@ watch(() => form.image, (newImage) => {
   }
 })
 
+// НОВОЕ: Синхронизация Family Tree -> Timeline
+const syncFamilyToTimeline = () => {
+  let hasChanges = false
+  const newTimeline = [...form.timeline]
+
+  // Проходим по членам семьи
+  form.family_tree.forEach((member: any) => {
+    // Нас интересуют только супруги и дети с заполненным именем
+    if ((member.role === 'spouse' || member.role === 'child') && member.name) {
+      // Ищем существующее событие в таймлайне для этого члена семьи
+      const existingEventIndex = newTimeline.findIndex(
+        (event: any) => event.related_person === member.id
+      )
+
+      const eventType = member.role === 'spouse' ? 'marriage' : 'birth'
+      const eventTitle = member.role === 'spouse'
+        ? 'Wedding'
+        : 'Birth of a Child'
+      const eventDescription = member.role === 'spouse'
+        ? `Marriage to ${member.name}`
+        : `Birth of ${member.name}`
+
+      // Получаем фото
+      let media: File | string | null = null
+      if (avatarFiles.value.has(member.id)) {
+        media = avatarFiles.value.get(member.id) as File
+      } else if (member.avatar) {
+        media = member.avatar
+      }
+
+      if (existingEventIndex !== -1) {
+        // ОБНОВЛЕНИЕ
+        const event = newTimeline[existingEventIndex] // Mutate copy reference in array
+        let eventChanged = false
+
+        // Обновляем заголовок если он старый или отличается
+        if (event.title !== eventTitle) {
+          event.title = eventTitle
+          eventChanged = true
+        }
+
+        // Обновляем описание если имя изменилось
+        if (event.description !== eventDescription) {
+          event.description = eventDescription
+          eventChanged = true
+        }
+
+        if (media && event.media !== media) {
+          event.media = media
+          eventChanged = true
+        }
+
+        if (eventChanged) hasChanges = true
+
+      } else {
+        // СОЗДАНИЕ
+        const newEvent = {
+          id: `timeline-${member.id}`,
+          title: eventTitle,
+          description: eventDescription,
+          type: eventType,
+          location: '',
+          date: '',
+          related_person: member.id,
+          media: media
+        }
+        newTimeline.push(newEvent)
+        hasChanges = true
+      }
+    }
+  })
+
+  // Если были изменения, обновляем весь массив, чтобы триггернуть реактивность
+  if (hasChanges) {
+    form.timeline = newTimeline
+  }
+}
+
+// Следим за изменениями в дереве (добавление/удаление/изменение имен)
+watch(() => form.family_tree, () => {
+  syncFamilyToTimeline()
+}, { deep: true })
+
+// Следим за изменениями файлов аватаров (чтобы обновить фото в таймлайне)
+watch(() => avatarFiles.value, () => {
+  syncFamilyToTimeline()
+}, { deep: true })
+
 const submit = () => {
   const formData = new FormData()
 
@@ -90,44 +204,51 @@ const submit = () => {
 
   if (form.background_url) formData.append('background_url', form.background_url)
 
+  // Флаги активности секций
+  formData.append('family_tree_enabled', form.family_tree_enabled ? '1' : '0')
+  formData.append('gallery_enabled', form.gallery_enabled ? '1' : '0')
+  formData.append('timeline_enabled', form.timeline_enabled ? '1' : '0')
+  formData.append('features_enabled', form.features_enabled ? '1' : '0')
 
-  // Галерея
-  if (form.gallery.length > 0) {
+  // Галерея (только если секция активна)
+  if (form.gallery_enabled && form.gallery.length > 0) {
     form.gallery.forEach((file, index) => {
       formData.append(`gallery[${index}]`, file)
     })
   }
 
-  // Семейное дерево (без main_person)
-  const familyTreeWithoutMainPerson = form.family_tree.filter(
-    (member: any) => member.role !== 'main_person' && member.name
-  )
+  // Семейное дерево (только если секция активна)
+  if (form.family_tree_enabled) {
+    const familyTreeWithoutMainPerson = form.family_tree.filter(
+      (member: any) => member.role !== 'main_person' && member.name
+    )
 
-  familyTreeWithoutMainPerson.forEach((member: any, index: number) => {
-    formData.append(`family_tree[${index}][id]`, member.id)
-    formData.append(`family_tree[${index}][name]`, member.name || '')
-    formData.append(`family_tree[${index}][role]`, member.role)
-    formData.append(`family_tree[${index}][qr_code]`, member.qr_code || '')
+    familyTreeWithoutMainPerson.forEach((member: any, index: number) => {
+      formData.append(`family_tree[${index}][id]`, member.id)
+      formData.append(`family_tree[${index}][name]`, member.name || '')
+      formData.append(`family_tree[${index}][role]`, member.role)
+      formData.append(`family_tree[${index}][qr_code]`, member.qr_code || '')
 
-    if (member.position) {
-      formData.append(
-        `family_tree[${index}][position]`,
-        JSON.stringify(member.position)
-      )
-    }
+      if (member.position) {
+        formData.append(
+          `family_tree[${index}][position]`,
+          JSON.stringify(member.position)
+        )
+      }
 
-    const avatarFile = avatarFiles.value.get(member.id)
-    if (avatarFile && member.id !== 'you') {
-      formData.append(
-        `family_tree[${index}][avatar]`,
-        avatarFile,
-        avatarFile.name
-      )
-    }
-  })
+      const avatarFile = avatarFiles.value.get(member.id)
+      if (avatarFile && member.id !== 'you') {
+        formData.append(
+          `family_tree[${index}][avatar]`,
+          avatarFile,
+          avatarFile.name
+        )
+      }
+    })
+  }
 
-  // TIMELINE
-  if (form.timeline.length > 0) {
+  // TIMELINE (только если секция активна)
+  if (form.timeline_enabled && form.timeline.length > 0) {
     form.timeline.forEach((item: any, index: number) => {
       formData.append(`timeline[${index}][id]`, item.id)
       formData.append(`timeline[${index}][title]`, item.title)
@@ -146,35 +267,31 @@ const submit = () => {
     })
   }
 
-  // 🔥 FEATURES - ПРАВИЛЬНАЯ ОТПРАВКА МАССИВОВ
+  // FEATURES (только если секция активна)
+  if (form.features_enabled) {
+    if (form.characteristics && form.characteristics.length > 0) {
+      form.characteristics.forEach((char, index) => {
+        formData.append(`characteristics[${index}]`, char)
+      })
+    } else {
+      formData.append('characteristics', JSON.stringify([]))
+    }
 
-  // Characteristics - отправляем каждый элемент массива
-  if (form.characteristics && form.characteristics.length > 0) {
-    form.characteristics.forEach((char, index) => {
-      formData.append(`characteristics[${index}]`, char)
-    })
-  } else {
-    // Если массив пустой, отправляем пустой массив
-    formData.append('characteristics', JSON.stringify([]))
+    if (form.hobbies && form.hobbies.length > 0) {
+      form.hobbies.forEach((hobby, index) => {
+        formData.append(`hobbies[${index}]`, hobby)
+      })
+    } else {
+      formData.append('hobbies', JSON.stringify([]))
+    }
+
+    formData.append('custom_traits', form.customTraits || '')
+    formData.append('additional_hobbies', form.additionalHobbies || '')
+    formData.append('retirement', form.retirement || '')
+    formData.append('habits', form.habits || '')
+    formData.append('stories', form.stories || '')
+    formData.append('wisdom', form.wisdom || '')
   }
-
-  // Hobbies - отправляем каждый элемент массива
-  if (form.hobbies && form.hobbies.length > 0) {
-    form.hobbies.forEach((hobby, index) => {
-      formData.append(`hobbies[${index}]`, hobby)
-    })
-  } else {
-    // Если массив пустой, отправляем пустой массив
-    formData.append('hobbies', JSON.stringify([]))
-  }
-
-  // Текстовые поля (конвертируем из camelCase в snake_case для Laravel)
-  formData.append('custom_traits', form.customTraits || '')
-  formData.append('additional_hobbies', form.additionalHobbies || '')
-  formData.append('retirement', form.retirement || '')
-  formData.append('habits', form.habits || '')
-  formData.append('stories', form.stories || '')
-  formData.append('wisdom', form.wisdom || '')
 
   // 🔍 ОТЛАДКА: Проверяем что попало в FormData
   console.log('=== FORMDATA CONTENTS ===')
@@ -215,6 +332,9 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
 </script>
 
 <template>
+
+  <Head title="Rememus - Memorial Create" />
+
   <div class="bg-white dark:bg-black min-h-screen">
     <form @submit.prevent="submit" class="space-y-8">
 
@@ -223,17 +343,130 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
         v-model:background_image="form.background_image" v-model:background_url="form.background_url"
         :errors="form.errors" />
 
-      <FamilyTreeCreate :model-value="form.family_tree" :main-person-name="form.name" :main-person-avatar="form.image"
-        @update:model-value="handleFamilyTreeUpdate" @update:avatar-files="handleAvatarFilesUpdate" />
+      <!-- Family Tree Section -->
+      <div class="space-y-4">
+        <div class="px-4 md:px-6 lg:px-8 flex items-center justify-between">
+          <div class="mx-auto mt-10 md:mt-[7px] max-w-3xl">
+            <div class="grid grid-cols-3 items-center">
 
-      <GalleryCreate @update:gallery-files="handleGalleryUpdate" />
+              <!-- Левая пустая колонка -->
+              <div></div>
+              <!-- Центр -->
+              <div class="text-center">
+                <span class="badge badge-green">
+                  Family Tree
+                </span>
+              </div>
 
-      <TimelineCreate v-model="form.timeline" :birth-date="form.birth_date" :death-date="form.death_date" />
+              <!-- Правая часть -->
+              <div class="flex justify-end items-center space-x-2 pr-40">
+                <Switch id="family-tree-toggle" v-model="sectionsEnabled.familyTree" />
+                <Label for="family-tree-toggle" class="cursor-pointer">
+                  {{ sectionsEnabled.familyTree ? 'Active' : 'Disabled' }}
+                </Label>
+              </div>
 
-      <FeaturesCreate v-model:characteristics="form.characteristics" v-model:hobbies="form.hobbies"
-        v-model:custom-traits="form.customTraits" v-model:additional-hobbies="form.additionalHobbies"
-        v-model:retirement="form.retirement" v-model:habits="form.habits" v-model:stories="form.stories"
-        v-model:wisdom="form.wisdom" />
+            </div>
+          </div>
+        </div>
+        <div class="relative transition-all duration-300"
+          :class="sectionsEnabled.familyTree ? 'h-auto' : 'h-[300px] overflow-hidden'">
+          <div v-if="!sectionsEnabled.familyTree" class="absolute inset-0 bg-white/10 z-10 cursor-not-allowed"></div>
+          <div :class="{ 'opacity-80 blur-sm': !sectionsEnabled.familyTree }">
+            <FamilyTreeCreate :model-value="form.family_tree" :main-person-name="form.name"
+              :main-person-avatar="form.image" :disabled="!sectionsEnabled.familyTree"
+              @update:model-value="handleFamilyTreeUpdate" @update:avatar-files="handleAvatarFilesUpdate" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Gallery Section -->
+      <div class="space-y-4">
+        <div class="px-4 md:px-6 lg:px-8 flex items-center justify-between">
+          <div class="mx-auto mt-10 md:mt-[7px] max-w-3xl">
+            <div class="grid grid-cols-3 items-center">
+              <div></div>
+              <div class="text-center">
+                <span class="badge badge-green">
+                  Gallery
+                </span>
+              </div>
+              <div class="flex justify-end items-center space-x-2 pr-40">
+                <Switch id="gallery-toggle" v-model="sectionsEnabled.gallery" />
+                <Label for="gallery-toggle" class="cursor-pointer">
+                  {{ sectionsEnabled.gallery ? 'Активно' : 'Отключено' }}
+                </Label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="relative">
+          <div v-if="!sectionsEnabled.gallery" class="absolute inset-0 bg-white/10 z-10 cursor-not-allowed"></div>
+          <div :class="{ 'opacity-80 blur-sm': !sectionsEnabled.gallery }">
+            <GalleryCreate :disabled="!sectionsEnabled.gallery" @update:gallery-files="handleGalleryUpdate" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline Section -->
+      <div class="space-y-4">
+        <div class="px-4 md:px-6 lg:px-8 flex items-center justify-between">
+          <div class="mx-auto mt-10 md:mt-[7px] max-w-3xl">
+            <div class="grid grid-cols-3 items-center">
+              <div></div>
+              <div class="text-center">
+                <span class="badge badge-green">
+                  Timeline
+                </span>
+              </div>
+              <div class="flex justify-end items-center space-x-2 pr-40">
+                <Switch id="timeline-toggle" v-model="sectionsEnabled.timeline" />
+                <Label for="timeline-toggle" class="cursor-pointer">
+                  {{ sectionsEnabled.timeline ? 'Активно' : 'Отключено' }}
+                </Label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="relative">
+          <div v-if="!sectionsEnabled.timeline" class="absolute inset-0 bg-white/10 z-10 cursor-not-allowed"></div>
+          <div :class="{ 'opacity-70 blur-sm': !sectionsEnabled.timeline }">
+            <TimelineCreate v-model="form.timeline" :birth-date="form.birth_date" :death-date="form.death_date"
+              :disabled="!sectionsEnabled.timeline" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Features Section -->
+      <div class="space-y-4">
+        <!-- <div class="px-4 md:px-6 lg:px-8 flex items-center justify-between">
+          <div class="mx-auto mt-10 md:mt-[7px] max-w-3xl">
+            <div class="grid grid-cols-3 items-center">
+              <div></div>
+              <div class="text-center">
+                <span class="badge badge-green">
+                  Memories
+                </span>
+              </div>
+              <div class="flex justify-end items-center space-x-2 pr-40">
+                <Switch id="features-toggle" v-model="sectionsEnabled.features" />
+                <Label for="features-toggle" class="cursor-pointer">
+                  {{ sectionsEnabled.features ? 'Активно' : 'Отключено' }}
+                </Label>
+              </div>
+            </div>
+          </div>
+        </div> -->
+        <div class="relative">
+          <div v-if="!sectionsEnabled.features" class="absolute inset-0 bg-black/50 z-10 cursor-not-allowed"></div>
+          <div :class="{ 'opacity-50 blur-sm': !sectionsEnabled.features }">
+            <FeaturesCreate v-model:characteristics="form.characteristics" v-model:hobbies="form.hobbies"
+              v-model:custom-traits="form.customTraits" v-model:additional-hobbies="form.additionalHobbies"
+              v-model:retirement="form.retirement" v-model:habits="form.habits" v-model:stories="form.stories"
+              v-model:wisdom="form.wisdom" :disabled="!sectionsEnabled.features" />
+          </div>
+        </div>
+      </div>
 
       <div class="mt-8 px-4 md:px-6 lg:px-8 pb-12">
         <Button type="submit" class="w-full" :disabled="form.processing">

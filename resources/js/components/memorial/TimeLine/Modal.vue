@@ -15,7 +15,7 @@ export function formatDate(date: Date | undefined) {
 import { ref, watch, computed } from 'vue'
 import { nanoid } from 'nanoid'
 import { fromDate, getLocalTimeZone, CalendarDate } from '@internationalized/date'
-import { CalendarIcon } from 'lucide-vue-next'
+import { CalendarIcon, Baby, GraduationCap, Briefcase, Heart, FileText } from 'lucide-vue-next'
 import { Dialog, DialogDescription, DialogContent } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -36,11 +36,11 @@ import {
  * 🔹 Типы событий
  */
 const EVENT_TYPES = [
-  { value: 'birth_child', label: 'Birth of a Child', mode: 'single' },
-  { value: 'school', label: 'School', mode: 'range' },
-  { value: 'work', label: 'Work', mode: 'range' },
-  { value: 'wedding', label: 'Wedding', mode: 'single' },
-  { value: 'other', label: 'Other', mode: 'single' },
+  { value: 'birth_child', label: 'Birth of a Child', mode: 'single', icon: Baby },
+  { value: 'school', label: 'School', mode: 'range', icon: GraduationCap },
+  { value: 'work', label: 'Work', mode: 'range', icon: Briefcase },
+  { value: 'wedding', label: 'Wedding', mode: 'single', icon: Heart },
+  { value: 'other', label: 'Other', mode: 'single', icon: FileText },
 ]
 
 const props = defineProps<{
@@ -103,6 +103,13 @@ const titleTouched = ref(false)
 const dateMode = computed(() => {
   const found = EVENT_TYPES.find(t => t.value === form.value.type)
   return found?.mode ?? 'single'
+})
+
+/**
+ * 🔹 Текущий выбранный тип события
+ */
+const selectedEventType = computed(() => {
+  return EVENT_TYPES.find(t => t.value === form.value.type)
 })
 
 /**
@@ -481,7 +488,12 @@ const save = () => {
         <!-- Event Type -->
         <Select v-model="form.type">
           <SelectTrigger class="w-full">
-            <SelectValue placeholder="Select event type" />
+            <SelectValue placeholder="Select event type">
+              <div v-if="selectedEventType" class="flex items-center gap-2">
+                <component :is="selectedEventType.icon" class="size-4" />
+                <span>{{ selectedEventType.label }}</span>
+              </div>
+            </SelectValue>
           </SelectTrigger>
 
           <SelectContent
@@ -494,7 +506,10 @@ const save = () => {
                 :key="type.value"
                 :value="type.value"
               >
-                {{ type.label }}
+                <div class="flex items-center gap-2">
+                  <component :is="type.icon" class="size-4" />
+                  <span>{{ type.label }}</span>
+                </div>
               </SelectItem>
             </SelectGroup>
           </SelectContent>

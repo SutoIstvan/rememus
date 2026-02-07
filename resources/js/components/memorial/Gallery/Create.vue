@@ -1,12 +1,13 @@
 <template>
     <div class="mx-auto max-w-3xl space-y-4 pt-1 text-center">
-        <div class="text-center space-y-5 mx-auto mt-10 md:mt-[7px]">
+        <!-- <div class="text-center space-y-5 mx-auto mt-10 md:mt-[7px]">
             <span class="badge badge-green">
                 Gallery
             </span>
-        </div>
+        </div> -->
         <p class="text-muted-foreground">
-            You can upload photos and drag and drop them by simply capturing the image. <br> The maximum size of one photo is 5 megabytes.
+            You can upload photos and drag and drop them by simply capturing the image. <br> The maximum size of one
+            photo is 5 megabytes.
         </p>
         <div class="flex justify-center mb-4 mt-5">
             <label
@@ -25,31 +26,24 @@
                     <template #item="{ element }">
                         <div class="h-30 rounded-md relative group hover:cursor-pointer"
                             :class="{ 'border-0 border-red-500': drag }">
-                            <img 
-                                :src="element.src" 
-                                :style="{ transform: `rotate(${element.rotation}deg)` }"
-                                class="w-full h-30 object-cover rounded-md transition-transform duration-300" 
-                                alt="Uploaded photo" 
-                            />
+                            <img :src="element.src" :style="{ transform: `rotate(${element.rotation}deg)` }"
+                                class="w-full h-30 object-cover rounded-md transition-transform duration-300"
+                                alt="Uploaded photo" />
                             <!-- Drag Handle Icon -->
                             <div
                                 class="drag-handle absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-70 transition-opacity bg-black bg-opacity-30 rounded-md">
                                 <GripHorizontal class="w-6 h-6 text-white" />
                             </div>
                             <!-- Rotate Icon -->
-                            <button
-                                type="button"
+                            <button type="button"
                                 class="absolute top-1 left-1 bg-gray-200 text-grey rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:text-white hover:bg-blue-600 hover:cursor-pointer"
-                                @click="rotateImage(element.id)"
-                                title="Rotate 90°">
+                                @click="rotateImage(element.id)" title="Rotate 90°">
                                 <RotateCw class="w-4 h-4" />
                             </button>
                             <!-- Delete Icon -->
-                            <button
-                                type="button"
+                            <button type="button"
                                 class="absolute top-1 right-1 bg-gray-200 text-grey rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:text-white hover:bg-red-600 hover:cursor-pointer"
-                                @click="removeImage(element.id)"
-                                title="Delete">
+                                @click="removeImage(element.id)" title="Delete">
                                 <Trash2 class="w-4 h-4" />
                             </button>
                         </div>
@@ -151,23 +145,23 @@ const rotateImageFile = async (file: File, rotation: number): Promise<File> => {
 const handleFileUpload = (event: Event) => {
     const input = event.target as HTMLInputElement
     const files = Array.from(input.files || [])
-    
+
     // Ограничение: максимум 10 фото
     const maxPhotos = 10
     const availableSlots = maxPhotos - images.value.length
-    
+
     if (availableSlots <= 0) {
         alert(`Вы можете загрузить максимум ${maxPhotos} фотографий`)
         if (fileInput.value) fileInput.value.value = ''
         return
     }
-    
+
     const filesToUpload = files.slice(0, availableSlots)
-    
+
     if (files.length > availableSlots) {
         alert(`Загружено ${filesToUpload.length} из ${files.length} фотографий. Лимит: ${maxPhotos}`)
     }
-    
+
     try {
         filesToUpload.forEach((file, i) => {
             // Проверка размера файла (5MB)
@@ -175,11 +169,11 @@ const handleFileUpload = (event: Event) => {
                 console.error(`File ${file.name} is too large`)
                 return
             }
-            
+
             const reader = new FileReader()
             reader.onload = (e) => {
-                images.value.push({ 
-                    id: Date.now() + i, 
+                images.value.push({
+                    id: Date.now() + i,
                     src: e.target?.result as string,
                     file: file,
                     rotation: 0
@@ -189,7 +183,7 @@ const handleFileUpload = (event: Event) => {
             reader.onerror = () => console.error('Error reading file:', file.name)
             reader.readAsDataURL(file)
         })
-        
+
         // Reset the file input
         if (fileInput.value) {
             fileInput.value.value = ''

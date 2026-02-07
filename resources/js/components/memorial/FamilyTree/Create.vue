@@ -593,10 +593,14 @@ defineExpose({
 <template>
   <div
     class="flex min-h-screen flex-col items-center p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
-    <div class="text-center space-y-5 mx-auto mt-10 md:mt-[7px]">
-      <span class="badge badge-green">
+    <div class="text-center space-y-5 mx-auto mt-0 md:mt-[7px]">
+      <!-- <span class="badge badge-green">
         Family Tree
-      </span>
+      </span> -->
+        <p class="text-muted-foreground">
+          Here you can add a family member by entering their name and uploading their photo. <br>
+          You can easily manage and update family members at any time.
+        </p>
     </div>
     <div
       class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
@@ -606,7 +610,7 @@ defineExpose({
           :zoom-on-double-click="false" :pan-on-drag="false" :nodes-draggable="false" :nodes-connectable="false"
           :elements-selectable="false" @node-click="(event) => handleAddClick(event.node.id)">
           <template #node-default="nodeProps">
-            <SpecialNodeEdit v-bind="nodeProps" class="shadow-sm" @update-node-data="handleNodeDataChange" />
+            <SpecialNodeEdit v-bind="nodeProps" class="shadow-xs" @update-node-data="handleNodeDataChange" />
           </template>
 
           <!-- Кастомный узел для кнопок добавления -->

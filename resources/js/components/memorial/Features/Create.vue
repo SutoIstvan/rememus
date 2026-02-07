@@ -93,25 +93,16 @@ const toggleHobby = (value: string) => {
       </h3>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        <label 
-          v-for="item in CHARACTERISTICS" 
-          :key="item.value" 
-          class="flex items-center gap-2 cursor-pointer"
-        >
-          <Checkbox 
-            :checked="characteristics.includes(item.value)"
-            @update:checked="toggleCharacteristic(item.value)"
-          />
+        <label v-for="item in CHARACTERISTICS" :key="item.value" class="flex items-center gap-2 cursor-pointer">
+          <Checkbox :checked="characteristics.includes(item.value)"
+            @update:checked="toggleCharacteristic(item.value)" />
           <span class="text-sm">{{ item.label }}</span>
         </label>
       </div>
 
       <div class="mt-4">
-        <Input 
-          placeholder="Other personality traits, values..." 
-          :model-value="customTraits"
-          @update:model-value="emit('update:customTraits', $event)" 
-        />
+        <Input placeholder="Other personality traits, values..." :model-value="customTraits"
+          @update:model-value="emit('update:customTraits', $event)" />
       </div>
     </section>
 
@@ -122,25 +113,15 @@ const toggleHobby = (value: string) => {
       </h3>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        <label 
-          v-for="item in HOBBIES" 
-          :key="item.value" 
-          class="flex items-center gap-2 cursor-pointer"
-        >
-          <Checkbox 
-            :checked="hobbies.includes(item.value)"
-            @update:checked="toggleHobby(item.value)"
-          />
+        <label v-for="item in HOBBIES" :key="item.value" class="flex items-center gap-2 cursor-pointer">
+          <Checkbox :checked="hobbies.includes(item.value)" @update:checked="toggleHobby(item.value)" />
           <span class="text-sm">{{ item.label }}</span>
         </label>
       </div>
 
       <div class="mt-4">
-        <Input 
-          placeholder="Additional hobbies..." 
-          :model-value="additionalHobbies"
-          @update:model-value="emit('update:additionalHobbies', $event)" 
-        />
+        <Input placeholder="Additional hobbies..." :model-value="additionalHobbies"
+          @update:model-value="emit('update:additionalHobbies', $event)" />
       </div>
     </section>
 
@@ -150,68 +131,52 @@ const toggleHobby = (value: string) => {
         <h3 class="text-lg font-medium mb-2">
           Retirement years
 
-        <label for="retirement" class="text-sm font-normal text-muted-foreground">
-          How did they spend their retirement years? What did they do during this time? Did they travel? Was there a favorite place where they liked to relax?
-        </label>
-                </h3>
-        <Textarea 
-          id="retirement"
-          rows="3" 
-          placeholder="Example: They spent their retirement years in their garden, loved pruning roses, and every summer vacationed at Lake Balaton with the family." 
-          :model-value="retirement"
-          @update:model-value="emit('update:retirement', $event)" 
-        />
+          <label for="retirement" class="text-sm font-normal text-muted-foreground">
+            How did they spend their retirement years? What did they do during this time? Did they travel? Was there a
+            favorite place where they liked to relax?
+          </label>
+        </h3>
+        <Textarea id="retirement" rows="3"
+          placeholder="Example: They spent their retirement years in their garden, loved pruning roses, and every summer vacationed at Lake Balaton with the family."
+          :model-value="retirement" @update:model-value="emit('update:retirement', $event)" />
       </div>
 
       <div>
         <h3 class="text-lg font-medium mb-2">
           Memorable habits
 
-        <label for="habits" class="text-sm font-normal text-muted-foreground"> 
-          Was there a small habit that everyone remembers?
-        </label>
-                </h3>
-        <Textarea 
-          id="habits"
-          rows="3" 
-          placeholder="Examples: Always drank coffee at the kitchen table in the mornings. / Baked fresh brioche every Sunday. / Surprised everyone with handmade cards for every birthday." 
-          :model-value="habits"
-          @update:model-value="emit('update:habits', $event)" 
-        />
+          <label for="habits" class="text-sm font-normal text-muted-foreground">
+            Was there a small habit that everyone remembers?
+          </label>
+        </h3>
+        <Textarea id="habits" rows="3"
+          placeholder="Examples: Always drank coffee at the kitchen table in the mornings. / Baked fresh brioche every Sunday. / Surprised everyone with handmade cards for every birthday."
+          :model-value="habits" @update:model-value="emit('update:habits', $event)" />
       </div>
 
       <div>
         <h3 class="text-lg font-medium mb-2">
           Memorable stories
 
-        <label for="stories" class="text-sm font-normal text-muted-foreground"> 
-          A story, event, or characteristic that we will always remember
-        </label>
-                </h3>
-        <Textarea 
-          id="stories"
-          rows="3" 
-          placeholder="Examples: Once accidentally turned the garden hose on himself, and everyone laughed. / Gave gifts every Christmas wearing a funny hat." 
-          :model-value="stories"
-          @update:model-value="emit('update:stories', $event)" 
-        />
+          <label for="stories" class="text-sm font-normal text-muted-foreground">
+            A story, event, or characteristic that we will always remember
+          </label>
+        </h3>
+        <Textarea id="stories" rows="3"
+          placeholder="Examples: Once accidentally turned the garden hose on himself, and everyone laughed. / Gave gifts every Christmas wearing a funny hat."
+          :model-value="stories" @update:model-value="emit('update:stories', $event)" />
       </div>
 
       <div>
         <h3 class="text-lg font-medium mb-2">
           Wisdom
-        
-        <label for="wisdom" class="text-sm font-normal text-muted-foreground"> 
-          What was the life wisdom they left behind for us?
-        </label>
+
+          <label for="wisdom" class="text-sm font-normal text-muted-foreground">
+            What was the life wisdom they left behind for us?
+          </label>
         </h3>
-        <Textarea 
-          id="wisdom"
-          rows="3" 
-          placeholder="What advice or wisdom did they share in life?" 
-          :model-value="wisdom"
-          @update:model-value="emit('update:wisdom', $event)" 
-        />
+        <Textarea id="wisdom" rows="3" placeholder="What advice or wisdom did they share in life?" :model-value="wisdom"
+          @update:model-value="emit('update:wisdom', $event)" />
       </div>
     </section>
   </div>
