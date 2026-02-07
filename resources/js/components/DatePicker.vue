@@ -216,7 +216,7 @@ watch(
       const safeDay = Math.min(day, max);
       try {
         selectedDate.value = new CalendarDate(newPlaceholder.year, newPlaceholder.month, safeDay);
-      } catch (e) {
+      } catch {
         // ignore
       }
     }
@@ -256,45 +256,27 @@ function setYear(v: string | number | null) {
       <Popover v-model:open="isOpen">
         <div class="relative">
           <!-- Поля для ручного ввода -->
-          <div class="flex items-center space-x-0.5 border border-gray-200 shadow-sm rounded-md px-3 py-1 w-[187px] bg-background">
+          <div
+            class="flex items-center space-x-0.5 border border-gray-200 shadow-sm rounded-md px-3 py-1 w-[187px] bg-background">
             <!-- Скрытый input для формы -->
             <input type="hidden" :name="props.name" :value="props.modelValue" />
 
-            <Input
-              ref="dayInputRef"
-              v-model="dayInput"
-              placeholder="01"
-              maxlength="2"
+            <Input ref="dayInputRef" v-model="dayInput" placeholder="01" maxlength="2"
               class="w-8 h-6 p-0 text-center border-none focus-visible:ring-0 focus-visible:ring-offset-0"
               @input="handleDayInput"
-              @keypress="(e) => { if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab') e.preventDefault() }"
-            />
+              @keypress="(e) => { if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab') e.preventDefault() }" />
             <span class="text-muted-foreground">/</span>
-            <Input
-              ref="monthInputRef"
-              v-model="monthInput"
-              placeholder="01"
-              maxlength="2"
+            <Input ref="monthInputRef" v-model="monthInput" placeholder="01" maxlength="2"
               class="w-8 h-6 p-0 text-center border-none focus-visible:ring-0 focus-visible:ring-offset-0"
               @input="handleMonthInput"
-              @keypress="(e) => { if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab') e.preventDefault() }"
-            />
+              @keypress="(e) => { if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab') e.preventDefault() }" />
             <span class="text-muted-foreground">/</span>
-            <Input
-              ref="yearInputRef"
-              v-model="yearInput"
-              placeholder="2000"
-              maxlength="4"
+            <Input ref="yearInputRef" v-model="yearInput" placeholder="2000" maxlength="4"
               class="w-12 h-6 p-0 text-center border-none focus-visible:ring-0 focus-visible:ring-offset-0"
               @input="handleYearInput"
-              @keypress="(e) => { if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab') e.preventDefault() }"
-            />
+              @keypress="(e) => { if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab') e.preventDefault() }" />
             <PopoverTrigger as-child>
-              <Button
-                variant="ghost"
-                size="sm"
-                class="ml-auto h-6 w-6 p-0 cursor-pointer"
-              >
+              <Button variant="ghost" size="sm" class="ml-auto h-6 w-6 p-0 cursor-pointer">
                 <CalendarIcon class="h-4 w-4 opacity-50 " />
               </Button>
             </PopoverTrigger>
@@ -303,51 +285,33 @@ function setYear(v: string | number | null) {
 
         <PopoverContent class="w-auto p-0">
           <!-- Кастомный календарь с селектами -->
-          <CalendarRoot
-            v-slot="{ date, grid, weekDays }"
-            v-model:placeholder="calendarPlaceholder"
-            :model-value="selectedDate"
-            initial-focus
-            :min-value="new CalendarDate(1900, 1, 1)"
-            :max-value="today(getLocalTimeZone())"
-            :class="cn('rounded-md border p-3')"
-            @update:model-value="handleDateSelect"
-          >
+          <CalendarRoot v-slot="{ date, grid, weekDays }" v-model:placeholder="calendarPlaceholder"
+            :model-value="selectedDate" initial-focus :min-value="new CalendarDate(1900, 1, 1)"
+            :max-value="today(getLocalTimeZone())" :class="cn('rounded-md border p-3')"
+            @update:model-value="handleDateSelect">
             <CalendarHeader>
               <CalendarHeading class="flex w-full items-center justify-between gap-2">
                 <!-- Селект месяца -->
-                <Select
-                  :model-value="String(calendarPlaceholder.month)"
-                  @update:model-value="setMonth"
-                >
+                <Select :model-value="String(calendarPlaceholder.month)" @update:model-value="setMonth">
                   <SelectTrigger aria-label="Select month" class="w-[60%]">
                     <SelectValue placeholder="Select month" />
                   </SelectTrigger>
                   <SelectContent class="max-h-[200px]">
-                    <SelectItem
-                      v-for="month in createYear({ dateObj: calendarPlaceholder })"
-                      :key="month.toString()"
-                      :value="month.month.toString()"
-                    >
+                    <SelectItem v-for="month in createYear({ dateObj: calendarPlaceholder })" :key="month.toString()"
+                      :value="month.month.toString()">
                       {{ formatter.custom(toDate(month), { month: 'long' }) }}
                     </SelectItem>
                   </SelectContent>
                 </Select>
 
                 <!-- Селект года -->
-                <Select
-                  :model-value="String(calendarPlaceholder.year)"
-                  @update:model-value="setYear"
-                >
+                <Select :model-value="String(calendarPlaceholder.year)" @update:model-value="setYear">
                   <SelectTrigger aria-label="Select year" class="w-[40%]">
                     <SelectValue placeholder="Select year" />
                   </SelectTrigger>
                   <SelectContent class="max-h-[200px]">
-                    <SelectItem
-                      v-for="yearValue in years"
-                      :key="yearValue.toString()"
-                      :value="yearValue.year.toString()"
-                    >
+                    <SelectItem v-for="yearValue in years" :key="yearValue.toString()"
+                      :value="yearValue.year.toString()">
                       {{ yearValue.year }}
                     </SelectItem>
                   </SelectContent>
@@ -366,16 +330,9 @@ function setYear(v: string | number | null) {
                   </CalendarGridRow>
                 </CalendarGridHead>
                 <CalendarGridBody class="grid">
-                  <CalendarGridRow
-                    v-for="(weekDates, index) in month.rows"
-                    :key="`weekDate-${index}`"
-                    class="mt-2 w-full"
-                  >
-                    <CalendarCell
-                      v-for="weekDate in weekDates"
-                      :key="weekDate.toString()"
-                      :date="weekDate"
-                    >
+                  <CalendarGridRow v-for="(weekDates, index) in month.rows" :key="`weekDate-${index}`"
+                    class="mt-2 w-full">
+                    <CalendarCell v-for="weekDate in weekDates" :key="weekDate.toString()" :date="weekDate">
                       <CalendarCellTrigger :day="weekDate" :month="month.value" />
                     </CalendarCell>
                   </CalendarGridRow>

@@ -13,8 +13,7 @@ const props = defineProps({
   }
 })
 
-const x = computed(() => `${Math.round(props.position.x)}px`)
-const y = computed(() => `${Math.round(props.position.y)}px`)
+
 </script>
 
 <template>
@@ -23,15 +22,15 @@ const y = computed(() => `${Math.round(props.position.y)}px`)
     <!-- Top handles -->
     <Handle type="target" :position="Position.Top" id="target-top" />
     <Handle type="source" :position="Position.Top" id="source-top" />
-    
+
     <!-- Left handles -->
     <Handle type="target" :position="Position.Left" id="target-left" />
     <Handle type="source" :position="Position.Left" id="source-left" />
-    
+
     <!-- Right handles -->
     <Handle type="target" :position="Position.Right" id="target-right" />
     <Handle type="source" :position="Position.Right" id="source-right" />
-    
+
     <!-- Bottom handles -->
     <Handle type="target" :position="Position.Bottom" id="target-bottom" />
     <Handle type="source" :position="Position.Bottom" id="source-bottom" />
@@ -50,7 +49,6 @@ const y = computed(() => `${Math.round(props.position.y)}px`)
 </template>
 
 <style scoped>
-
 /* Стили для карточки с аватаркой */
 .node-with-avatar {
   display: flex;
@@ -83,10 +81,14 @@ const y = computed(() => `${Math.round(props.position.y)}px`)
   font-weight: 300;
   text-align: center;
   color: #555;
-  height: 33px;              /* фиксированная высота */
-  display: flex;             /* делаем flex-контейнер */
-  align-items: center;       /* вертикальное выравнивание */
-  justify-content: center;   /* горизонтальное выравнивание */
+  height: 33px;
+  /* фиксированная высота */
+  display: flex;
+  /* делаем flex-контейнер */
+  align-items: center;
+  /* вертикальное выравнивание */
+  justify-content: center;
+  /* горизонтальное выравнивание */
   /* margin-bottom: 2px; */
 }
 
@@ -107,8 +109,10 @@ const y = computed(() => `${Math.round(props.position.y)}px`)
 
 /* Скрываем handles по умолчанию, показываем только при hover */
 .node-with-avatar:hover {
-  border: 1px solid #a7dcff !important; /* голубая рамка */
-  background-color: rgba(100, 193, 255, 0.1); /* лёгкая голубая заливка */
+  border: 1px solid #a7dcff !important;
+  /* голубая рамка */
+  background-color: rgba(100, 193, 255, 0.1);
+  /* лёгкая голубая заливка */
 }
 
 /* Скрываем визуально, но handles остаются для edge анимации */
@@ -116,7 +120,8 @@ const y = computed(() => `${Math.round(props.position.y)}px`)
   width: 0 !important;
   height: 0 !important;
   opacity: 0 !important;
-  pointer-events: none !important; /* чтобы не мешали кликам */
+  pointer-events: none !important;
+  /* чтобы не мешали кликам */
 }
 
 

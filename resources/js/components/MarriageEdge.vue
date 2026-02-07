@@ -1,25 +1,10 @@
 <template>
   <g>
-    <path
-      :id="id"
-      :class="edgeClass"
-      :d="edgePath"
-      fill="none"
-      stroke-width="1"
-      :stroke="strokeColor"
-      :stroke-dasharray="strokeDashArray"
-      :marker-end="markerEnd"
-    />
+    <path :id="id" :class="edgeClass" :d="edgePath" fill="none" stroke-width="1" :stroke="strokeColor"
+      :stroke-dasharray="strokeDashArray" :marker-end="markerEnd" />
     <!-- Сердечко для супружеских связей -->
-    <text
-      v-if="props.type === 'marriage'"
-      :x="centerX"
-      :y="centerY +4"
-      text-anchor="middle"
-      class="marriage-heart"
-      font-size="10"
-      fill="#b1b1b7"
-    >
+    <text v-if="props.type === 'marriage'" :x="centerX" :y="centerY + 4" text-anchor="middle" class="marriage-heart"
+      font-size="10" fill="#b1b1b7">
       ❤️
     </text>
   </g>
@@ -44,11 +29,7 @@ const strokeColor = computed(() => {
   return '#b1b1b7'
 })
 
-const strokeWidth = computed(() => {
-  if (props.type === 'marriage') return '2'
-  if (props.type === 'sibling') return '1.5'
-  return '1'
-})
+
 
 const strokeDashArray = computed(() => {
   if (props.type === 'marriage') return '8,4'  // Пунктирная линия для супружеских связей
@@ -155,6 +136,6 @@ const markerEnd = computed(() => props.markerEnd)
 /* Стиль для сердечка */
 .marriage-heart {
   font-weight: bold;
-  filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.3));
+  filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.3));
 }
 </style>

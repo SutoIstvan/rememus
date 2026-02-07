@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
 // Определяем props от Laravel контроллера
-const props = defineProps({
+defineProps({
     memorial: {
         type: Object,
         default: () => ({

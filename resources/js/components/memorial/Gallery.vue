@@ -118,24 +118,7 @@ const previousImage = () => {
   }
 }
 
-const downloadImage = async () => {
-  try {
-    const response = await fetch(currentImage.value)
-    const blob = await response.blob()
-    const url = window.URL.createObjectURL(blob)
 
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `image-${currentImageIndex.value + 1}.jpg`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-
-    window.URL.revokeObjectURL(url)
-  } catch (error) {
-    console.error('Ошибка при скачивании изображения:', error)
-  }
-}
 
 // Обработка клавиш
 const handleKeydown = (event) => {

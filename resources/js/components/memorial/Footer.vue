@@ -1,74 +1,37 @@
 <template>
-  <footer
-    class="footer footer-three bg-white dark:bg-background-8 relative overflow-hidden"
-    :class="footerClass"
-  >
+  <footer class="footer footer-three bg-white dark:bg-background-8 relative overflow-hidden" :class="footerClass">
     <div class="main-container">
       <!-- footer bg-img  -->
-      <figure
-        v-if="showGradient"
-        v-scroll-animate="{ direction: 'right', delay: 700, offset: 100 }"
-        class="footer-gradient-visible absolute overflow-hidden hidden"
-        :class="bgGradientClass"
-      >
-        <img 
-          :src="bgGradientImg" 
-          alt="gradient-img" 
-          class="w-full h-full object-cover" 
-        />
+      <figure v-if="showGradient" v-scroll-animate="{ direction: 'right', delay: 700, offset: 100 }"
+        class="footer-gradient-visible absolute overflow-hidden hidden" :class="bgGradientClass">
+        <img :src="bgGradientImg" alt="gradient-img" class="w-full h-full object-cover" />
       </figure>
 
-      <div
-        class="grid grid-cols-12 lg:gap-x-8 xl:gap-x-0 gap-x-0 gap-y-16 xl:pt-[100px] pt-16 pb-16 justify-between"
-      >
+      <div class="grid grid-cols-12 lg:gap-x-8 xl:gap-x-0 gap-x-0 gap-y-16 xl:pt-[100px] pt-16 pb-16 justify-between">
         <div class="lg:col-span-4 col-span-12">
-          <div 
-            v-scroll-animate="{ direction: 'up', delay: 300 }" 
-            class="xl:max-w-[306px]"
-          >
+          <div v-scroll-animate="{ direction: 'up', delay: 300 }" class="xl:max-w-[306px]">
             <figure>
-              <img 
-                src="/images/shared/light-logo.svg" 
-                class="dark:hidden" 
-                alt="NextSass" 
-              />
-              <img 
-                src="/images/shared/dark-logo.svg" 
-                class="hidden dark:block" 
-                alt="NextSass" 
-              />
+              <img src="/images/shared/light-logo.svg" class="dark:hidden" alt="NextSass" />
+              <img src="/images/shared/dark-logo.svg" class="hidden dark:block" alt="NextSass" />
             </figure>
             <p class="mt-4 mb-7 text-secondary dark:text-accent">
               {{ companyDescription }}
             </p>
             <div class="flex items-center gap-3">
               <template v-for="(social, index) in socialLinks" :key="social.name">
-                <Link 
-                  :href="social.url" 
-                  class="footer-social-link"
-                >
+                <Link :href="social.url" class="footer-social-link">
                   <span class="sr-only">{{ social.name }}</span>
                   <div v-html="social.icon"></div>
                 </Link>
-                <div 
-                  v-if="index < socialLinks.length - 1"
-                  class="h-5 w-px bg-stroke-1 dark:bg-stroke-8"
-                ></div>
+                <div v-if="index < socialLinks.length - 1" class="h-5 w-px bg-stroke-1 dark:bg-stroke-8"></div>
               </template>
             </div>
           </div>
         </div>
-        
+
         <div class="lg:col-span-8 col-span-12 grid grid-cols-12 gap-x-0 gap-y-8">
-          <div 
-            v-for="(section, index) in footerSections" 
-            :key="section.title"
-            class="col-span-12 md:col-span-4"
-          >
-            <div 
-              v-scroll-animate="{ direction: 'up', delay: 400 + (index * 100) }" 
-              class="space-y-8"
-            >
+          <div v-for="(section, index) in footerSections" :key="section.title" class="col-span-12 md:col-span-4">
+            <div v-scroll-animate="{ direction: 'up', delay: 400 + (index * 100) }" class="space-y-8">
               <p class="sm:text-heading-6 text-tagline-1 font-normal text-secondary dark:text-accent">
                 {{ section.title }}
               </p>
@@ -83,15 +46,13 @@
           </div>
         </div>
       </div>
-      
+
       <div class="pt-6 pb-[60px] text-center relative overflow-hidden">
         <div
-          class="footer-divider absolute top-0 left-0 right-0 w-0 origin-center mx-auto h-px bg-stroke-2 dark:bg-accent/5"
-        ></div>
-        <p
-          v-scroll-animate="{ direction: 'up', delay: 700, offset: 10, start: 'top 105%' }"
-          class="text-secondary dark:text-accent/60"
-        >
+          class="footer-divider absolute top-0 left-0 right-0 w-0 origin-center mx-auto h-px bg-stroke-2 dark:bg-accent/5">
+        </div>
+        <p v-scroll-animate="{ direction: 'up', delay: 700, offset: 10, start: 'top 105%' }"
+          class="text-secondary dark:text-accent/60">
           {{ copyrightText }}
         </p>
       </div>
@@ -103,7 +64,7 @@
 import { Link } from '@inertiajs/vue3'
 
 // Props
-const props = defineProps({
+defineProps({
   footerClass: {
     type: String,
     default: ''

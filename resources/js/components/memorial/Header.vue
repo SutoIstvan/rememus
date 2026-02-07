@@ -63,7 +63,7 @@ import BlurReveal from '@/components/ui/blur-reveal/BlurReveal.vue'
 import { MapPin, Calendar, Calendar1 } from "lucide-vue-next";
 
 // Определяем props от Laravel контроллера
-const props = defineProps({
+defineProps({
     person: {
         type: Object,
         default: () => ({
