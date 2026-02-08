@@ -64,22 +64,18 @@ const onFileChange = (e: Event) => {
                 <Input placeholder="E.g. Central Cemetery, Main Street 123" :model-value="graveLocation"
                     @update:model-value="emit('update:graveLocation', $event)" />
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div>
-                        <label class="text-sm font-medium mb-2 block">Parcel</label>
+                <div class="w-full">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <Input placeholder="Parcel number" :model-value="graveParcel"
-                            @update:model-value="emit('update:graveParcel', $event)" />
-                    </div>
-                    <div>
-                        <label class="text-sm font-medium mb-2 block">Row</label>
+                            @update:model-value="emit('update:graveParcel', $event)" class="w-full" />
+
                         <Input placeholder="Row number" :model-value="graveLine"
-                            @update:model-value="emit('update:graveLine', $event)" />
-                    </div>
-                    <div>
-                        <label class="text-sm font-medium mb-2 block">Number</label>
+                            @update:model-value="emit('update:graveLine', $event)" class="w-full" />
+
                         <Input placeholder="Grave number" :model-value="graveNumber"
-                            @update:model-value="emit('update:graveNumber', $event)" />
+                            @update:model-value="emit('update:graveNumber', $event)" class="w-full" />
                     </div>
+
                 </div>
             </div>
         </section>
@@ -87,44 +83,48 @@ const onFileChange = (e: Event) => {
         <!-- COORDINATES SECTION -->
         <section class="max-w-4xl mx-auto">
             <h3 class="text-lg font-medium mb-4 flex items-center gap-2">
-                GPS Coordinates
-                <span class="text-sm font-normal text-muted-foreground">
-                    (optional)
-                </span>
+                Location Details
             </h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-4">
-                    <Input placeholder="E.g. 47.497912, 42.458989" :model-value="coordinates"
-                        @update:model-value="emit('update:coordinates', $event)" />
-                    <small class="text-muted-foreground">
-                        Enter coordinates manually or they will be extracted from the uploaded photo.
-                    </small>
-                </div>
-
-                <div class="space-y-4">
-                    <div class="flex items-center gap-4">
-                        <div class="flex-1">
-                            <label class="text-sm font-medium mb-2 block flex items-center gap-2">
-                                <ImageIcon class="size-4" />
-                                Upload Photo with Location
-                            </label>
-                            <input type="file" accept="image/*" @change="onFileChange"
-                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
-                            <small class="text-muted-foreground">
-                                Accepted formats: JPG, JPEG, PNG, WEBP. Max: 20 MB.
-                            </small>
-                        </div>
+                <!-- LEFT COLUMN: Inputs -->
+                <div class="space-y-6">
+                    <!-- Coordinates Input -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium">
+                            GPS Coordinates <span class="text-muted-foreground font-normal">(optional)</span>
+                        </label>
+                        <Input placeholder="E.g. 47.497912, 42.458989" :model-value="coordinates"
+                            @update:model-value="emit('update:coordinates', $event)" />
+                        <p class="text-[0.8rem] text-muted-foreground">
+                            Enter coordinates manually or they will be extracted from the uploaded photo.
+                        </p>
                     </div>
 
-                    <div v-if="photoPreview" class="mt-4">
-                        <div class="border rounded-lg p-2 bg-muted/50 inline-block">
-                            <img :src="photoPreview" alt="Grave photo preview"
-                                class="rounded-lg max-h-40 object-cover shadow" />
-                        </div>
-                        <p class="mt-2 text-sm text-muted-foreground">
-                            Uploaded photo
+                    <!-- File Upload Input -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium flex items-center gap-2">
+                            <ImageIcon class="size-4" />
+                            Upload Photo with Location
+                        </label>
+                        <input type="file" accept="image/*" @change="onFileChange"
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                        <p class="text-[0.8rem] text-muted-foreground">
+                            Accepted formats: JPG, JPEG, PNG, WEBP. Max: 20 MB.
                         </p>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: Photo Preview (Persistent Gray Box) -->
+                <div>
+                    <div
+                        class="w-full h-[230px] aspect-video bg-muted/50 rounded-lg flex items-center justify-center overflow-hidden relative">
+                        <img v-if="photoPreview" :src="photoPreview" alt="Grave photo preview"
+                            class="w-full h-full object-cover" />
+                        <div v-else class="text-center p-4 text-muted-foreground">
+                            <ImageIcon class="size-10 mx-auto mb-2 opacity-20" />
+                            <span class="text-xs">No photo selected</span>
+                        </div>
                     </div>
                 </div>
             </div>
