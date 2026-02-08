@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import exifr from 'exifr'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { MapPinIcon, ImageIcon } from 'lucide-vue-next'
@@ -24,12 +25,28 @@ const emit = defineEmits([
 
 const photoPreview = ref<string | null>(null)
 
-const onFileChange = (e: Event) => {
+const onFileChange = async (e: Event) => {
     const file = (e.target as HTMLInputElement).files?.[0]
     if (!file) return
 
     emit('update:gravePhoto', file)
 
+    // Extract EXIF GPS coordinates
+    try {
+        const exifData = await exifr.parse(file, { gps: true })
+
+        if (exifData?.latitude && exifData?.longitude) {
+            const coordinates = `${exifData.latitude}, ${exifData.longitude}`
+            emit('update:coordinates', coordinates)
+        } else {
+            emit('update:coordinates', 'Photo has no GPS coordinates')
+        }
+    } catch (error) {
+        console.warn('Failed to extract GPS data from image:', error)
+        emit('update:coordinates', 'Photo has no GPS coordinates')
+    }
+
+    // Show preview
     const reader = new FileReader()
     reader.onload = (event) => {
         photoPreview.value = event.target?.result as string
@@ -82,32 +99,32 @@ const onFileChange = (e: Event) => {
 
         <!-- COORDINATES SECTION -->
         <section class="max-w-4xl mx-auto">
-            <h3 class="text-lg font-medium mb-4 flex items-center gap-2">
-                Location Details
-            </h3>
+
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- LEFT COLUMN: Inputs -->
                 <div class="space-y-6">
                     <!-- Coordinates Input -->
                     <div class="space-y-2">
-                        <label class="text-sm font-medium">
-                            GPS Coordinates <span class="text-muted-foreground font-normal">(optional)</span>
-                        </label>
-                        <Input placeholder="E.g. 47.497912, 42.458989" :model-value="coordinates"
+
+                        <Input placeholder="GPS Coordinates (47.497912, 42.458989)" :model-value="coordinates"
                             @update:model-value="emit('update:coordinates', $event)" />
                         <p class="text-[0.8rem] text-muted-foreground">
                             Enter coordinates manually or they will be extracted from the uploaded photo.
+                        </p>
+                        <p class="text-[0.8rem] text-muted-foreground">
+                            We will not display your photo on the website.
+                            The image is used only to extract GPS coordinates (location data) from the photo metadata.
                         </p>
                     </div>
 
                     <!-- File Upload Input -->
                     <div class="space-y-2">
-                        <label class="text-sm font-medium flex items-center gap-2">
+                        <!-- <label class="text-sm font-medium flex items-center gap-2">
                             <ImageIcon class="size-4" />
                             Upload Photo with Location
-                        </label>
-                        <input type="file" accept="image/*" @change="onFileChange"
+                        </label> -->
+                        <input type="file" accept="image/*" capture="environment" @change="onFileChange"
                             class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
                         <p class="text-[0.8rem] text-muted-foreground">
                             Accepted formats: JPG, JPEG, PNG, WEBP. Max: 20 MB.
