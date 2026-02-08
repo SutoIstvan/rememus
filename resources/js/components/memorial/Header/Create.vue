@@ -57,7 +57,7 @@
           <!-- Person Info Section -->
           <div class="lg:flex-1/2 pt-[30px] max-lg:px-5 max-lg:text-center max-lg:mt-[200px]">
             <div class="flex justify-center lg:justify-start">
-              <Input id="name" type="text" placeholder="Enter Name" class="w-104" :value="name"
+              <Input id="name" type="text" placeholder="Enter Name" class="w-120" :value="name"
                 @update:modelValue="updateName" />
             </div>
             <InputError :message="errors?.name" />
@@ -69,7 +69,8 @@
                 <div class="mb-4">
                   <div class="relative flex gap-2">
                     <Input :model-value="birthInput" placeholder="15.01.1900 Birth Date"
-                      class="bg-background tracking-normal" maxlength="10" @update:model-value="handleBirthInput" />
+                      class="bg-background tracking-normal w-58" maxlength="10"
+                      @update:model-value="handleBirthInput" />
                     <Popover v-model:open="openBirth">
                       <PopoverTrigger as-child>
                         <Button variant="ghost" size="icon" class="absolute top-1/2 right-1 -translate-y-1/2 h-8 w-8"
@@ -100,7 +101,7 @@
                 <div class="mb-4">
                   <div class="relative flex gap-2">
                     <Input :model-value="deathInput" placeholder="15.01.2026 Passing Date"
-                      class="bg-background pr-10 tracking-normal" maxlength="10"
+                      class="bg-background pr-10 tracking-normal w-59" maxlength="10"
                       @update:model-value="handleDeathInput" />
                     <Popover v-model:open="openDeath">
                       <PopoverTrigger as-child>
@@ -131,7 +132,7 @@
             </ul>
 
             <div class="flex justify-center lg:justify-start">
-              <div class="relative w-104">
+              <div class="relative w-120">
                 <MapPin class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input type="text" placeholder="Memorial Location" class="pl-10 w-full" :value="grave_location"
                   @update:modelValue="updateGraveLocation" />

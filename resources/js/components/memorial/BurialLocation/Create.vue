@@ -4,6 +4,11 @@ import exifr from 'exifr'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { MapPinIcon, ImageIcon } from 'lucide-vue-next'
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from '@/components/ui/hover-card'
 
 const props = defineProps<{
     graveLocation: string
@@ -72,14 +77,14 @@ const onFileChange = async (e: Event) => {
 
         <!-- ADDRESS SECTION -->
         <section class="max-w-4xl mx-auto">
-            <h3 class="text-lg font-medium mb-4 mt-12 flex items-center gap-2">
+            <!-- <h3 class="text-lg font-medium mb-4 mt-12 flex items-center gap-2">
                 <MapPinIcon class="size-5" />
                 Cemetery Address
-            </h3>
+            </h3> -->
 
             <div class="space-y-4">
-                <Input placeholder="E.g. Central Cemetery, Main Street 123" :model-value="graveLocation"
-                    @update:model-value="emit('update:graveLocation', $event)" />
+                <Input placeholder="Cemetery Address (E.g. Central Cemetery, Main Street 123)"
+                    :model-value="graveLocation" @update:model-value="emit('update:graveLocation', $event)" />
 
                 <div class="w-full">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -109,13 +114,10 @@ const onFileChange = async (e: Event) => {
 
                         <Input placeholder="GPS Coordinates (47.497912, 42.458989)" :model-value="coordinates"
                             @update:model-value="emit('update:coordinates', $event)" />
-                        <p class="text-[0.8rem] text-muted-foreground">
+                        <p class="text-[0.8rem] text-muted-foreground ms-1">
                             Enter coordinates manually or they will be extracted from the uploaded photo.
                         </p>
-                        <p class="text-[0.8rem] text-muted-foreground">
-                            We will not display your photo on the website.
-                            The image is used only to extract GPS coordinates (location data) from the photo metadata.
-                        </p>
+
                     </div>
 
                     <!-- File Upload Input -->
@@ -126,8 +128,73 @@ const onFileChange = async (e: Event) => {
                         </label> -->
                         <input type="file" accept="image/*" capture="environment" @change="onFileChange"
                             class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
-                        <p class="text-[0.8rem] text-muted-foreground">
-                            Accepted formats: JPG, JPEG, PNG, WEBP. Max: 20 MB.
+
+                        <p class="text-[0.8rem] text-muted-foreground ms-1">
+                            We will not display your photo on the website.
+                            The image is used only to extract GPS coordinates (location data) from the photo metadata.
+                        </p>
+
+                        <p class="text-[0.8rem] text-muted-foreground flex flex-col gap-1 mt-2">
+
+                        <div class="flex items-center gap-3 ms-1">
+                            <span class="flex items-center gap-2">
+                                <span class="text-xs font-medium">Enable GPS Location:</span>
+                            </span>
+                            <!-- iOS Hover Card -->
+
+                            <HoverCard>
+                                <HoverCardTrigger as-child>
+                                    <div
+                                        class="flex items-center gap-1 cursor-help hover:text-foreground transition-colors group">
+                                        <span class="underline decoration-dotted underline-offset-4 text-xs">iOS
+                                            Video</span>
+                                    </div>
+                                </HoverCardTrigger>
+                                <HoverCardContent class="w-90 p-0 border-none">
+                                    <div class="aspect-video w-full">
+                                        <iframe width="100%" height="100%"
+                                            src="https://www.youtube.com/embed/5FjW6CGXD6k?autoplay=1&mute=1&loop=1&playlist=5FjW6CGXD6k"
+                                            title="iOS Location Settings" frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                            allowfullscreen class="rounded-t-md"></iframe>
+                                    </div>
+                                    <div class="p-4 space-y-2">
+                                        <h4 class="text-sm font-semibold">iOS: Turn on Camera Location</h4>
+                                        <p class="text-xs text-muted-foreground">
+                                            Go to Settings > Privacy > Location Services > Camera > While Using the App.
+                                        </p>
+                                    </div>
+                                </HoverCardContent>
+                            </HoverCard>
+
+                            <span class="text-muted-foreground/30">|</span>
+
+                            <!-- Android Hover Card -->
+                            <HoverCard>
+                                <HoverCardTrigger as-child>
+                                    <div
+                                        class="flex items-center gap-1 cursor-help hover:text-foreground transition-colors group">
+                                        <span class="underline decoration-dotted underline-offset-4 text-xs">Android
+                                            Video</span>
+                                    </div>
+                                </HoverCardTrigger>
+                                <HoverCardContent class="w-90 p-0 border-none">
+                                    <div class="aspect-video w-full">
+                                        <iframe width="100%" height="100%"
+                                            src="https://www.youtube.com/embed/5FjW6CGXD6k?autoplay=1&mute=1&loop=1&playlist=5FjW6CGXD6k"
+                                            title="Android Location Settings" frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                            allowfullscreen class="rounded-t-md"></iframe>
+                                    </div>
+                                    <div class="p-4 space-y-2">
+                                        <h4 class="text-sm font-semibold">Android: Geo-tag Photos</h4>
+                                        <p class="text-xs text-muted-foreground">
+                                            Open Camera > Settings > Enable "Location tags" or "Save location".
+                                        </p>
+                                    </div>
+                                </HoverCardContent>
+                            </HoverCard>
+                        </div>
                         </p>
                     </div>
                 </div>

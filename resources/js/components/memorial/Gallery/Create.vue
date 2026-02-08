@@ -19,39 +19,36 @@
             </label>
         </div>
         <div class="grid grid-cols-4 gap-3 pt-6 sm:grid-cols-3 md:grid-cols-6">
-            <transition-group name="smooth-drag" tag="div" class="contents">
-                <draggable key="draggable" v-model="images" item-key="id" :animation="300" :ghost-class="'ghost'"
-                    :drag-class="'dragging'" @start="drag = true" @end="onDragEnd" class="contents"
-                    handle=".drag-handle">
-                    <template #item="{ element }">
-                        <div class="h-30 rounded-md relative group hover:cursor-pointer"
-                            :class="{ 'border-0 border-red-500': drag }">
-                            <img :src="element.src" :style="{ transform: `rotate(${element.rotation}deg)` }"
-                                class="w-full h-30 object-cover rounded-md transition-transform duration-300"
-                                alt="Uploaded photo" />
-                            <!-- Drag Handle Icon -->
-                            <div
-                                class="drag-handle absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-70 transition-opacity bg-black bg-opacity-30 rounded-md">
-                                <GripHorizontal class="w-6 h-6 text-white" />
-                            </div>
-                            <!-- Rotate Icon -->
-                            <button type="button"
-                                class="absolute top-1 left-1 bg-gray-200 text-grey rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:text-white hover:bg-blue-600 hover:cursor-pointer"
-                                @click="rotateImage(element.id)" title="Rotate 90°">
-                                <RotateCw class="w-4 h-4" />
-                            </button>
-                            <!-- Delete Icon -->
-                            <button type="button"
-                                class="absolute top-1 right-1 bg-gray-200 text-grey rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:text-white hover:bg-red-600 hover:cursor-pointer"
-                                @click="removeImage(element.id)" title="Delete">
-                                <Trash2 class="w-4 h-4" />
-                            </button>
+            <draggable v-model="images" item-key="id" :animation="300" :ghost-class="'ghost'" :drag-class="'dragging'"
+                @start="drag = true" @end="onDragEnd" class="contents" handle=".drag-handle">
+                <template #item="{ element }">
+                    <div class="h-30 rounded-md relative group hover:cursor-pointer"
+                        :class="{ 'border-0 border-red-500': drag }">
+                        <img :src="element.src" :style="{ transform: `rotate(${element.rotation}deg)` }"
+                            class="w-full h-30 object-cover rounded-md transition-transform duration-300"
+                            alt="Uploaded photo" />
+                        <!-- Drag Handle Icon -->
+                        <div
+                            class="drag-handle absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-70 transition-opacity bg-black bg-opacity-30 rounded-md">
+                            <GripHorizontal class="w-6 h-6 text-white" />
                         </div>
-                    </template>
-                </draggable>
-                <div v-for="index in placeholderCount" :key="`placeholder-${index}`" class="h-30 rounded-md bg-muted">
-                </div>
-            </transition-group>
+                        <!-- Rotate Icon -->
+                        <button type="button"
+                            class="absolute top-1 left-1 bg-gray-200 text-grey rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:text-white hover:bg-blue-600 hover:cursor-pointer"
+                            @click="rotateImage(element.id)" title="Rotate 90°">
+                            <RotateCw class="w-4 h-4" />
+                        </button>
+                        <!-- Delete Icon -->
+                        <button type="button"
+                            class="absolute top-1 right-1 bg-gray-200 text-grey rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:text-white hover:bg-red-600 hover:cursor-pointer"
+                            @click="removeImage(element.id)" title="Delete">
+                            <Trash2 class="w-4 h-4" />
+                        </button>
+                    </div>
+                </template>
+            </draggable>
+            <div v-for="n in placeholderCount" :key="`placeholder-${n}`" class="h-30 rounded-md bg-muted">
+            </div>
         </div>
     </div>
 </template>
@@ -222,15 +219,15 @@ const onDragEnd = () => {
     color: #6b7280;
 }
 
-.smooth-drag-enter-active,
-.smooth-drag-leave-active {
-    transition: all 0.3s ease;
+.placeholder-fade-enter-active,
+.placeholder-fade-leave-active {
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.smooth-drag-enter-from,
-.smooth-drag-leave-to {
+.placeholder-fade-enter-from,
+.placeholder-fade-leave-to {
     opacity: 0;
-    transform: translateY(10px);
+    transform: scale(0.8);
 }
 
 .ghost {

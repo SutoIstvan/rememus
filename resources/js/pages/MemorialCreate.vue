@@ -421,7 +421,7 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
 
 <template>
 
-  <Head title="Rememus - Memorial Create" />
+  <Head title="Memorial Create" />
 
   <div class="bg-white dark:bg-black min-h-screen">
     <form @submit.prevent="submit" class="space-y-8">
@@ -434,11 +434,13 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
       <!-- Family Tree Section -->
       <div class="space-y-4">
         <div class="px-4 md:px-6 lg:px-8 flex items-center justify-between">
-          <div class="mx-auto mt-10 md:mt-[7px] max-w-3xl">
-            <div class="grid grid-cols-3 items-center">
+          <div class="mx-auto mt-10 md:mt-[7px] w-[760px]">
 
+
+            <div class="grid grid-cols-[1fr_auto_1fr] items-center">
               <!-- Левая пустая колонка -->
               <div></div>
+
               <!-- Центр -->
               <div class="text-center">
                 <span class="badge badge-green">
@@ -447,14 +449,16 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
               </div>
 
               <!-- Правая часть -->
-              <div class="flex justify-end items-center space-x-1 pr-20">
-                <Switch id="family-tree-toggle" v-model="sectionsEnabled.familyTree" />
+              <div class="flex justify-end items-center space-x-1">
                 <Label for="family-tree-toggle" class="cursor-pointer">
                   {{ sectionsEnabled.familyTree ? 'Active' : 'Disabled' }}
                 </Label>
-              </div>
+                <Switch id="family-tree-toggle" v-model="sectionsEnabled.familyTree" />
 
+              </div>
             </div>
+
+
           </div>
         </div>
         <div class="relative transition-all duration-300"
@@ -471,19 +475,22 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
       <!-- Gallery Section -->
       <div class="space-y-4">
         <div class="px-4 md:px-6 lg:px-8 flex items-center justify-between">
-          <div class="mx-auto mt-10 md:mt-[7px] max-w-3xl">
-            <div class="grid grid-cols-3 items-center">
+          <div class="mx-auto mt-10 md:mt-[7px] w-[760px]">
+
+
+            <div class="grid grid-cols-[1fr_auto_1fr] items-center">
               <div></div>
               <div class="text-center">
                 <span class="badge badge-green">
                   Gallery
                 </span>
               </div>
-              <div class="flex justify-end items-center space-x-1 pr-20">
-                <Switch id="gallery-toggle" v-model="sectionsEnabled.gallery" />
+              <div class="flex justify-end items-center space-x-1">
                 <Label for="gallery-toggle" class="cursor-pointer">
                   {{ sectionsEnabled.gallery ? 'Active' : 'Disabled' }}
                 </Label>
+                <Switch id="gallery-toggle" v-model="sectionsEnabled.gallery" />
+
               </div>
             </div>
           </div>
@@ -499,19 +506,22 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
       <!-- Timeline Section -->
       <div class="space-y-4">
         <div class="px-4 md:px-6 lg:px-8 flex items-center justify-between">
-          <div class="mx-auto mt-10 md:mt-[7px] max-w-3xl">
-            <div class="grid grid-cols-3 items-center">
+          <div class="mx-auto mt-10 md:mt-[7px] w-[760px]">
+
+
+            <div class="grid grid-cols-[1fr_auto_1fr] items-center">
               <div></div>
               <div class="text-center">
                 <span class="badge badge-green">
                   Timeline
                 </span>
               </div>
-              <div class="flex justify-end items-center space-x-1 pr-20">
-                <Switch id="timeline-toggle" v-model="sectionsEnabled.timeline" />
+              <div class="flex justify-end items-center space-x-1">
                 <Label for="timeline-toggle" class="cursor-pointer">
                   {{ sectionsEnabled.timeline ? 'Active' : 'Disabled' }}
                 </Label>
+                <Switch id="timeline-toggle" v-model="sectionsEnabled.timeline" />
+
               </div>
             </div>
           </div>
@@ -560,8 +570,10 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
       <!-- Burial Location Section -->
       <div class="space-y-4">
         <div class="px-4 md:px-6 lg:px-8 flex items-center justify-between">
-          <div class="mx-auto mt-10 md:mt-[7px] max-w-3xl">
-            <div class="grid grid-cols-3 items-center">
+          <div class="mx-auto mt-10 md:mt-[7px] w-[760px]">
+
+
+            <div class="grid grid-cols-[1fr_auto_1fr] items-center">
               <!-- Левая пустая колонка -->
               <div></div>
               <!-- Центр -->
@@ -572,17 +584,18 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
               </div>
 
               <!-- Правая часть -->
-              <div class="flex justify-end items-center space-x-1 pr-20">
-                <Switch id="burial-location-toggle" v-model="sectionsEnabled.burialLocation" />
+              <div class="flex justify-end items-center space-x-1">
                 <Label for="burial-location-toggle" class="cursor-pointer">
                   {{ sectionsEnabled.burialLocation ? 'Active' : 'Disabled' }}
                 </Label>
+                <Switch id="burial-location-toggle" v-model="sectionsEnabled.burialLocation" />
+
               </div>
             </div>
           </div>
         </div>
         <div class="relative transition-all duration-300"
-          :class="sectionsEnabled.burialLocation ? 'h-auto' : 'h-[300px] overflow-hidden'">
+          :class="sectionsEnabled.burialLocation ? 'h-auto' : 'h-[275px] overflow-hidden'">
           <div v-if="!sectionsEnabled.burialLocation" class="absolute inset-0 bg-white/10 z-10 cursor-not-allowed">
           </div>
           <div :class="{ 'opacity-80 blur-sm': !sectionsEnabled.burialLocation }">
@@ -594,9 +607,11 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
         </div>
       </div>
 
-      <div class="mt-8 px-4 md:px-6 lg:px-8 pb-12">
-        <Button type="submit" class="w-full" :disabled="form.processing">
-          {{ form.processing ? 'Сохранение...' : 'Сохранить мемориал' }}
+      <div class="text-center space-y-5 mx-auto mt-5 md:mt-[10px]">
+        <Button type="submit"
+          class="items-center gap-2 cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+          :disabled="form.processing">
+          {{ form.processing ? 'Saving...' : 'Save Memorial' }}
         </Button>
       </div>
 
