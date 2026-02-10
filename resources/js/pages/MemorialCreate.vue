@@ -347,20 +347,16 @@ const submit = () => {
 
   // FEATURES (только если секция активна)
   if (form.features_enabled) {
-    if (form.characteristics && form.characteristics.length > 0) {
+    if (Array.isArray(form.characteristics)) {
       form.characteristics.forEach((char, index) => {
         formData.append(`characteristics[${index}]`, char)
       })
-    } else {
-      formData.append('characteristics', JSON.stringify([]))
     }
 
-    if (form.hobbies && form.hobbies.length > 0) {
+    if (Array.isArray(form.hobbies)) {
       form.hobbies.forEach((hobby, index) => {
         formData.append(`hobbies[${index}]`, hobby)
       })
-    } else {
-      formData.append('hobbies', JSON.stringify([]))
     }
 
     formData.append('custom_traits', form.customTraits || '')
