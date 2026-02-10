@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import exifr from 'exifr'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { MapPinIcon, ImageIcon } from 'lucide-vue-next'
+import { MapPin, ImageIcon } from 'lucide-vue-next'
 import {
     HoverCard,
     HoverCardContent,
@@ -125,12 +125,22 @@ const onFileChange = async (e: Event) => {
                             <ImageIcon class="size-4" />
                             Upload Photo with Location
                         </label> -->
-                        <input type="file" accept="image/*" capture="environment" @change="onFileChange"
-                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                        <div class="relative">
+                            <label for="image-upload"
+                                class="flex h-10 w-full items-center rounded-md border border-input bg-background px-3 py-2 text-sm cursor-pointer">
+                                <span class="text-muted-foreground">Choose image</span>
+
+                                <ImageIcon class="ml-auto w-4 h-4 text-muted-foreground" />
+                            </label>
+
+                            <input id="image-upload" type="file" accept="image/*" capture="environment"
+                                @change="onFileChange" class="hidden" />
+                        </div>
 
                         <p class="text-[0.8rem] text-muted-foreground ms-1">
                             We will not display your photo on the website.
-                            The image is used only to extract GPS coordinates (location data) from the photo metadata.
+                            The image is used only to extract GPS coordinates (location data) from the photo
+                            metadata.
                         </p>
 
                         <div class="text-[0.8rem] text-muted-foreground flex flex-col gap-1 mt-2">
@@ -160,7 +170,8 @@ const onFileChange = async (e: Event) => {
                                         <div class="p-4 space-y-2">
                                             <h4 class="text-sm font-semibold">iOS: Turn on Camera Location</h4>
                                             <p class="text-xs text-muted-foreground">
-                                                Go to Settings > Privacy > Location Services > Camera > While Using the
+                                                Go to Settings > Privacy > Location Services > Camera > While Using
+                                                the
                                                 App.
                                             </p>
                                         </div>
