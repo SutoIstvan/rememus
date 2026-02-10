@@ -134,7 +134,7 @@ const nodes = ref([
   },
   {
     id: 'wife',
-    position: { x: 135, y: 331 },
+    position: { x: 155, y: 331 },
     style: { width: '90px', height: '105px', padding: '5px' },
     data: {
       label: '',
@@ -169,7 +169,7 @@ const nodes = ref([
   // Кнопки добавления остаются как узлы
   {
     id: 'add-wife-btn',
-    position: { x: 25, y: 331 },
+    position: { x: 45, y: 331 },
     style: { width: '80px', height: '80px' },
     type: 'addButton',
     data: {
@@ -205,7 +205,7 @@ const nodes = ref([
   },
   {
     id: 'other-member-1',
-    position: { x: 1, y: 650 },
+    position: { x: 100, y: 650 },
     style: { width: '90px', height: '105px', padding: '5px' },
     data: {
       label: '',
@@ -216,7 +216,7 @@ const nodes = ref([
   },
   {
     id: 'add-other-member-btn',
-    position: { x: 115, y: 650 }, // по центру внизу
+    position: { x: 215, y: 650 }, // по центру внизу
     style: { width: '60px', height: '80px' },
     type: 'addButton',
     data: {

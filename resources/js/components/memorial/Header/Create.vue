@@ -133,7 +133,7 @@
 
             <div class="flex justify-center lg:justify-start">
               <div class="relative w-120">
-                <MapPin class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <MapPin class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input type="text" placeholder="Birth Place" class="pl-10 w-full" :value="birth_place"
                   @update:modelValue="updateBirthPlace" />
                 <InputError :message="errors?.birth_place" />
@@ -457,7 +457,7 @@ watch(
 /* ---------- image / background ---------- */
 
 const selectedFile = ref<File | null>(null)
-const previewImage = ref<string>(props.imagePreview || '/images/front/hero-bg.png')
+const previewImage = ref<string>(props.imagePreview || '/images/front/avatar_2.png')
 const customBackground = ref<File | null>(null)
 const backgroundImage = ref<string>('/images/front/hero-bg.png')
 
