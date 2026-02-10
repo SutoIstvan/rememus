@@ -64,12 +64,12 @@
 
             <ul class="list-none space-y-2 mb-2 max-lg:!mb-0 mt-5">
               <li
-                class="flex items-center gap-3 mb-2 justify-center lg:justify-start text-pretty text-xl tracking-tighter xl:text-4xl/none sm:text-3xl">
+                class="flex flex-col lg:flex-row items-center gap-3 mb-2 justify-center lg:justify-start text-pretty text-xl tracking-tighter xl:text-4xl/none sm:text-3xl">
                 <!-- Дата рождения -->
-                <div class="mb-4">
+                <div class="mb-4 w-full sm:w-120 lg:w-auto">
                   <div class="relative flex gap-2">
                     <Input :model-value="birthInput" placeholder="15.01.1900 Birth Date"
-                      class="bg-background tracking-normal w-58" maxlength="10"
+                      class="bg-background tracking-normal w-full lg:!w-58" maxlength="10"
                       @update:model-value="handleBirthInput" />
                     <Popover v-model:open="openBirth">
                       <PopoverTrigger as-child>
@@ -98,10 +98,10 @@
                 </div>
 
                 <!-- Дата смерти -->
-                <div class="mb-4">
+                <div class="mb-4 w-full sm:w-120 lg:w-auto">
                   <div class="relative flex gap-2">
                     <Input :model-value="deathInput" placeholder="15.01.2026 Passing Date"
-                      class="bg-background pr-10 tracking-normal w-59" maxlength="10"
+                      class="bg-background pr-10 tracking-normal w-full lg:!w-58" maxlength="10"
                       @update:model-value="handleDeathInput" />
                     <Popover v-model:open="openDeath">
                       <PopoverTrigger as-child>
@@ -133,10 +133,10 @@
 
             <div class="flex justify-center lg:justify-start">
               <div class="relative w-120">
-                <MapPin class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                <Input type="text" placeholder="Memorial Location" class="pl-10 w-full" :value="grave_location"
-                  @update:modelValue="updateGraveLocation" />
-                <InputError :message="errors?.grave_location" />
+                <MapPin class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Input type="text" placeholder="Birth Place" class="pl-10 w-full" :value="birth_place"
+                  @update:modelValue="updateBirthPlace" />
+                <InputError :message="errors?.birth_place" />
               </div>
             </div>
           </div>
@@ -231,7 +231,7 @@ const props = defineProps({
   name: String,
   birth_date: String,
   death_date: String,
-  grave_location: String,
+  birth_place: String,
   imagePreview: String,
   errors: Object
 })
@@ -240,7 +240,7 @@ const emit = defineEmits([
   'update:name',
   'update:birth_date',
   'update:death_date',
-  'update:grave_location',
+  'update:birth_place',
   'update:image',
   'update:background_image',
   'update:background_url'
@@ -386,15 +386,16 @@ const parseDateFromFormat = (dateStr: string) => {
   return null
 }
 
-const handleBirthInput = (value: string) => {
-  if (!value) {
+const handleBirthInput = (value: string | number) => {
+  const strValue = String(value)
+  if (!strValue) {
     birthInput.value = ''
     birthDate.value = null
     emit('update:birth_date', '')
     return
   }
 
-  const formatted = formatDateInput(value)
+  const formatted = formatDateInput(strValue)
   birthInput.value = formatted
 
   if (formatted.length === 10) {
@@ -407,15 +408,16 @@ const handleBirthInput = (value: string) => {
   }
 }
 
-const handleDeathInput = (value: string) => {
-  if (!value) {
+const handleDeathInput = (value: string | number) => {
+  const strValue = String(value)
+  if (!strValue) {
     deathInput.value = ''
     deathDate.value = null
     emit('update:death_date', '')
     return
   }
 
-  const formatted = formatDateInput(value)
+  const formatted = formatDateInput(strValue)
   deathInput.value = formatted
 
   if (formatted.length === 10) {
@@ -462,8 +464,8 @@ const backgroundImage = ref<string>('/images/front/hero-bg.png')
 const imageFileInput = ref<HTMLInputElement | null>(null)
 const backgroundFileInput = ref<HTMLInputElement | null>(null)
 
-const updateName = (v: string) => emit('update:name', v)
-const updateGraveLocation = (v: string) => emit('update:grave_location', v)
+const updateName = (v: string | number) => emit('update:name', String(v))
+const updateBirthPlace = (v: string | number) => emit('update:birth_place', String(v))
 
 const triggerFileUpload = () => {
   if (imageFileInput.value) imageFileInput.value.value = ''

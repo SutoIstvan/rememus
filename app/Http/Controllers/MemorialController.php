@@ -21,6 +21,7 @@ class MemorialController extends Controller
             'name'           => 'required|string|max:255',
             'birth_date'     => 'nullable|date',
             'death_date'     => 'nullable|date|after:birth_date',
+            'birth_place'    => 'nullable|string|max:255',
             'grave_location' => 'nullable|string|max:255',
 
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
@@ -94,6 +95,7 @@ class MemorialController extends Controller
             'name' => $validated['name'],
             'birth_date' => $validated['birth_date'] ?? null,
             'death_date' => $validated['death_date'] ?? null,
+            'birth_place' => $validated['birth_place'] ?? null,
             'grave_location' => $validated['grave_location'] ?? null,
 
             // 🔥 FEATURES

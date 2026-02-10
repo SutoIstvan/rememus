@@ -61,17 +61,16 @@ const onFileChange = async (e: Event) => {
 </script>
 
 <template>
-    <div class="space-y-10 px-4 md:px-6 lg:px-8">
+    <div class="space-y-10 max-w-3xl mx-auto px-3 sm:px-1">
         <div class="text-center space-y-5 mx-auto mt-1 md:mt-[30px]">
             <!-- <span class="badge badge-green">
                 Burial Location
             </span> -->
 
-            <p class="text-muted-foreground">
+            <p class="text-muted-foreground max-w-2xl mx-auto">
                 Here you can enter the cemetery address and exact coordinates to make it easier for relatives to find
-                <br>
-                the resting place. This feature helps your loved ones get to the specified location quickly
-                <br> and easily, paying tribute to the memory.
+                the resting place. This feature helps your loved ones get to the specified location quickly and easily,
+                paying tribute to the memory.
             </p>
         </div>
 
@@ -134,68 +133,69 @@ const onFileChange = async (e: Event) => {
                             The image is used only to extract GPS coordinates (location data) from the photo metadata.
                         </p>
 
-                        <p class="text-[0.8rem] text-muted-foreground flex flex-col gap-1 mt-2">
+                        <div class="text-[0.8rem] text-muted-foreground flex flex-col gap-1 mt-2">
 
-                        <div class="flex items-center gap-3 ms-1">
-                            <span class="flex items-center gap-2">
-                                <span class="text-xs font-medium">Enable GPS Location:</span>
-                            </span>
-                            <!-- iOS Hover Card -->
+                            <div class="flex items-center gap-3 ms-1">
+                                <span class="flex items-center gap-2">
+                                    <span class="text-xs font-medium">Enable GPS Location:</span>
+                                </span>
+                                <!-- iOS Hover Card -->
 
-                            <HoverCard>
-                                <HoverCardTrigger as-child>
-                                    <div
-                                        class="flex items-center gap-1 cursor-help hover:text-foreground transition-colors group">
-                                        <span class="underline decoration-dotted underline-offset-4 text-xs">iOS
-                                            Video</span>
-                                    </div>
-                                </HoverCardTrigger>
-                                <HoverCardContent class="w-90 p-0 border-none">
-                                    <div class="aspect-video w-full">
-                                        <iframe width="100%" height="100%"
-                                            src="https://www.youtube.com/embed/5FjW6CGXD6k?autoplay=1&mute=1&loop=1&playlist=5FjW6CGXD6k"
-                                            title="iOS Location Settings" frameborder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                            allowfullscreen class="rounded-t-md"></iframe>
-                                    </div>
-                                    <div class="p-4 space-y-2">
-                                        <h4 class="text-sm font-semibold">iOS: Turn on Camera Location</h4>
-                                        <p class="text-xs text-muted-foreground">
-                                            Go to Settings > Privacy > Location Services > Camera > While Using the App.
-                                        </p>
-                                    </div>
-                                </HoverCardContent>
-                            </HoverCard>
+                                <HoverCard>
+                                    <HoverCardTrigger as-child>
+                                        <div
+                                            class="flex items-center gap-1 cursor-help hover:text-foreground transition-colors group">
+                                            <span class="underline decoration-dotted underline-offset-4 text-xs">iOS
+                                                Video</span>
+                                        </div>
+                                    </HoverCardTrigger>
+                                    <HoverCardContent class="w-90 p-0 border-none">
+                                        <div class="aspect-video w-full">
+                                            <iframe width="100%" height="100%"
+                                                src="https://www.youtube.com/embed/5FjW6CGXD6k?autoplay=1&mute=1&loop=1&playlist=5FjW6CGXD6k"
+                                                title="iOS Location Settings" frameborder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                allowfullscreen class="rounded-t-md"></iframe>
+                                        </div>
+                                        <div class="p-4 space-y-2">
+                                            <h4 class="text-sm font-semibold">iOS: Turn on Camera Location</h4>
+                                            <p class="text-xs text-muted-foreground">
+                                                Go to Settings > Privacy > Location Services > Camera > While Using the
+                                                App.
+                                            </p>
+                                        </div>
+                                    </HoverCardContent>
+                                </HoverCard>
 
-                            <span class="text-muted-foreground/30">|</span>
+                                <span class="text-muted-foreground/30">|</span>
 
-                            <!-- Android Hover Card -->
-                            <HoverCard>
-                                <HoverCardTrigger as-child>
-                                    <div
-                                        class="flex items-center gap-1 cursor-help hover:text-foreground transition-colors group">
-                                        <span class="underline decoration-dotted underline-offset-4 text-xs">Android
-                                            Video</span>
-                                    </div>
-                                </HoverCardTrigger>
-                                <HoverCardContent class="w-90 p-0 border-none">
-                                    <div class="aspect-video w-full">
-                                        <iframe width="100%" height="100%"
-                                            src="https://www.youtube.com/embed/5FjW6CGXD6k?autoplay=1&mute=1&loop=1&playlist=5FjW6CGXD6k"
-                                            title="Android Location Settings" frameborder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                            allowfullscreen class="rounded-t-md"></iframe>
-                                    </div>
-                                    <div class="p-4 space-y-2">
-                                        <h4 class="text-sm font-semibold">Android: Geo-tag Photos</h4>
-                                        <p class="text-xs text-muted-foreground">
-                                            Open Camera > Settings > Enable "Location tags" or "Save location".
-                                        </p>
-                                    </div>
-                                </HoverCardContent>
-                            </HoverCard>
+                                <!-- Android Hover Card -->
+                                <HoverCard>
+                                    <HoverCardTrigger as-child>
+                                        <div
+                                            class="flex items-center gap-1 cursor-help hover:text-foreground transition-colors group">
+                                            <span class="underline decoration-dotted underline-offset-4 text-xs">Android
+                                                Video</span>
+                                        </div>
+                                    </HoverCardTrigger>
+                                    <HoverCardContent class="w-90 p-0 border-none">
+                                        <div class="aspect-video w-full">
+                                            <iframe width="100%" height="100%"
+                                                src="https://www.youtube.com/embed/5FjW6CGXD6k?autoplay=1&mute=1&loop=1&playlist=5FjW6CGXD6k"
+                                                title="Android Location Settings" frameborder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                allowfullscreen class="rounded-t-md"></iframe>
+                                        </div>
+                                        <div class="p-4 space-y-2">
+                                            <h4 class="text-sm font-semibold">Android: Geo-tag Photos</h4>
+                                            <p class="text-xs text-muted-foreground">
+                                                Open Camera > Settings > Enable "Location tags" or "Save location".
+                                            </p>
+                                        </div>
+                                    </HoverCardContent>
+                                </HoverCard>
+                            </div>
                         </div>
-                        </p>
                     </div>
                 </div>
 

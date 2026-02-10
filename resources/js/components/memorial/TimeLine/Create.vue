@@ -74,8 +74,8 @@ const removeItem = (id: string) => {
         Timeline
       </span> -->
 
-      <p class="text-muted-foreground">
-        The timeline allows you to record key life events, including education, family milestones, <br> professional
+      <p class="text-muted-foreground max-w-xl mx-auto">
+        The timeline allows you to record key life events, including education, family milestones, professional
         life, and other significant moments.
       </p>
 

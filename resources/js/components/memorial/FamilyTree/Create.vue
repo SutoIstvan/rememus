@@ -596,14 +596,14 @@ defineExpose({
       <!-- <span class="badge badge-green">
         Family Tree
       </span> -->
-      <p class="text-muted-foreground">
-        Here you can add a family member by entering their name and uploading their photo. <br>
+      <p class="text-muted-foreground max-w-xl mx-auto px-3 sm:px-1">
+        Here you can add a family member by entering their name and uploading their photo.
         You can easily manage and update family members at any time.
       </p>
     </div>
     <div
       class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
-      <div style="width: 100%; height: 1000px;">
+      <div style="width: 100%; " class="h-[500px] md:h-[800px] lg:h-[1000px]">
         <VueFlow :nodes="nodes" :edges="edges" fit-view-on-init :edge-types="edgeTypes"
           v-scroll-animate="{ direction: 'up', offset: 200 }" :zoom-on-scroll="false" :zoom-on-pinch="false"
           :zoom-on-double-click="false" :pan-on-drag="false" :nodes-draggable="false" :nodes-connectable="false"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Checkbox } from '@/components/ui/checkbox'
+import { CheckboxPill } from '@/components/ui/checkbox-pill'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 
@@ -74,30 +74,27 @@ const toggleHobby = (value: string) => {
 </script>
 
 <template>
-  <div class="space-y-10 px-4 md:px-6 lg:px-8">
+  <div class="space-y-10 max-w-3xl mx-auto">
     <div class="text-center space-y-5 mx-auto mt-10 md:mt-[70px]">
       <span class="badge badge-green">
         Memories
       </span>
 
-      <p class="text-muted-foreground">
-        This section collects memories, life experiences, and personal traits to help <br /> create a respectful and
-        meaningful biography.
+      <p class="text-muted-foreground max-w-xl mx-auto px-3 sm:px-1">
+        This section collects memories, life experiences, and personal traits to help create a respectful and meaningful
+        biography.
       </p>
     </div>
 
     <!-- CHARACTERISTICS -->
-    <section class="max-w-4xl mx-auto">
+    <section class="max-w-3xl mx-auto px-3 sm:px-1">
       <h3 class="text-lg font-medium mb-4 mt-12">
         Characteristics, Values, and Principles
       </h3>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        <label v-for="item in CHARACTERISTICS" :key="item.value" class="flex items-center gap-2 cursor-pointer">
-          <Checkbox :checked="characteristics.includes(item.value)"
-            @update:checked="toggleCharacteristic(item.value)" />
-          <span class="text-sm">{{ item.label }}</span>
-        </label>
+      <div class="flex flex-row flex-wrap gap-2">
+        <CheckboxPill v-for="item in CHARACTERISTICS" :key="item.value" :id="`char-${item.value}`" :label="item.label"
+          :checked="characteristics.includes(item.value)" @update:checked="toggleCharacteristic(item.value)" />
       </div>
 
       <div class="mt-4">
@@ -107,16 +104,14 @@ const toggleHobby = (value: string) => {
     </section>
 
     <!-- HOBBIES -->
-    <section class="max-w-4xl mx-auto">
+    <section class="max-w-3xl mx-auto px-3 sm:px-1">
       <h3 class="text-lg font-medium mb-4">
         Hobbies and Passions
       </h3>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        <label v-for="item in HOBBIES" :key="item.value" class="flex items-center gap-2 cursor-pointer">
-          <Checkbox :checked="hobbies.includes(item.value)" @update:checked="toggleHobby(item.value)" />
-          <span class="text-sm">{{ item.label }}</span>
-        </label>
+      <div class="flex flex-row flex-wrap gap-2">
+        <CheckboxPill v-for="item in HOBBIES" :key="item.value" :id="`hobby-${item.value}`" :label="item.label"
+          :checked="hobbies.includes(item.value)" @update:checked="toggleHobby(item.value)" />
       </div>
 
       <div class="mt-4">
@@ -126,7 +121,7 @@ const toggleHobby = (value: string) => {
     </section>
 
     <!-- TEXT SECTIONS -->
-    <section class="space-y-6 max-w-4xl mx-auto">
+    <section class="max-w-3xl mx-auto px-3 sm:px-1">
       <div>
         <h3 class="text-lg font-medium mb-2">
           Retirement years

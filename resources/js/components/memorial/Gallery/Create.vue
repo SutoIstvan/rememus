@@ -5,8 +5,8 @@
                 Gallery
             </span>
         </div> -->
-        <p class="text-muted-foreground">
-            You can upload photos and drag and drop them by simply capturing the image. <br> The maximum size of one
+        <p class="text-muted-foreground max-w-xl mx-auto px-3 sm:px-1">
+            You can upload photos and drag and drop them by simply capturing the image. The maximum size of one
             photo is 5 megabytes.
         </p>
         <div class="flex justify-center mb-4 mt-5">
@@ -18,7 +18,7 @@
                     multiple />
             </label>
         </div>
-        <div class="grid grid-cols-4 gap-3 pt-6 sm:grid-cols-3 md:grid-cols-6">
+        <div class="grid grid-cols-4 gap-3 pt-6 sm:grid-cols-3 md:grid-cols-6 mx-auto px-3 sm:px-1">
             <draggable v-model="images" item-key="id" :animation="300" :ghost-class="'ghost'" :drag-class="'dragging'"
                 @start="drag = true" @end="onDragEnd" class="contents" handle=".drag-handle">
                 <template #item="{ element }">
@@ -47,14 +47,14 @@
                     </div>
                 </template>
             </draggable>
-            <div v-for="n in placeholderCount" :key="`placeholder-${n}`" class="h-30 rounded-md bg-muted">
+            <div v-for="n in placeholderCount" :key="`placeholder-${n}`" class="h-20 sm:!h-30 rounded-md bg-muted">
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import draggable from 'vuedraggable'
 import { GripHorizontal, Trash2, Upload, RotateCw } from 'lucide-vue-next'
 
@@ -72,9 +72,24 @@ const emit = defineEmits<{
 const images = ref<ImageItem[]>([])
 const drag = ref(false)
 const fileInput = ref<HTMLInputElement | null>(null)
+const windowWidth = ref(window.innerWidth)
+
+const updateWindowWidth = () => {
+    windowWidth.value = window.innerWidth
+}
+
+onMounted(() => {
+    window.addEventListener('resize', updateWindowWidth)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('resize', updateWindowWidth)
+})
 
 const placeholderCount = computed(() => {
-    return images.value.length < 6 ? 6 - images.value.length : 0
+    const isMobile = windowWidth.value < 640 // sm breakpoint
+    const maxPlaceholders = isMobile ? 4 : 6
+    return images.value.length < maxPlaceholders ? maxPlaceholders - images.value.length : 0
 })
 
 const emitGalleryFiles = () => {

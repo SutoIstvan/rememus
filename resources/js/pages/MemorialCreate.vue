@@ -37,6 +37,7 @@ const form = useForm({
   name: '',
   birth_date: '',
   death_date: '',
+  birth_place: '',
   grave_location: '',
   image: null as File | null,
   background_image: null as File | null,
@@ -268,6 +269,7 @@ const submit = () => {
   formData.append('name', form.name)
   formData.append('birth_date', form.birth_date)
   formData.append('death_date', form.death_date)
+  formData.append('birth_place', form.birth_place)
   formData.append('grave_location', form.grave_location)
 
   // Изображения
@@ -427,7 +429,7 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
     <form @submit.prevent="submit" class="space-y-8">
 
       <HeaderCreate v-model:name="form.name" v-model:birth_date="form.birth_date" v-model:death_date="form.death_date"
-        v-model:grave_location="form.grave_location" v-model:image="form.image"
+        v-model:birth_place="form.birth_place" v-model:image="form.image"
         v-model:background_image="form.background_image" v-model:background_url="form.background_url"
         :errors="form.errors" />
 
