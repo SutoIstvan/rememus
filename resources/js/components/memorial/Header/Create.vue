@@ -101,7 +101,7 @@
                 <div class="mb-4 w-full sm:w-120 lg:w-auto">
                   <div class="relative flex gap-2">
                     <Input :model-value="deathInput" placeholder="15.01.2026 Passing Date"
-                      class="bg-background pr-10 tracking-normal w-full lg:!w-58" maxlength="10"
+                      class="bg-background pr-10 tracking-normal w-full lg:!w-59" maxlength="10"
                       @update:model-value="handleDeathInput" />
                     <Popover v-model:open="openDeath">
                       <PopoverTrigger as-child>

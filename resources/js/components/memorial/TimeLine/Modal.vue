@@ -57,7 +57,7 @@ const emit = defineEmits(['close', 'save'])
  */
 const minCalendarDate = computed(() => {
   if (!props.birthDate) return undefined
-  
+
   const [year, month, day] = props.birthDate.split('-').map(Number)
   return new CalendarDate(year, month, day)
 })
@@ -67,7 +67,7 @@ const minCalendarDate = computed(() => {
  */
 const maxCalendarDate = computed(() => {
   if (!props.deathDate) return undefined
-  
+
   const [year, month, day] = props.deathDate.split('-').map(Number)
   return new CalendarDate(year, month, day)
 })
@@ -96,6 +96,7 @@ const form = ref(getEmptyForm())
  * 🔹 Флаг: пользователь трогал заголовок
  */
 const titleTouched = ref(false)
+const isInitializing = ref(false)
 
 /**
  * 🔹 режим дат (single / range)
@@ -129,13 +130,13 @@ const actualDateTo = ref<Date | null>(null)
 /**
  * 🔹 Computed для календаря
  */
-const calendarDate = computed(() => 
+const calendarDate = computed(() =>
   actualDate.value ? fromDate(actualDate.value, getLocalTimeZone()) : undefined
 )
-const calendarDateFrom = computed(() => 
+const calendarDateFrom = computed(() =>
   actualDateFrom.value ? fromDate(actualDateFrom.value, getLocalTimeZone()) : undefined
 )
-const calendarDateTo = computed(() => 
+const calendarDateTo = computed(() =>
   actualDateTo.value ? fromDate(actualDateTo.value, getLocalTimeZone()) : undefined
 )
 
@@ -220,23 +221,33 @@ const isDateDisabled = (date: CalendarDate) => {
 }
 
 /**
+ * 🔹 Локальное форматирование даты YYYY-MM-DD (без UTC сдвига)
+ */
+const toLocalDateString = (d: Date) => {
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+/**
  * 🔹 Синхронизация с формой
  */
 watch([actualDate, actualDateFrom, actualDateTo], ([date, dateFrom, dateTo]) => {
   if (date) {
-    form.value.date = date.toISOString().split('T')[0]
+    form.value.date = toLocalDateString(date)
   } else {
     form.value.date = ''
   }
 
   if (dateFrom) {
-    form.value.date_from = dateFrom.toISOString().split('T')[0]
+    form.value.date_from = toLocalDateString(dateFrom)
   } else {
     form.value.date_from = ''
   }
 
   if (dateTo) {
-    form.value.date_to = dateTo.toISOString().split('T')[0]
+    form.value.date_to = toLocalDateString(dateTo)
   } else {
     form.value.date_to = ''
   }
@@ -249,8 +260,16 @@ watch(
   () => props.item,
   (item) => {
     if (item) {
+      isInitializing.value = true
       form.value = { ...item }
       titleTouched.value = true
+
+      // Handle media preview
+      if (item.media_preview) {
+        form.value.media_preview = item.media_preview
+      } else if (item.media && typeof item.media === 'string') {
+        form.value.media_preview = item.media
+      }
 
       if (item.date) {
         const [year, month, day] = item.date.split('-').map(Number)
@@ -281,6 +300,9 @@ watch(
         actualDateTo.value = null
         inputDateToValue.value = ''
       }
+
+      // nextTick to let the type watcher fire first, then reset flag
+      setTimeout(() => { isInitializing.value = false }, 0)
     } else {
       form.value = getEmptyForm()
       titleTouched.value = false
@@ -323,15 +345,18 @@ watch(
 watch(
   () => form.value.type,
   (newType) => {
-    form.value.date = ''
-    form.value.date_from = ''
-    form.value.date_to = ''
-    inputDateValue.value = ''
-    inputDateFromValue.value = ''
-    inputDateToValue.value = ''
-    actualDate.value = null
-    actualDateFrom.value = null
-    actualDateTo.value = null
+    // Skip date clearing when initializing from an existing item
+    if (!isInitializing.value) {
+      form.value.date = ''
+      form.value.date_from = ''
+      form.value.date_to = ''
+      inputDateValue.value = ''
+      inputDateFromValue.value = ''
+      inputDateToValue.value = ''
+      actualDate.value = null
+      actualDateFrom.value = null
+      actualDateTo.value = null
+    }
 
     if (!titleTouched.value) {
       const found = EVENT_TYPES.find(t => t.value === newType)
@@ -384,7 +409,7 @@ const parseDateFromFormat = (dateStr: string) => {
 
     if (day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 1900 && year <= 2100) {
       const date = new Date(year, month - 1, day)
-      
+
       // Проверка на диапазон между датой рождения и смерти
       if (props.birthDate) {
         const [minYear, minMonth, minDay] = props.birthDate.split('-').map(Number)
@@ -393,7 +418,7 @@ const parseDateFromFormat = (dateStr: string) => {
           return null
         }
       }
-      
+
       if (props.deathDate) {
         const [maxYear, maxMonth, maxDay] = props.deathDate.split('-').map(Number)
         const maxDate = new Date(maxYear, maxMonth - 1, maxDay)
@@ -401,7 +426,7 @@ const parseDateFromFormat = (dateStr: string) => {
           return null
         }
       }
-      
+
       return date
     }
   }
@@ -496,16 +521,9 @@ const save = () => {
             </SelectValue>
           </SelectTrigger>
 
-          <SelectContent
-            position="popper"
-            class="w-[450px] max-w-full"
-          >
+          <SelectContent position="popper" class="w-[450px] max-w-full">
             <SelectGroup>
-              <SelectItem
-                v-for="type in EVENT_TYPES"
-                :key="type.value"
-                :value="type.value"
-              >
+              <SelectItem v-for="type in EVENT_TYPES" :key="type.value" :value="type.value">
                 <div class="flex items-center gap-2">
                   <component :is="type.icon" class="size-4" />
                   <span>{{ type.label }}</span>
@@ -519,13 +537,8 @@ const save = () => {
         <div class="space-y-2">
           <template v-if="dateMode === 'single'">
             <div class="relative flex gap-2">
-              <Input 
-                :model-value="inputDateValue" 
-                placeholder="15.01.2026 date" 
-                class="bg-background pr-10"
-                maxlength="10" 
-                @update:model-value="handleDateInput" 
-              />
+              <Input :model-value="inputDateValue" placeholder="15.01.2026 date" class="bg-background pr-10"
+                maxlength="10" @update:model-value="handleDateInput" />
               <Popover v-model:open="openDate">
                 <PopoverTrigger as-child>
                   <Button variant="ghost" size="icon" class="absolute top-1/2 right-2 size-8 -translate-y-1/2">
@@ -534,23 +547,17 @@ const save = () => {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent class="w-auto overflow-hidden p-0" align="end">
-                  <Calendar 
-                    :model-value="calendarDate"
-                    v-model:placeholder="placeholderDate" 
-                    layout="month-and-year"
-                    :min-value="minCalendarDate"
-                    :max-value="maxCalendarDate"
-                    :is-date-disabled="isDateDisabled"
+                  <Calendar :model-value="calendarDate" v-model:placeholder="placeholderDate" layout="month-and-year"
+                    :min-value="minCalendarDate" :max-value="maxCalendarDate" :is-date-disabled="isDateDisabled"
                     class="rounded-md border shadow-sm **:data-[slot=calendar-cell-trigger]:size-11"
                     @update:model-value="(value) => {
                       if (value) {
-                        const date = value.toDate(getLocalTimeZone())
+                        const date = new Date(value.year, value.month - 1, value.day)
                         actualDate = date
                         inputDateValue = formatDate(date)
                         openDate = false
                       }
-                    }" 
-                  />
+                    }" />
                 </PopoverContent>
               </Popover>
             </div>
@@ -561,13 +568,8 @@ const save = () => {
               <!-- Дата начала -->
               <div>
                 <div class="relative flex gap-2">
-                  <Input 
-                    :model-value="inputDateFromValue" 
-                    placeholder="15.01.2026 Start" 
-                    class="bg-background pr-10"
-                    maxlength="10" 
-                    @update:model-value="handleDateFromInput" 
-                  />
+                  <Input :model-value="inputDateFromValue" placeholder="15.01.2026 Start" class="bg-background pr-10"
+                    maxlength="10" @update:model-value="handleDateFromInput" />
                   <Popover v-model:open="openDateFrom">
                     <PopoverTrigger as-child>
                       <Button variant="ghost" size="icon" class="absolute top-1/2 right-2 size-8 -translate-y-1/2">
@@ -576,23 +578,18 @@ const save = () => {
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent class="w-auto overflow-hidden p-0" align="end">
-                      <Calendar 
-                        :model-value="calendarDateFrom"
-                        v-model:placeholder="placeholderDateFrom" 
-                        layout="month-and-year"
-                        :min-value="minCalendarDate"
-                        :max-value="maxCalendarDate"
+                      <Calendar :model-value="calendarDateFrom" v-model:placeholder="placeholderDateFrom"
+                        layout="month-and-year" :min-value="minCalendarDate" :max-value="maxCalendarDate"
                         :is-date-disabled="isDateDisabled"
                         class="rounded-md border shadow-sm **:data-[slot=calendar-cell-trigger]:size-11"
                         @update:model-value="(value) => {
                           if (value) {
-                            const date = value.toDate(getLocalTimeZone())
+                            const date = new Date(value.year, value.month - 1, value.day)
                             actualDateFrom = date
                             inputDateFromValue = formatDate(date)
                             openDateFrom = false
                           }
-                        }" 
-                      />
+                        }" />
                     </PopoverContent>
                   </Popover>
                 </div>
@@ -601,13 +598,8 @@ const save = () => {
               <!-- Дата окончания -->
               <div>
                 <div class="relative flex gap-2">
-                  <Input 
-                    :model-value="inputDateToValue" 
-                    placeholder="15.01.2026 End" 
-                    class="bg-background pr-10"
-                    maxlength="10" 
-                    @update:model-value="handleDateToInput" 
-                  />
+                  <Input :model-value="inputDateToValue" placeholder="15.01.2026 End" class="bg-background pr-10"
+                    maxlength="10" @update:model-value="handleDateToInput" />
                   <Popover v-model:open="openDateTo">
                     <PopoverTrigger as-child>
                       <Button variant="ghost" size="icon" class="absolute top-1/2 right-2 size-8 -translate-y-1/2">
@@ -616,23 +608,18 @@ const save = () => {
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent class="w-auto overflow-hidden p-0" align="end">
-                      <Calendar 
-                        :model-value="calendarDateTo"
-                        v-model:placeholder="placeholderDateTo" 
-                        layout="month-and-year"
-                        :min-value="minCalendarDate"
-                        :max-value="maxCalendarDate"
+                      <Calendar :model-value="calendarDateTo" v-model:placeholder="placeholderDateTo"
+                        layout="month-and-year" :min-value="minCalendarDate" :max-value="maxCalendarDate"
                         :is-date-disabled="isDateDisabled"
                         class="rounded-md border shadow-sm **:data-[slot=calendar-cell-trigger]:size-11"
                         @update:model-value="(value) => {
                           if (value) {
-                            const date = value.toDate(getLocalTimeZone())
+                            const date = new Date(value.year, value.month - 1, value.day)
                             actualDateTo = date
                             inputDateToValue = formatDate(date)
                             openDateTo = false
                           }
-                        }" 
-                      />
+                        }" />
                     </PopoverContent>
                   </Popover>
                 </div>
@@ -650,27 +637,18 @@ const save = () => {
         <div class="space-y-2">
           <textarea
             class="flex min-h-[50px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            rows="2" 
-            placeholder="Add event description" 
-            v-model="form.description"
-          ></textarea>
+            rows="2" placeholder="Add event description" v-model="form.description"></textarea>
         </div>
 
         <!-- Медиа -->
         <div class="space-y-2">
           <div class="flex flex-col gap-3">
             <div class="relative">
-              <input 
-                type="file" 
-                @change="onFile"
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              />
+              <input type="file" @change="onFile"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
 
-              <Button 
-                variant="ghost" 
-                size="icon"
-                class="absolute top-1/2 right-2 size-8 -translate-y-1/2 pointer-events-none"
-              >
+              <Button variant="ghost" size="icon"
+                class="absolute top-1/2 right-2 size-8 -translate-y-1/2 pointer-events-none">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
@@ -681,12 +659,8 @@ const save = () => {
               </Button>
             </div>
 
-            <img 
-              v-if="form.media_preview" 
-              :src="form.media_preview"
-              class="rounded-lg max-h-28 w-full object-cover border" 
-              alt="Preview" 
-            />
+            <img v-if="form.media_preview" :src="form.media_preview"
+              class="rounded-lg max-h-28 w-full object-cover border" alt="Preview" />
           </div>
         </div>
       </div>

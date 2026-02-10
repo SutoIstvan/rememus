@@ -123,7 +123,7 @@ const syncFamilyToTimeline = () => {
         (event: any) => event.related_person === member.id
       )
 
-      const eventType = member.role === 'spouse' ? 'marriage' : 'birth'
+      const eventType = member.role === 'spouse' ? 'wedding' : 'birth_child'
       const eventTitle = member.role === 'spouse'
         ? 'Wedding'
         : 'Birth of a Child'
@@ -189,7 +189,7 @@ const syncFamilyToTimeline = () => {
 
 // НОВОЕ: Синхронизация Header -> Timeline (Основной персонаж)
 const syncHeaderToTimeline = () => {
-  if (!form.name || !form.birth_date) return
+  if (!form.name) return
 
   const timelineId = 'timeline-main-birth'
   const newTimeline = [...form.timeline]
@@ -236,7 +236,7 @@ const syncHeaderToTimeline = () => {
       id: timelineId,
       title: eventTitle,
       description: eventDescription,
-      type: 'birth',
+      type: 'born',
       location: '', // Можно добавить место рождения если будет поле
       date: eventDate,
       related_person: 'you',

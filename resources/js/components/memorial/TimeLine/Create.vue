@@ -38,7 +38,14 @@ const openCreate = () => {
 }
 
 const openEdit = (item: any) => {
-  editingItem.value = { ...item }
+  const editItem = { ...item }
+
+  // If there's a media field that's a string (URL), set it as media_preview
+  if (editItem.media && typeof editItem.media === 'string') {
+    editItem.media_preview = editItem.media
+  }
+
+  editingItem.value = editItem
   modalOpen.value = true
 }
 

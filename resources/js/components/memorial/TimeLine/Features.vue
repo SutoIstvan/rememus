@@ -15,11 +15,25 @@
         </div>
 
         <!-- Icon Badge -->
-        <div class="icon-badge">
-          <div class="icon-container">
-            <div class="icon-wrapper">
-              <component :is="resolveIcon(feature)" class="icon" />
+        <div class="icon-badge-wrapper">
+          <div class="icon-badge">
+            <div class="icon-container">
+              <div class="icon-wrapper">
+                <component :is="resolveIcon(feature)" class="icon" />
+              </div>
             </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button type="button" @click.stop.prevent="$emit('edit', feature)" class="action-btn edit-btn"
+              title="Edit event">
+              <Pencil class="size-4" />
+            </button>
+            <button type="button" @click.stop.prevent="$emit('remove', feature.id)" class="action-btn delete-btn"
+              title="Delete event">
+              <Trash2 class="size-4" />
+            </button>
           </div>
         </div>
 
@@ -52,14 +66,23 @@
 
 <script lang="ts">
 import {
-  LayoutList,
-  LocateFixed,
-  Users,
-  Cpu,
+  Baby,
+  GraduationCap,
+  Briefcase,
+  Heart,
+  FileText,
+  Star,
+  Pencil,
+  Trash2,
 } from 'lucide-vue-next'
 
 export default {
   name: 'TimelineFeatures',
+
+  components: {
+    Pencil,
+    Trash2,
+  },
 
   props: {
     features: {
@@ -74,31 +97,21 @@ export default {
   methods: {
     /* ===== ДАТА ===== */
     formatDate(feature) {
-      console.log('formatDate called with:', feature)
-      console.log('All keys:', Object.keys(feature))
-      console.log('date:', feature.date)
-      console.log('date_from:', feature.date_from)
-      console.log('date_to:', feature.date_to)
-
       // Приоритет 1: одиночная дата
       if (feature.date) {
-        console.log('Using date:', feature.date)
         return this.formatSingleDate(feature.date)
       }
 
       // Приоритет 2: период (date_from - date_to)
       if (feature.date_from && feature.date_to) {
-        console.log('Using range:', feature.date_from, feature.date_to)
         return `${this.formatSingleDate(feature.date_from)} – ${this.formatSingleDate(feature.date_to)}`
       }
 
       // Приоритет 3: только date_from
       if (feature.date_from) {
-        console.log('Using date_from:', feature.date_from)
         return this.formatSingleDate(feature.date_from)
       }
 
-      console.log('No date found')
       return ''
     },
 
@@ -120,7 +133,7 @@ export default {
         return dateString
       }
 
-      return date.toLocaleDateString('ru-RU', {
+      return date.toLocaleDateString('en-US', {
         day: '2-digit',
         month: 'long',
         year: 'numeric',
@@ -129,25 +142,19 @@ export default {
 
     /* ===== ИКОНКА ===== */
     resolveIcon(feature) {
-      const map = {
-        IconLayoutList: LayoutList,
-        IconLocateFixed: LocateFixed,
-        IconUsers: Users,
-        IconCpu: Cpu,
-      }
-
       // Маппинг типов событий на иконки
       const typeIconMap = {
-        birth_child: Users,        // Рождение ребёнка
-        school: LayoutList,        // Школа
-        work: Cpu,                 // Работа
-        wedding: Users,            // Свадьба
-        other: LocateFixed,        // Другое
+        born: Star,                // Рождение основного человека
+        birth_child: Baby,         // Рождение ребёнка
+        school: GraduationCap,     // Школа
+        work: Briefcase,           // Работа
+        wedding: Heart,            // Свадьба
+        other: FileText,           // Другое
       }
 
       // Проверка на существование feature
       if (!feature) {
-        return LayoutList
+        return FileText
       }
 
       // Приоритет 1: тип события
@@ -155,13 +162,8 @@ export default {
         return typeIconMap[feature.type]
       }
 
-      // Приоритет 2: явно указанная иконка
-      if (typeof feature.icon === 'string' && map[feature.icon]) {
-        return map[feature.icon]
-      }
-
       // По умолчанию
-      return LayoutList
+      return FileText
     },
 
     /* ===== ИЗОБРАЖЕНИЕ ===== */
@@ -202,7 +204,7 @@ export default {
   justify-content: center;
   padding: 0.25rem;
   padding-top: 2.5rem;
-  padding-bottom: 2.5rem;
+  padding-bottom: 0.5rem;
   text-align: end;
   gap: 2.5rem;
 }
@@ -239,6 +241,14 @@ export default {
   margin-left: auto;
 }
 
+.icon-badge-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .icon-badge {
   background: white;
   z-index: 10;
@@ -268,6 +278,45 @@ export default {
   width: 1rem;
   height: 1rem;
   flex-shrink: 0;
+}
+
+.action-buttons {
+  transform: translateY(-20px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 20;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.375rem;
+  border: 1px solid #e5e7eb;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.edit-btn:hover {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #ef4444;
+  border-color: #ef4444;
+  color: white;
 }
 
 .image-section {
@@ -303,8 +352,8 @@ export default {
 }
 
 .feature-image {
-  width: 400px;
-  height: 250px;
+  width: 305px;
+  height: 200px;
   max-width: 100%;
   object-fit: cover;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
