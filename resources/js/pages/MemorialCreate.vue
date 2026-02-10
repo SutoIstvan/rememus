@@ -287,6 +287,7 @@ const submit = () => {
   formData.append('gallery_enabled', form.gallery_enabled ? '1' : '0')
   formData.append('timeline_enabled', form.timeline_enabled ? '1' : '0')
   formData.append('features_enabled', form.features_enabled ? '1' : '0')
+  formData.append('burial_location_enabled', form.burial_location_enabled ? '1' : '0')
 
   // Галерея (только если секция активна)
   if (form.gallery_enabled && form.gallery.length > 0) {

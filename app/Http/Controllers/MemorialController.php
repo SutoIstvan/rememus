@@ -72,6 +72,13 @@ class MemorialController extends Controller
             'habits' => 'nullable|string',
             'stories' => 'nullable|string',
             'wisdom' => 'nullable|string',
+
+            // Section toggles
+            'family_tree_enabled' => 'nullable|boolean',
+            'gallery_enabled' => 'nullable|boolean',
+            'timeline_enabled' => 'nullable|boolean',
+            'features_enabled' => 'nullable|boolean',
+            'burial_location_enabled' => 'nullable|boolean',
         ]);
 
         // Основные изображения
@@ -113,6 +120,13 @@ class MemorialController extends Controller
             'grave_line' => $validated['grave_line'] ?? null,
             'grave_number' => $validated['grave_number'] ?? null,
             'grave_coordinates' => $validated['coordinates'] ?? null,
+
+            // Section toggles
+            'family_tree_enabled' => $validated['family_tree_enabled'] ?? true,
+            'gallery_enabled' => $validated['gallery_enabled'] ?? true,
+            'timeline_enabled' => $validated['timeline_enabled'] ?? true,
+            'features_enabled' => $validated['features_enabled'] ?? true,
+            'burial_location_enabled' => $validated['burial_location_enabled'] ?? true,
 
             'qr_code' => Str::uuid(),
             'admin_id' => Auth::id(),

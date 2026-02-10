@@ -45,11 +45,23 @@ class Memorial extends Model
         'habits',
         'stories',
         'wisdom',
+
+        // Section toggles
+        'family_tree_enabled',
+        'gallery_enabled',
+        'timeline_enabled',
+        'features_enabled',
+        'burial_location_enabled',
     ];
 
     protected $casts = [
         'characteristics' => 'array',
         'hobbies' => 'array',
+        'family_tree_enabled' => 'boolean',
+        'gallery_enabled' => 'boolean',
+        'timeline_enabled' => 'boolean',
+        'features_enabled' => 'boolean',
+        'burial_location_enabled' => 'boolean',
     ];
 
     // Указываем, что для маршрутов используется slug
