@@ -382,7 +382,7 @@ const submit = () => {
 
   // 🔍 ОТЛАДКА: Проверяем что попало в FormData
   console.log('=== FORMDATA CONTENTS ===')
-  for (let pair of formData.entries()) {
+  for (const pair of formData.entries()) {
     console.log(pair[0], '=', pair[1])
   }
   console.log('=========================')

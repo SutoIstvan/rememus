@@ -60,7 +60,7 @@
 
 <script setup lang="ts">
 import BlurReveal from '@/components/ui/blur-reveal/BlurReveal.vue'
-import { MapPin, Calendar, Calendar1 } from "lucide-vue-next";
+import { MapPin, Calendar } from "lucide-vue-next";
 
 // Определяем props от Laravel контроллера
 defineProps({

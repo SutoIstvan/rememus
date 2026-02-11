@@ -285,7 +285,7 @@ function setYear(v: string | number | null) {
 
         <PopoverContent class="w-auto p-0">
           <!-- Кастомный календарь с селектами -->
-          <CalendarRoot v-slot="{ date, grid, weekDays }" v-model:placeholder="calendarPlaceholder"
+          <CalendarRoot v-slot="{ grid, weekDays }" v-model:placeholder="calendarPlaceholder"
             :model-value="selectedDate" initial-focus :min-value="new CalendarDate(1900, 1, 1)"
             :max-value="today(getLocalTimeZone())" :class="cn('rounded-md border p-3')"
             @update:model-value="handleDateSelect">

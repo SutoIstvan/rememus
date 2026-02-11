@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { CalendarDate, getLocalTimeZone } from '@internationalized/date'
+import { CalendarDate } from '@internationalized/date'
 import { Calendar } from '@/components/ui/calendar'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
@@ -83,11 +83,7 @@ const nextMonth = () => {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem
-              v-for="month in months"
-              :key="month.value"
-              :value="month.value"
-            >
+            <SelectItem v-for="month in months" :key="month.value" :value="month.value">
               {{ month.label }}
             </SelectItem>
           </SelectContent>
@@ -98,11 +94,7 @@ const nextMonth = () => {
             <SelectValue />
           </SelectTrigger>
           <SelectContent class="max-h-[200px]">
-            <SelectItem
-              v-for="year in years"
-              :key="year.value"
-              :value="year.value"
-            >
+            <SelectItem v-for="year in years" :key="year.value" :value="year.value">
               {{ year.label }}
             </SelectItem>
           </SelectContent>
@@ -115,10 +107,6 @@ const nextMonth = () => {
     </div>
 
     <!-- Календарь -->
-    <Calendar
-      :model-value="modelValue"
-      :month="displayDate"
-      @update:model-value="onDateSelect"
-    />
+    <Calendar :model-value="modelValue" :month="displayDate" @update:model-value="onDateSelect" />
   </div>
 </template>

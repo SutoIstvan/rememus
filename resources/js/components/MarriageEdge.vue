@@ -80,21 +80,6 @@ const edgePath = computed(() => {
   return path
 })
 
-// Вычисляем центр линии для размещения сердечка
-const centerX = computed(() => {
-  if (typeof props.sourceX === 'number' && typeof props.targetX === 'number') {
-    return (props.sourceX + props.targetX) / 2
-  }
-  return 0
-})
-
-const centerY = computed(() => {
-  if (typeof props.sourceY === 'number' && typeof props.targetY === 'number') {
-    return (props.sourceY + props.targetY) / 2
-  }
-  return 0
-})
-
 const id = computed(() => props.id)
 const markerEnd = computed(() => props.markerEnd)
 </script>

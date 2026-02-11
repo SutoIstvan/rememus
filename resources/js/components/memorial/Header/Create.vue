@@ -225,7 +225,7 @@ import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import InputError from '@/components/InputError.vue'
-import { fromDate, getLocalTimeZone, CalendarDate } from '@internationalized/date'
+import { fromDate, getLocalTimeZone } from '@internationalized/date'
 
 const props = defineProps({
   name: String,

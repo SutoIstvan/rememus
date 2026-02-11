@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch } from 'vue'
 import { VueFlow } from '@vue-flow/core'
 import { markRaw } from 'vue'
 import { Position } from '@vue-flow/core'
 import SpecialEdge from '@/components/SpecialEdge.vue'
-import MarriageEdge from '@/components/MarriageEdge.vue'
 import SpecialNodeEdit from '@/components/SpecialNodeEdit.vue'
 import { Controls } from '@vue-flow/controls'
 

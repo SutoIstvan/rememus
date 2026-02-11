@@ -2,15 +2,14 @@
 import { ref } from 'vue'
 import exifr from 'exifr'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { MapPin, ImageIcon } from 'lucide-vue-next'
+import { ImageIcon } from 'lucide-vue-next'
 import {
     HoverCard,
     HoverCardContent,
     HoverCardTrigger,
 } from '@/components/ui/hover-card'
 
-const props = defineProps<{
+defineProps<{
     graveLocation: string
     graveParcel: string
     graveLine: string
