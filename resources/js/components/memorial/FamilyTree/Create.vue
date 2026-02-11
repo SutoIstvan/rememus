@@ -548,39 +548,39 @@ function addNewChild() {
 }
 
 // Animation directive
-const vScrollAnimate = {
-  mounted(el, binding) {
-    const { delay = 0, direction = 'up', offset = 100 } = binding.value || {}
-    el.style.opacity = '0'
-    el.style.transition = 'all 0.6s ease-out'
-    switch (direction) {
-      case 'up': el.style.transform = 'translateY(30px)'; break
-      case 'down': el.style.transform = 'translateY(-30px)'; break
-      case 'left': el.style.transform = 'translateX(-30px)'; break
-      case 'right': el.style.transform = 'translateX(30px)'; break
-    }
-    if (delay > 0) el.style.transitionDelay = `${delay}ms`
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setTimeout(() => {
-              entry.target.style.opacity = '1'
-              entry.target.style.transform = 'translate(0, 0)'
-            }, delay)
-            observer.unobserve(entry.target)
-          }
-        })
-      },
-      { root: null, rootMargin: `0px 0px -${offset}px 0px`, threshold: 0.1 }
-    )
-    observer.observe(el)
-    el._observer = observer
-  },
-  unmounted(el) {
-    if (el._observer) el._observer.disconnect()
-  }
-}
+// const vScrollAnimate = {
+//   mounted(el, binding) {
+//     const { delay = 0, direction = 'up', offset = 100 } = binding.value || {}
+//     el.style.opacity = '0'
+//     el.style.transition = 'all 0.6s ease-out'
+//     switch (direction) {
+//       case 'up': el.style.transform = 'translateY(30px)'; break
+//       case 'down': el.style.transform = 'translateY(-30px)'; break
+//       case 'left': el.style.transform = 'translateX(-30px)'; break
+//       case 'right': el.style.transform = 'translateX(30px)'; break
+//     }
+//     if (delay > 0) el.style.transitionDelay = `${delay}ms`
+//     const observer = new IntersectionObserver(
+//       (entries) => {
+//         entries.forEach((entry) => {
+//           if (entry.isIntersecting) {
+//             setTimeout(() => {
+//               entry.target.style.opacity = '1'
+//               entry.target.style.transform = 'translate(0, 0)'
+//             }, delay)
+//             observer.unobserve(entry.target)
+//           }
+//         })
+//       },
+//       { root: null, rootMargin: `0px 0px -${offset}px 0px`, threshold: 0.1 }
+//     )
+//     observer.observe(el)
+//     el._observer = observer
+//   },
+//   unmounted(el) {
+//     if (el._observer) el._observer.disconnect()
+//   }
+// }
 
 // Экспортируем функцию для получения данных семьи
 defineExpose({

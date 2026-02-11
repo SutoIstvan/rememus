@@ -15,9 +15,9 @@
 
         <div>
           <Button type="button" variant="secondary" @click="openBackgroundModal = true"
-            class="bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900">
+            class="bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 cursor-pointer">
             <ImageIcon class="w-5 h-5" />
-            <span class="hidden sm:inline-block ml-2">Change background</span>
+            <span class="hidden sm:inline-block ml-0">Change background</span>
           </Button>
         </div>
       </div>
@@ -38,9 +38,9 @@
 
                 <div class="absolute bottom-3 right-3">
                   <Button type="button" variant="secondary" @click="triggerFileUpload"
-                    class="bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900">
+                    class="bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 cursor-pointer">
                     <Camera class="w-5 h-5" />
-                    <span class="ml-2">Upload photo</span>
+                    <span class="ml-0">Upload person photo</span>
                   </Button>
                 </div>
 
@@ -56,20 +56,20 @@
 
           <!-- Person Info Section -->
           <div class="lg:flex-1/2 pt-[30px] max-lg:px-5 max-lg:text-center max-lg:mt-[200px]">
-            <div class="flex justify-center lg:justify-start">
-              <Input id="name" type="text" placeholder="Enter Name" class="w-120" :value="name"
+            <div class="flex justify-center lg:justify-start ">
+              <Input id="name" type="text" placeholder="Enter Name" class="w-full md:!w-120" :value="name"
                 @update:modelValue="updateName" />
             </div>
             <InputError :message="errors?.name" />
 
-            <ul class="list-none space-y-2 mb-2 max-lg:!mb-0 mt-5">
+            <ul class="list-none space-y-2 mb-2 max-md:!mb-0 mt-5">
               <li
-                class="flex flex-col lg:flex-row items-center gap-3 mb-2 justify-center lg:justify-start text-pretty text-xl tracking-tighter xl:text-4xl/none sm:text-3xl">
+                class="flex flex-col md:flex-row items-center gap-3 mb-2 justify-center md:justify-center lg:justify-start text-pretty text-xl tracking-tighter xl:text-4xl/none sm:text-3xl">
                 <!-- Дата рождения -->
-                <div class="mb-4 w-full sm:w-120 lg:w-auto">
+                <div class="mb-4 w-full sm:w-120 md:w-auto">
                   <div class="relative flex gap-2">
                     <Input :model-value="birthInput" placeholder="15.01.1900 Birth Date"
-                      class="bg-background tracking-normal w-full lg:!w-58" maxlength="10"
+                      class="bg-background tracking-normal w-full md:!w-58" maxlength="10"
                       @update:model-value="handleBirthInput" />
                     <Popover v-model:open="openBirth">
                       <PopoverTrigger as-child>
@@ -98,10 +98,10 @@
                 </div>
 
                 <!-- Дата смерти -->
-                <div class="mb-4 w-full sm:w-120 lg:w-auto">
+                <div class="mb-4 w-full sm:w-120 md:w-auto">
                   <div class="relative flex gap-2">
                     <Input :model-value="deathInput" placeholder="15.01.2026 Passing Date"
-                      class="bg-background pr-10 tracking-normal w-full lg:!w-59" maxlength="10"
+                      class="bg-background pr-10 tracking-normal w-full md:!w-59" maxlength="10"
                       @update:model-value="handleDeathInput" />
                     <Popover v-model:open="openDeath">
                       <PopoverTrigger as-child>
@@ -132,9 +132,9 @@
             </ul>
 
             <div class="flex justify-center lg:justify-start">
-              <div class="relative w-120">
+              <div class="relative w-full md:!w-120">
                 <MapPin class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                <Input type="text" placeholder="Birth Place" class="pl-10 w-full" :value="birth_place"
+                <Input type="text" placeholder="Birth Place" class="w-full md:!w-120" :value="birth_place"
                   @update:modelValue="updateBirthPlace" />
                 <InputError :message="errors?.birth_place" />
               </div>
