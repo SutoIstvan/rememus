@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MemorialController;
 use App\Http\Controllers\AvatarUploadController;
+use App\Http\Controllers\BiographyController;
 use Inertia\Inertia;
 
 use App\Http\Controllers\DashboardMemorialController;
@@ -46,6 +47,10 @@ Route::middleware(['auth'])->group(function () {
     // Удаление мемориала
     Route::delete('/memorial/{memorial}', [MemorialController::class, 'destroy'])
         ->name('memorial.destroy');
+
+    // Генерация биографии и девиза через OpenAI
+    Route::post('/memorial/{memorial}/generate-biography', [BiographyController::class, 'generate'])
+        ->name('memorial.generate-biography');
 });
 
 Route::post('/upload', [AvatarUploadController::class, 'upload']);

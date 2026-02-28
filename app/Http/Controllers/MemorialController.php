@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use App\Models\Family;
 use App\Models\Image;
 use App\Models\Timeline;
+use App\Services\BiographyGeneratorService;
 
 class MemorialController extends Controller
 {
@@ -191,6 +192,25 @@ class MemorialController extends Controller
                     'date_to' => $event['date_to'] ?? null,
                 ]);
             }
+        }
+
+        // ── Автогенерация биографии и девиза через OpenAI ────────────
+        try {
+            $memorial->load(['family', 'timeline']);
+            $generated = app(BiographyGeneratorService::class)->generate($memorial);
+            $updateData = [];
+            if (!empty($generated['biography'])) {
+                $updateData['biography'] = $generated['biography'];
+            }
+            if (!empty($generated['motto'])) {
+                $updateData['motto'] = $generated['motto'];
+            }
+            if (!empty($updateData)) {
+                $memorial->update($updateData);
+            }
+        } catch (\Throwable $e) {
+            // Не прерываем сохранение при ошибке генерации
+            \Log::warning('Biography generation failed on store: ' . $e->getMessage());
         }
 
         return redirect()
@@ -469,6 +489,25 @@ class MemorialController extends Controller
                     'order' => $maxOrder + 1 + $index,
                 ]);
             }
+        }
+
+        // ── Автогенерация биографии и девиза через OpenAI ────────────
+        try {
+            $memorial->load(['family', 'timeline']);
+            $generated = app(BiographyGeneratorService::class)->generate($memorial);
+            $updateData = [];
+            if (!empty($generated['biography'])) {
+                $updateData['biography'] = $generated['biography'];
+            }
+            if (!empty($generated['motto'])) {
+                $updateData['motto'] = $generated['motto'];
+            }
+            if (!empty($updateData)) {
+                $memorial->update($updateData);
+            }
+        } catch (\Throwable $e) {
+            // Не прерываем обновление при ошибке генерации
+            \Log::warning('Biography generation failed on update: ' . $e->getMessage());
         }
 
         return redirect()

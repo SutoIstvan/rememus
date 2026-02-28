@@ -4,6 +4,7 @@ import { ref, watch, onMounted, computed } from 'vue'
 import { toast } from "vue-sonner"
 import { Toaster } from '@/components/ui/sonner'
 import { Head } from '@inertiajs/vue3';
+import { Sparkles, Loader2 } from 'lucide-vue-next'
 
 import 'vue-sonner/style.css'
 
@@ -218,6 +219,30 @@ watch(() => form.image, (newImage) => {
 // Decision: OMIT auto-sync in Edit mode to prevent overwriting user's manual edits.
 import { update as updateMemorial } from '@/routes/memorial'
 
+const isGenerating = ref(false)
+
+const generateContent = async () => {
+    if (isGenerating.value) return
+    isGenerating.value = true
+    try {
+        const url = `/memorial/${props.memorial.slug || props.memorial.id}/generate-biography`
+        // axios is pre-configured in Laravel+Vite to send the XSRF-TOKEN cookie automatically
+        const { default: axios } = await import('axios')
+        const { data } = await axios.post(url, {}, {
+            headers: { Accept: 'application/json' },
+        })
+        if (data.error) throw new Error(data.error)
+        if (data.biography) form.biography = data.biography
+        if (data.motto) form.motto = data.motto
+        toast.success('Biography and motto generated!')
+    } catch (err: any) {
+        const msg = err?.response?.data?.error || err?.message || 'Failed to generate biography'
+        toast.error(msg)
+    } finally {
+        isGenerating.value = false
+    }
+}
+
 const submit = () => {
     // Generate URL using Wayfinder helper
     const url = updateMemorial.url({ memorial: props.memorial.slug || props.memorial.id })
@@ -412,6 +437,19 @@ const handleGalleryDelete = (ids: number[]) => {
                         <div class="space-y-2 mt-4">
                             <Textarea id="biography" v-model="form.biography" placeholder="Write a biography..."
                                 class="min-h-[150px]" />
+                        </div>
+                        <!-- Generate button -->
+                        <div class="mt-3">
+                            <button type="button" @click="generateContent" :disabled="isGenerating" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                                       bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md
+                                       hover:from-violet-700 hover:to-indigo-700 hover:shadow-lg hover:-translate-y-px
+                                       disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0">
+                                <Loader2 v-if="isGenerating" class="size-4 animate-spin" />
+                                <Sparkles v-else class="size-4" />
+                                {{ isGenerating ? 'Generating...' : '✨ Generate Biography & Motto' }}
+                            </button>
+                            <p class="mt-1 text-xs text-gray-400">Uses AI to generate based on name, dates, family tree,
+                                timeline & features.</p>
                         </div>
                     </div>
                 </div>
