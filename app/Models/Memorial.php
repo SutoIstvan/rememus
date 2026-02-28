@@ -4,11 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use App\Models\Image;
+use App\Models\Timeline;
 
 class Memorial extends Model
 {
     use SoftDeletes;
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($memorial) {
+            if (empty($memorial->slug)) {
+                $memorial->slug = $memorial->generateUniqueSlug($memorial->name);
+            }
+        });
+    }
 
     protected $fillable = [
         'slug',
@@ -33,6 +47,7 @@ class Memorial extends Model
         'grave_parcel',
         'grave_line',
         'grave_number',
+        'grave_photo',
         'virtual_code',
         'admin_id',
         'generation_attempts_left',
@@ -85,7 +100,18 @@ class Memorial extends Model
         $originalSlug = $slug;
         $count = 1;
 
-        while (static::where('slug', $slug)->where('id', '!=', $this->id)->exists()) {
+        while (true) {
+            $query = static::where('slug', $slug);
+
+            // При обновлении исключаем текущую запись
+            if ($this->id) {
+                $query->where('id', '!=', $this->id);
+            }
+
+            if (!$query->exists()) {
+                break;
+            }
+
             $slug = $originalSlug . '-' . $count++;
         }
 
@@ -97,36 +123,26 @@ class Memorial extends Model
     //     return $this->hasMany(Image::class);
     // }
 
-    // public function images()
-    // {
-    //     return $this->hasMany(Image::class);
-    // }
+    public function images(): HasMany
+    {
+        return $this->hasMany(Image::class);
+    }
 
-    // public function comments()
-    // {
-    //     return $this->hasMany(Comment::class);
-    // }
-
-    // public function timelines()
-    // {
-    //     return $this->hasMany(Timeline::class);
-    // }
-
-    // public function family()
-    // {
-    //     return $this->hasMany(Family::class);
-    // }
-
-    // public function timeline()
-    // {
-    //     return $this->hasMany(Timeline::class);
-    // }
+    public function timeline(): HasMany
+    {
+        return $this->hasMany(Timeline::class);
+    }
 
 
     /**
      * Получить членов семьи для этого мемориала
      */
-    public function families(): HasMany
+
+
+    /**
+     * Получить членов семьи для этого мемориала
+     */
+    public function family(): HasMany
     {
         return $this->hasMany(Family::class);
     }
@@ -136,7 +152,7 @@ class Memorial extends Model
      */
     public function mainPerson()
     {
-        return $this->families()->where('role', 'main_person')->first();
+        return $this->family()->where('role', 'main_person')->first();
     }
 
     /**
@@ -144,7 +160,7 @@ class Memorial extends Model
      */
     public function parents(): HasMany
     {
-        return $this->families()->whereIn('role', ['father', 'mother']);
+        return $this->family()->whereIn('role', ['father', 'mother']);
     }
 
     /**
@@ -152,7 +168,7 @@ class Memorial extends Model
      */
     public function children(): HasMany
     {
-        return $this->families()->where('role', 'child');
+        return $this->family()->where('role', 'child');
     }
 
     /**
@@ -160,7 +176,7 @@ class Memorial extends Model
      */
     public function spouses(): HasMany
     {
-        return $this->families()->where('role', 'spouse');
+        return $this->family()->where('role', 'spouse');
     }
 
     /**
@@ -168,7 +184,7 @@ class Memorial extends Model
      */
     public function siblings(): HasMany
     {
-        return $this->families()->where('role', 'sibling');
+        return $this->family()->where('role', 'sibling');
     }
 
     /**
@@ -176,7 +192,7 @@ class Memorial extends Model
      */
     public function grandparents(): HasMany
     {
-        return $this->families()->whereIn('role', [
+        return $this->family()->whereIn('role', [
             'grandfather_paternal',
             'grandmother_paternal',
             'grandfather_maternal',

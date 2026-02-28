@@ -1,30 +1,20 @@
 <template>
   <header>
-    <div
-      v-scroll-animate="{ direction: 'up', offset: 100 }"
-      class="header-one opacity-0 rounded-full lp:!max-w-[1290px] xl:max-w-[1140px] lg:max-w-[960px] md:max-w-[720px] sm:max-w-[540px] min-[500px]:max-w-[450px] min-[425px]:max-w-[375px] max-w-[320px] mx-auto w-full fixed left-1/2 -translate-x-1/2 z-50 top-5 flex items-center justify-between px-2.5 xl:py-0 py-2.5 bg-accent/60 border border-stroke-2 dark:border-stroke-6 dark:bg-background-9 backdrop-blur-lg"
-    >
+    <div v-scroll-animate="{ direction: 'up', offset: 100 }"
+      class="header-one opacity-0 rounded-full lp:!max-w-[1290px] xl:max-w-[1140px] lg:max-w-[960px] md:max-w-[720px] sm:max-w-[540px] min-[500px]:max-w-[450px] min-[425px]:max-w-[375px] max-w-[320px] mx-auto w-full fixed left-1/2 -translate-x-1/2 z-50 top-5 flex items-center justify-between px-2.5 xl:py-0 py-2.5 bg-accent/60 border border-stroke-2 dark:border-stroke-6 dark:bg-background-9 backdrop-blur-lg">
       <!-- Logo Section -->
-      <div >
+      <div>
         <Link :href="'/dashboard'" class=" flex items-center">
           <span class="sr-only">Home</span>
           <figure class="max-w-[44px]">
-            <img 
-              :src="logos.small" 
-              alt="Rememus.com" 
-              class="w-full dark:hidden block" 
-            />
-            <img 
-              :src="logos.smallDark" 
-              alt="Rememus.com" 
-              class="w-full dark:block hidden" 
-            />
+            <img :src="logos.small" alt="Rememus.com" class="w-full dark:hidden block" />
+            <img :src="logos.smallDark" alt="Rememus.com" class="w-full dark:block hidden" />
 
           </figure>
 
-            <div class="ms-2 text-xl">
-              Rememus<span class="text-gray-500">.com</span>
-            </div>
+          <div class="ms-2 text-xl">
+            Rememus<span class="text-gray-500">.com</span>
+          </div>
 
         </Link>
       </div>
@@ -33,14 +23,11 @@
       <nav class="hidden xl:flex items-center">
         <ul class="flex items-center">
           <li v-for="(item, index) in navigationItems" :key="index" class="py-2.5">
-            <a
-              :href="`#${item.route}`"
-              @click="scrollToSection(item.route, $event)"
+            <a :href="`#${item.route}`" @click="scrollToSection(item.route, $event)"
               class="flex items-center gap-1 px-4 py-2 border border-transparent hover:border-stroke-2 dark:hover:border-stroke-7 rounded-full text-tagline-1 font-normal transition-all duration-200"
-              :class="isActiveSection(item.route) ? 
-                'text-primary border-primary/20 bg-primary/5 dark:text-accent dark:border-accent/20 dark:bg-accent/5' : 
-                'text-secondary/60 hover:text-secondary dark:text-accent/60 dark:hover:text-accent'"
-            >
+              :class="isActiveSection(item.route) ?
+                'text-primary border-primary/20 bg-primary/5 dark:text-accent dark:border-accent/20 dark:bg-accent/5' :
+                'text-secondary/60 hover:text-secondary dark:text-accent/60 dark:hover:text-accent'">
               {{ item.label }}
             </a>
           </li>
@@ -49,34 +36,23 @@
 
       <!-- Desktop CTA Button -->
       <div class="xl:flex hidden items-center justify-center">
-        <Link 
-          :href="edit.url()" 
-          class="btn btn-md btn-secondary hover:btn-primary dark:btn-accent"
-        >
-          <span>Edit</span>
+        <Link href="/dashboard" class="btn btn-md btn-secondary hover:btn-primary dark:btn-accent">
+          <span>Dashboard</span>
         </Link>
       </div>
 
       <!-- Mobile Menu Button -->
       <div class="xl:hidden block">
-        <button
-          @click="toggleMobileMenu"
+        <button @click="toggleMobileMenu"
           class="nav-hamburger flex flex-col gap-[5px] size-12 bg-background-4 dark:bg-background-6 rounded-full items-center justify-center cursor-pointer"
-          :class="{ 'active': isMobileMenuOpen }"
-        >
+          :class="{ 'active': isMobileMenuOpen }">
           <span class="sr-only">Menu</span>
-          <span 
-            class="block w-6 h-0.5 bg-stroke-9 dark:bg-stroke-1 transition-all duration-300"
-            :class="{ 'rotate-45 translate-y-2': isMobileMenuOpen }"
-          ></span>
-          <span 
-            class="block w-6 h-0.5 bg-stroke-9 dark:bg-stroke-1 transition-all duration-300"
-            :class="{ 'opacity-0': isMobileMenuOpen }"
-          ></span>
-          <span 
-            class="block w-6 h-0.5 bg-stroke-9 dark:bg-stroke-1 transition-all duration-300"
-            :class="{ '-rotate-45 -translate-y-2': isMobileMenuOpen }"
-          ></span>
+          <span class="block w-6 h-0.5 bg-stroke-9 dark:bg-stroke-1 transition-all duration-300"
+            :class="{ 'rotate-45 translate-y-2': isMobileMenuOpen }"></span>
+          <span class="block w-6 h-0.5 bg-stroke-9 dark:bg-stroke-1 transition-all duration-300"
+            :class="{ 'opacity-0': isMobileMenuOpen }"></span>
+          <span class="block w-6 h-0.5 bg-stroke-9 dark:bg-stroke-1 transition-all duration-300"
+            :class="{ '-rotate-45 -translate-y-2': isMobileMenuOpen }"></span>
         </button>
       </div>
     </div>
@@ -86,33 +62,27 @@
       <div v-if="isMobileMenuOpen" class="fixed inset-0 z-40 xl:hidden">
         <!-- Backdrop -->
         <div @click="toggleMobileMenu" class="fixed inset-0 bg-black/50 backdrop-blur-sm"></div>
-        
+
         <!-- Menu Panel -->
-        <div class="fixed top-[100px] left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-white dark:bg-background-9 rounded-2xl border border-stroke-2 dark:border-stroke-6 p-6 shadow-xl">
+        <div
+          class="fixed top-[100px] left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-white dark:bg-background-9 rounded-2xl border border-stroke-2 dark:border-stroke-6 p-6 shadow-xl">
           <nav>
             <ul class="space-y-4">
               <li v-for="(item, index) in navigationItems" :key="index">
-                <a
-                  :href="`#${item.route}`"
-                  @click="scrollToSection(item.route, $event)"
-                  class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200"
-                  :class="isActiveSection(item.route) ? 
-                    'text-primary bg-primary/10 dark:text-accent dark:bg-accent/10' : 
-                    'text-secondary hover:bg-background-3 dark:text-accent dark:hover:bg-background-8'"
-                >
+                <a :href="`#${item.route}`" @click="scrollToSection(item.route, $event)"
+                  class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200" :class="isActiveSection(item.route) ?
+                    'text-primary bg-primary/10 dark:text-accent dark:bg-accent/10' :
+                    'text-secondary hover:bg-background-3 dark:text-accent dark:hover:bg-background-8'">
                   <component v-if="item.icon" :is="item.icon" class="w-5 h-5" />
                   <span>{{ item.label }}</span>
                 </a>
               </li>
             </ul>
-            
+
             <!-- Mobile CTA -->
             <div class="mt-6 pt-6 border-t border-stroke-2 dark:border-stroke-6">
-              <Link 
-                href="/register" 
-                @click="toggleMobileMenu"
-                class="btn btn-md btn-secondary hover:btn-primary dark:btn-accent w-full justify-center"
-              >
+              <Link href="/register" @click="toggleMobileMenu"
+                class="btn btn-md btn-secondary hover:btn-primary dark:btn-accent w-full justify-center">
                 <span>{{ ctaButton.text }}</span>
               </Link>
             </div>
@@ -126,7 +96,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'
-import { edit } from "@/routes/memorial";
+
 
 // Mobile menu state
 const isMobileMenuOpen = ref(false)
@@ -179,21 +149,21 @@ const scrollToSection = (sectionId, event) => {
   event.preventDefault()
   isMobileMenuOpen.value = false
   isScrolling.value = true
-  
+
   const element = document.getElementById(sectionId)
   if (element) {
     // Calculate offset for fixed header
     const headerHeight = 100 // Adjust based on your header height
     const elementPosition = element.offsetTop - headerHeight
-    
+
     window.scrollTo({
       top: elementPosition,
       behavior: 'smooth'
     })
-    
+
     // Set active section immediately for better UX
     activeSection.value = sectionId
-    
+
     // Reset scrolling flag after animation
     setTimeout(() => {
       isScrolling.value = false
@@ -204,7 +174,7 @@ const scrollToSection = (sectionId, event) => {
 // Handle scroll events to determine active section
 const handleScroll = () => {
   if (isScrolling.value) return // Don't update during programmatic scroll
-  
+
   const headerHeight = 100
   const sections = props.navigationItems.map(item => {
     const element = document.getElementById(item.route)
@@ -220,9 +190,9 @@ const handleScroll = () => {
     }
     return null
   }).filter(Boolean)
-  
+
   const scrollPosition = window.pageYOffset + headerHeight + 50 // Small offset for better detection
-  
+
   // Find the section that contains the scroll position
   let currentSection = ''
   for (const section of sections) {
@@ -231,7 +201,7 @@ const handleScroll = () => {
       break
     }
   }
-  
+
   // If no section is found, check if we're at the top or bottom
   if (!currentSection && sections.length > 0) {
     if (scrollPosition < sections[0].top) {
@@ -240,7 +210,7 @@ const handleScroll = () => {
       currentSection = sections[sections.length - 1].id
     }
   }
-  
+
   activeSection.value = currentSection
 }
 
@@ -264,7 +234,7 @@ onMounted(() => {
   nextTick(() => {
     // Set initial active section
     handleScroll()
-    
+
     // Add scroll listener
     window.addEventListener('scroll', throttledHandleScroll, { passive: true })
   })

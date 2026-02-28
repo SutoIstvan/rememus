@@ -259,16 +259,33 @@ watch(
   () => props.item,
   (item) => {
     if (item) {
+      console.log('TimelineModal received item:', item)
       isInitializing.value = true
       form.value = { ...item }
       titleTouched.value = true
 
-      // Handle media preview
-      if (item.media_preview) {
-        form.value.media_preview = item.media_preview
-      } else if (item.media && typeof item.media === 'string') {
-        form.value.media_preview = item.media
+      // Function to process image path
+      const processImagePath = (path: string) => {
+        if (!path || typeof path !== 'string') return null
+        if (path.startsWith('data:')) return path
+        if (path.startsWith('http')) return path
+        if (path.startsWith('/storage')) return path
+
+        if (path.startsWith('storage/')) return '/' + path
+
+        return `/storage/${path}`
       }
+
+      // Handle media preview - prioritizing existing preview but processing it
+      if (item.media_preview) {
+        console.log('Using existing media_preview:', item.media_preview)
+        form.value.media_preview = processImagePath(item.media_preview)
+      } else if (item.media) {
+        console.log('Using media:', item.media)
+        form.value.media_preview = processImagePath(item.media as string)
+      }
+
+      console.log('Final resolved media_preview:', form.value.media_preview)
 
       if (item.date) {
         const [year, month, day] = item.date.split('-').map(Number)

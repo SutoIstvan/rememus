@@ -1,21 +1,18 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { dashboard, home } from '@/routes';
-import { create as createMemorial, edit as editMemorial, destroy as destroyMemorial } from '@/routes/memorial';
+// import { dashboard } from '@/routes'; // Wayfinder might not have user routes yet
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { h, ref } from 'vue';
 import {
     ColumnDef,
     ColumnFiltersState,
-    ExpandedState,
     SortingState,
     VisibilityState,
     getCoreRowModel,
-    getExpandedRowModel,
-    getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
+    getFilteredRowModel,
     useVueTable,
     FlexRender,
 } from '@tanstack/vue-table';
@@ -23,11 +20,9 @@ import {
     ArrowUpDown,
     ChevronDown,
     MoreHorizontal,
-    Plus
 } from 'lucide-vue-next';
 
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -46,29 +41,32 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { valueUpdater } from '@/lib/utils'; // Make sure this exists, or implement it locally
+import { valueUpdater } from '@/lib/utils';
 
-interface Memorial {
+
+interface User {
     id: number;
-    slug: string | null;
     name: string;
-    birth_date: string | null;
-    death_date: string | null;
-    photo: string | null;
+    email: string;
+    created_at: string;
 }
 
 const props = defineProps<{
-    memorials: Memorial[];
+    users: User[];
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
-        href: dashboard().url,
+        href: '/dashboard', // Fallback if route helper fails
+    },
+    {
+        title: 'Users',
+        href: '/dashboard/users',
     },
 ];
 
-const columns: ColumnDef<Memorial>[] = [
+const columns: ColumnDef<User>[] = [
     {
         accessorKey: 'name',
         header: ({ column }) => {
@@ -80,20 +78,23 @@ const columns: ColumnDef<Memorial>[] = [
         cell: ({ row }) => h('div', { class: 'font-medium' }, row.getValue('name')),
     },
     {
-        accessorKey: 'birth_date',
-        header: 'Birth Date',
-        cell: ({ row }) => h('div', row.getValue('birth_date') || '-'),
+        accessorKey: 'email',
+        header: 'Email',
+        cell: ({ row }) => h('div', row.getValue('email')),
     },
     {
-        accessorKey: 'death_date',
-        header: 'Death Date',
-        cell: ({ row }) => h('div', row.getValue('death_date') || '-'),
+        accessorKey: 'created_at',
+        header: 'Created At',
+        cell: ({ row }) => {
+            const date = new Date(row.getValue('created_at'));
+            return h('div', date.toLocaleDateString());
+        },
     },
     {
         id: 'actions',
         enableHiding: false,
         cell: ({ row }) => {
-            const memorial = row.original;
+            const user = row.original;
 
             return h(DropdownMenu, {}, {
                 default: () => [
@@ -105,11 +106,9 @@ const columns: ColumnDef<Memorial>[] = [
                     ),
                     h(DropdownMenuContent, { align: 'end' }, () => [
                         h(DropdownMenuLabel, 'Actions'),
-                        h(DropdownMenuItem, () => h(Link, { href: editMemorial.url({ memorial: String(memorial.slug || memorial.id) }) }, 'Edit')),
-                        h(DropdownMenuItem, () => h(Link, { href: home.url() }, 'View (Home) - TODO')), // Replace with actual view route if available
                         h(DropdownMenuSeparator),
                         h(DropdownMenuItem, () => h(Link, {
-                            href: destroyMemorial.url({ memorial: String(memorial.slug || memorial.id) }),
+                            href: `/dashboard/users/${user.id}`,
                             method: 'delete',
                             as: 'button',
                             class: 'w-full text-left text-red-600 focus:text-red-600'
@@ -127,7 +126,7 @@ const columnVisibility = ref<VisibilityState>({});
 const rowSelection = ref({});
 
 const table = useVueTable({
-    get data() { return props.memorials },
+    get data() { return props.users },
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -137,7 +136,7 @@ const table = useVueTable({
     onColumnFiltersChange: updaterOrValue => valueUpdater(updaterOrValue, columnFilters),
     onColumnVisibilityChange: updaterOrValue => valueUpdater(updaterOrValue, columnVisibility),
     onRowSelectionChange: updaterOrValue => valueUpdater(updaterOrValue, rowSelection),
-    getRowId: (row) => String(row.id), // Use stable ID for keys
+    getRowId: (row) => String(row.id),
     state: {
         get sorting() { return sorting.value },
         get columnFilters() { return columnFilters.value },
@@ -150,20 +149,20 @@ const table = useVueTable({
 
 <template>
 
-    <Head title="Dashboard" />
+    <Head title="Users" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 p-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <h2 class="text-2xl font-bold tracking-tight">Memorials</h2>
-                    <p class="text-muted-foreground">Manage your memorial pages here.</p>
+                    <h2 class="text-2xl font-bold tracking-tight">Users</h2>
+                    <p class="text-muted-foreground">Manage your users here.</p>
                 </div>
-                <Link :href="createMemorial.url()">
+                <!-- <Link :href="route('users.create')">
                     <Button>
                         <Plus class="mr-2 h-4 w-4" /> Create New
                     </Button>
-                </Link>
+                </Link> -->
             </div>
 
             <div class="w-full">

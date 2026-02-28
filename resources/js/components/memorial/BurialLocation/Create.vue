@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import exifr from 'exifr'
 import { Input } from '@/components/ui/input'
 import { ImageIcon } from 'lucide-vue-next'
@@ -9,13 +9,13 @@ import {
     HoverCardTrigger,
 } from '@/components/ui/hover-card'
 
-defineProps<{
+const props = defineProps<{
     graveLocation: string
     graveParcel: string
     graveLine: string
     graveNumber: string
     coordinates: string
-    gravePhoto: File | null
+    gravePhoto: File | string | null
 }>()
 
 const emit = defineEmits([
@@ -28,6 +28,19 @@ const emit = defineEmits([
 ])
 
 const photoPreview = ref<string | null>(null)
+
+watch(() => props.gravePhoto, (newVal) => {
+    if (newVal instanceof File) {
+        // Already handled by onFileChange usually, but if passed from parent...
+        const reader = new FileReader()
+        reader.onload = (e) => photoPreview.value = e.target?.result as string
+        reader.readAsDataURL(newVal)
+    } else if (typeof newVal === 'string') {
+        photoPreview.value = newVal
+    } else {
+        photoPreview.value = null
+    }
+}, { immediate: true })
 
 const onFileChange = async (e: Event) => {
     const file = (e.target as HTMLInputElement).files?.[0]
@@ -62,6 +75,7 @@ const onFileChange = async (e: Event) => {
 <template>
     <div class="space-y-10 max-w-3xl mx-auto px-3 sm:px-1">
         <div class="text-center space-y-5 mx-auto mt-1 md:mt-[30px]">
+            <!-- DEBUG INFO -->
             <!-- <span class="badge badge-green">
                 Burial Location
             </span> -->

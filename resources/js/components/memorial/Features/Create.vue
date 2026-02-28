@@ -137,7 +137,7 @@ const toggleHobby = (value: string) => {
       </div>
 
       <div>
-        <h3 class="text-lg font-medium mb-2">
+        <h3 class="text-lg font-medium mt-4 mb-2">
           Memorable habits
 
           <label for="habits" class="text-sm font-normal text-muted-foreground">
@@ -150,7 +150,7 @@ const toggleHobby = (value: string) => {
       </div>
 
       <div>
-        <h3 class="text-lg font-medium mb-2">
+        <h3 class="text-lg font-medium mt-4 mb-2">
           Memorable stories
 
           <label for="stories" class="text-sm font-normal text-muted-foreground">
@@ -163,7 +163,7 @@ const toggleHobby = (value: string) => {
       </div>
 
       <div>
-        <h3 class="text-lg font-medium mb-2">
+        <h3 class="text-lg font-medium mt-4 mb-2">
           Wisdom
 
           <label for="wisdom" class="text-sm font-normal text-muted-foreground">

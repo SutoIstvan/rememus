@@ -233,6 +233,7 @@ const props = defineProps({
   death_date: String,
   birth_place: String,
   imagePreview: String,
+  backgroundImageUrl: String,
   errors: Object
 })
 
@@ -459,10 +460,37 @@ watch(
 const selectedFile = ref<File | null>(null)
 const previewImage = ref<string>(props.imagePreview || '/images/front/avatar_2.png')
 const customBackground = ref<File | null>(null)
-const backgroundImage = ref<string>('/images/front/hero-bg.png')
+const backgroundImage = ref<string>(props.backgroundImageUrl || '/images/front/hero-bg.png')
 
 const imageFileInput = ref<HTMLInputElement | null>(null)
 const backgroundFileInput = ref<HTMLInputElement | null>(null)
+
+watch(() => props.imagePreview, (newVal) => {
+  if (newVal) {
+    previewImage.value = newVal
+    selectedFile.value = null // Reset selected file as we have a new source of truth
+  } else {
+    previewImage.value = '/images/front/avatar_2.png'
+  }
+})
+
+watch(() => props.backgroundImageUrl, (newVal) => {
+  if (newVal) {
+    backgroundImage.value = newVal
+    customBackground.value = null // Reset custom background file
+    selectedBackgroundUrl.value = '' // Clear predefined selection if any (optional, depends on logic)
+    // If it's a predefined URL coming back, we might want to set selectedBackgroundUrl to it?
+    // But logic for predefined uses 'selectedBackgroundUrl'.
+    // If 'newVal' matches one of predefined, let's set it.
+    const match = predefinedBackgrounds.value.find(bg => bg.url === newVal)
+    if (match) {
+      selectedBackgroundUrl.value = match.url
+    }
+  } else {
+    backgroundImage.value = '/images/front/hero-bg.png'
+    selectedBackgroundUrl.value = '/images/front/hero-bg.png'
+  }
+})
 
 const updateName = (v: string | number) => emit('update:name', String(v))
 const updateBirthPlace = (v: string | number) => emit('update:birth_place', String(v))

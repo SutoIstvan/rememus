@@ -112,7 +112,7 @@ export default {
         return this.formatSingleDate(feature.date_from)
       }
 
-      return ''
+      return 'Please select a date'
     },
 
     formatSingleDate(dateString) {
@@ -176,7 +176,15 @@ export default {
       }
 
       if (typeof src === 'string') {
-        return src
+        // If it starts with http or https, return as is
+        if (src.startsWith('http')) return src
+        // If it starts with /storage already, return as is
+        if (src.startsWith('/storage')) return src
+        // If it starts with storage/ (no leading slash), prepend /
+        if (src.startsWith('storage/')) return '/' + src
+        // Otherwise, assume it's a storage path and prepend /storage/
+        // BUT check if it looks like a relative path that needs prefixing
+        return `/storage/${src}`
       }
 
       return null
