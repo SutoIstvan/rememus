@@ -219,6 +219,18 @@ class MemorialController extends Controller
     }
 
     /**
+     * Show the public memorial view page.
+     */
+    public function show(Memorial $memorial)
+    {
+        $memorial->load(['family', 'images', 'timeline']);
+
+        return \Inertia\Inertia::render('View', [
+            'memorial' => $memorial
+        ]);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Memorial $memorial)

@@ -13,7 +13,7 @@
           class="group cursor-pointer relative overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300"
           @click="openImage(img, colIndex * 3 + imgIndex + 1)">
           <img
-            class="h-auto w-full rounded-lg transform group-hover:scale-105 transition-transform duration-500 ease-out object-cover"
+            class="w-full h-full object-cover rounded-lg transform group-hover:scale-105 transition-transform duration-500 ease-out"
             :src="img" :alt="`Image ${colIndex * 3 + imgIndex + 1}`" />
           <div
             class="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-lg pointer-events-none">
@@ -65,9 +65,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 
-const images = [
+const props = withDefaults(defineProps<{
+  initialImages?: string[]
+}>(), {
+  initialImages: undefined,
+})
+
+const defaultImages = [
   "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image.jpg",
   "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-1.jpg",
   "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-2.jpg",
@@ -82,21 +88,25 @@ const images = [
   "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-11.jpg",
 ];
 
-// Разделяем картинки на колонки по 3 штуки
-const columns = [];
-for (let i = 0; i < 4; i++) {
-  columns.push(images.slice(i * 3, i * 3 + 3));
-}
+const images = computed(() => props.initialImages?.length ? props.initialImages : defaultImages)
 
-// Состояние модального окна
+// Разделяем картинки на колонки по 3 штуки
+const columns = computed(() => {
+  const cols: string[][] = []
+  for (let i = 0; i < 4; i++) {
+    cols.push(images.value.slice(i * 3, i * 3 + 3))
+  }
+  return cols
+})
+
 const isDialogOpen = ref(false)
 const currentImage = ref('')
 const currentImageIndex = ref(0)
 
 // Функции для работы с модальным окном
-const openImage = (imageSrc, index) => {
+const openImage = (imageSrc: string, index: number) => {
   currentImage.value = imageSrc
-  currentImageIndex.value = index - 1 // Преобразуем в 0-based index
+  currentImageIndex.value = index - 1
   isDialogOpen.value = true
 }
 
@@ -105,25 +115,24 @@ const closeDialog = () => {
 }
 
 const nextImage = () => {
-  if (currentImageIndex.value < images.length - 1) {
+  if (currentImageIndex.value < images.value.length - 1) {
     currentImageIndex.value++
-    currentImage.value = images[currentImageIndex.value]
+    currentImage.value = images.value[currentImageIndex.value]
   }
 }
 
 const previousImage = () => {
   if (currentImageIndex.value > 0) {
     currentImageIndex.value--
-    currentImage.value = images[currentImageIndex.value]
+    currentImage.value = images.value[currentImageIndex.value]
   }
 }
 
 
 
 // Обработка клавиш
-const handleKeydown = (event) => {
+const handleKeydown = (event: KeyboardEvent) => {
   if (!isDialogOpen.value) return
-
   if (event.key === 'Escape') {
     closeDialog()
   } else if (event.key === 'ArrowRight') {

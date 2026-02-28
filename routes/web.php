@@ -29,6 +29,10 @@ Route::get('/memorial/create', function () {
     return Inertia::render('MemorialCreate');
 })->middleware(['auth'])->name('memorial.create');
 
+// Public memorial view page (no auth required)
+Route::get('/memorial/{memorial}', [MemorialController::class, 'show'])
+    ->name('memorial.show');
+
 
 
 Route::middleware(['auth'])->group(function () {

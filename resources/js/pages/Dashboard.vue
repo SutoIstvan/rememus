@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { dashboard, home } from '@/routes';
+import { dashboard } from '@/routes';
 import { create as createMemorial, edit as editMemorial, destroy as destroyMemorial } from '@/routes/memorial';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/vue3';
@@ -106,7 +106,7 @@ const columns: ColumnDef<Memorial>[] = [
                     h(DropdownMenuContent, { align: 'end' }, () => [
                         h(DropdownMenuLabel, 'Actions'),
                         h(DropdownMenuItem, () => h(Link, { href: editMemorial.url({ memorial: String(memorial.slug || memorial.id) }) }, 'Edit')),
-                        h(DropdownMenuItem, () => h(Link, { href: home.url() }, 'View (Home) - TODO')), // Replace with actual view route if available
+                        h(DropdownMenuItem, () => h(Link, { href: `/memorial/${memorial.slug || memorial.id}`, target: '_blank' }, 'View Page')),
                         h(DropdownMenuSeparator),
                         h(DropdownMenuItem, () => h(Link, {
                             href: destroyMemorial.url({ memorial: String(memorial.slug || memorial.id) }),

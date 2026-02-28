@@ -1,372 +1,222 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { VueFlow } from '@vue-flow/core'
 import { markRaw } from 'vue'
 import { Position } from '@vue-flow/core'
 
-// these components are only shown as examples of how to use a custom node or edge
-// you can find many examples of how to create these custom components in the examples page of the docs
 import SpecialNode from '@/components/SpecialNode.vue'
 import SpecialEdge from '@/components/SpecialEdge.vue'
 import MarriageEdge from '@/components/MarriageEdge.vue'
 
+const props = defineProps({
+  familyData: {
+    type: Array,
+    default: () => []
+  },
+  memorial: {
+    type: Object,
+    default: () => ({})
+  }
+})
+
 const edgeTypes = {
   special: markRaw(SpecialEdge),
   marriage: markRaw(MarriageEdge),
-
 }
 
-// these are our nodes
-const nodes = [
-  {
-    id: 'dad',
-    position: { x: 190, y: 170 },
-    style: { width: '90px', height: '105px', padding: '5px', },
-    data: {
-      label: 'Paul Richardson',
-      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518291.jpg',
-    }
-  },
-  {
-    id: 'mom',
-    position: { x: 345, y: 170 },
-    style: { width: '90px', height: '105px', padding: '5px', },
-    data: {
-      label: 'Margaret Clarkson',
-      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518299.jpg',
-    }
-  },
-  {
+// Role → node ID mapping (same as Edit.vue)
+const roleToNodeId: Record<string, string> = {
+  father: 'dad',
+  mother: 'mom',
+  grandfather_paternal: 'grandpa_dad',
+  grandmother_paternal: 'grandma_dad',
+  grandfather_maternal: 'grandpa_mom',
+  grandmother_maternal: 'grandma_mom',
+  spouse: 'wife',
+  child: 'child',
+  sibling: 'brother',
+  other: 'other',
+}
+
+// Fixed positions for each node (same as Edit.vue layout)
+const nodePositions: Record<string, { x: number; y: number }> = {
+  grandpa_dad: { x: 75, y: 8 },
+  grandma_dad: { x: 200, y: 8 },
+  grandpa_mom: { x: 330, y: 8 },
+  grandma_mom: { x: 460, y: 8 },
+  dad: { x: 190, y: 170 },
+  mom: { x: 345, y: 170 },
+  you: { x: 265, y: 331 },
+  wife: { x: 135, y: 331 },
+  brother: { x: 375, y: 331 },
+  child: { x: 245, y: 490 },
+  other: { x: 100, y: 650 },
+}
+
+const nodeStyle = { width: '90px', height: '105px', padding: '5px' }
+
+// Helper to resolve avatar URL
+function resolveAvatar(avatar: string | null): string {
+  if (!avatar) return ''
+  if (avatar.startsWith('http') || avatar.startsWith('/storage') || avatar.startsWith('data:')) return avatar
+  return `/storage/${avatar}`
+}
+
+// Build nodes dynamically from DB data
+const nodes = computed(() => {
+  const familyMembers = props.familyData as any[]
+  const result: any[] = []
+  const nodeIds = new Set<string>()
+
+  // Always add the main person ('you') node
+  const mainPhoto = props.memorial?.photo
+    ? (props.memorial.photo.startsWith('http') || props.memorial.photo.startsWith('/storage')
+      ? props.memorial.photo
+      : `/storage/${props.memorial.photo}`)
+    : ''
+
+  result.push({
     id: 'you',
-    position: { x: 265, y: 331 },
-    style: { width: '90px', height: '105px', padding: '5px', },
+    position: { ...nodePositions.you },
+    style: { ...nodeStyle },
     data: {
-      label: 'Arnold Shannon',
-      avatar: 'http://rememus.test/images/front/testimonial-1.jpg',
+      label: props.memorial?.name || '',
+      avatar: mainPhoto,
     }
-  },
-  {
-    id: 'grandpa_dad',
-    position: { x: 75, y: 8 },
-    style: { width: '90px', height: '105px', padding: '5px', },
-    data: {
-      label: 'John Richardson',
-      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518264.jpg',
+  })
+  nodeIds.add('you')
+
+  // Track counters for dynamic nodes (siblings, children, spouses, others)
+  let siblingIndex = 0
+  let childIndex = 0
+  let spouseIndex = 0
+  let otherIndex = 0
+
+  familyMembers.forEach((member: any) => {
+    const role = member.role
+    const baseNodeId = roleToNodeId[role]
+    if (!baseNodeId) return
+
+    let nodeId: string
+    let position: { x: number; y: number }
+
+    // Roles with fixed single nodes
+    if (['dad', 'mom', 'grandpa_dad', 'grandma_dad', 'grandpa_mom', 'grandma_mom'].includes(baseNodeId)) {
+      nodeId = baseNodeId
+      position = { ...nodePositions[baseNodeId] }
     }
-  },
-  {
-    id: 'grandma_dad',
-    position: { x: 200, y: 8 },
-    style: { width: '90px', height: '105px', padding: '5px', },
-    data: {
-      label: 'Jacqueline Richardson',
-      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518272.jpg',
+    // Dynamic roles: use saved position or calculate offset
+    else if (baseNodeId === 'brother') {
+      nodeId = member.node_id || (siblingIndex === 0 ? 'brother' : `brother-${siblingIndex}`)
+      position = member.position || { x: 375 + siblingIndex * 110, y: 331 }
+      siblingIndex++
+    } else if (baseNodeId === 'child') {
+      nodeId = member.node_id || (childIndex === 0 ? 'child' : `child-${childIndex}`)
+      position = member.position || { x: 245 - childIndex * 110, y: 490 }
+      childIndex++
+    } else if (baseNodeId === 'wife') {
+      nodeId = member.node_id || (spouseIndex === 0 ? 'wife' : `wife-${spouseIndex}`)
+      position = member.position || { x: 135 - spouseIndex * 110, y: 331 }
+      spouseIndex++
+    } else if (baseNodeId === 'other') {
+      nodeId = member.node_id || `other-${otherIndex}`
+      position = member.position || { x: 100 + otherIndex * 110, y: 650 }
+      otherIndex++
+    } else {
+      return
     }
-  },
-  {
-    id: 'grandpa_mom',
-    position: { x: 330, y: 8 },
-    style: { width: '90px', height: '105px', padding: '5px', },
-    data: {
-      label: 'Bradley Clarkson',
-      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518278.jpg',
+
+    result.push({
+      id: nodeId,
+      position,
+      style: { ...nodeStyle },
+      data: {
+        label: member.name || '',
+        avatar: resolveAvatar(member.avatar),
+        qr_code: member.qr_code || '',
+      }
+    })
+    nodeIds.add(nodeId)
+  })
+
+  return result
+})
+
+// Set of existing node IDs for edge filtering
+const existingNodeIds = computed(() => new Set(nodes.value.map((n: any) => n.id)))
+
+// All possible edges — filtered to only include edges where both source and target exist
+const edges = computed(() => {
+  const ids = existingNodeIds.value
+
+  // Build all potential edges
+  const allEdges: any[] = []
+
+  // Parents → you
+  allEdges.push(
+    { id: 'mom-you', source: 'mom', target: 'you', type: 'special', sourcePosition: Position.Bottom, targetPosition: Position.Top, sourceHandle: 'source-bottom', targetHandle: 'target-top' },
+    { id: 'dad-you', source: 'dad', target: 'you', type: 'special', sourcePosition: Position.Bottom, targetPosition: Position.Top, sourceHandle: 'source-bottom', targetHandle: 'target-top' },
+  )
+
+  // Grandparents → mom
+  allEdges.push(
+    { id: 'grandma_mom-mom', source: 'grandma_mom', target: 'mom', type: 'special', sourcePosition: Position.Bottom, targetPosition: Position.Top, sourceHandle: 'source-bottom', targetHandle: 'target-top' },
+    { id: 'grandpa_mom-mom', source: 'grandpa_mom', target: 'mom', type: 'special', sourcePosition: Position.Bottom, targetPosition: Position.Top, sourceHandle: 'source-bottom', targetHandle: 'target-top' },
+  )
+
+  // Grandparents → dad
+  allEdges.push(
+    { id: 'grandma_dad-dad', source: 'grandma_dad', target: 'dad', type: 'special', sourcePosition: Position.Bottom, targetPosition: Position.Top, sourceHandle: 'source-bottom', targetHandle: 'target-top' },
+    { id: 'grandpa_dad-dad', source: 'grandpa_dad', target: 'dad', type: 'special', sourcePosition: Position.Bottom, targetPosition: Position.Top, sourceHandle: 'source-bottom', targetHandle: 'target-top' },
+  )
+
+  // Spouses (marriage edges: you → each spouse)
+  nodes.value.forEach((n: any) => {
+    if (n.id === 'wife' || n.id.startsWith('wife-')) {
+      allEdges.push({
+        id: `you-${n.id}`, source: 'you', target: n.id, type: 'marriage',
+        sourcePosition: Position.Left, targetPosition: Position.Right,
+        sourceHandle: 'source-left', targetHandle: 'target-right'
+      })
     }
-  },
-  {
-    id: 'grandma_mom',
-    position: { x: 460, y: 8 },
-    style: { width: '90px', height: '105px', padding: '5px', },
-    data: {
-      label: 'Emma Marie Clarkson',
-      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518285.jpg',
+  })
+
+  // Children (you → each child)
+  nodes.value.forEach((n: any) => {
+    if (n.id === 'child' || n.id.startsWith('child-') || n.id.startsWith('child')) {
+      if (n.id === 'you') return
+      // Check role-based: node IDs starting with 'child'
+      const isChild = n.id === 'child' || n.id.startsWith('child-') || n.id.startsWith('child')
+      // Avoid matching 'you' or other nodes
+      const familyMember = (props.familyData as any[]).find((m: any) => (m.node_id === n.id || roleToNodeId[m.role] === 'child'))
+      if (familyMember?.role === 'child' || n.id === 'child' || n.id.startsWith('child-')) {
+        allEdges.push({
+          id: `you-${n.id}`, source: 'you', target: n.id, type: 'special',
+          sourcePosition: Position.Bottom, targetPosition: Position.Top,
+          sourceHandle: 'source-bottom', targetHandle: 'target-top'
+        })
+      }
     }
-  },
+  })
 
-  {
-    id: 'wife',
-    position: { x: 135, y: 331 }, // слева от 'you' (x: 265)
-    style: { width: '90px', height: '105px', padding: '5px' },
-    data: {
-      label: 'Evelyn Lewis',
-      avatar: 'https://www.online-tribute.com/memorial/static/random1.jpg',
+  // Siblings (mom → each sibling)
+  nodes.value.forEach((n: any) => {
+    if (n.id === 'brother' || n.id.startsWith('brother-')) {
+      allEdges.push({
+        id: `mom-${n.id}`, source: 'mom', target: n.id, type: 'special',
+        sourcePosition: Position.Bottom, targetPosition: Position.Top,
+        sourceHandle: 'source-bottom', targetHandle: 'target-top'
+      })
     }
-  },
-  {
-    id: 'child',
-    position: { x: 245, y: 490 }, // ниже 'you'
-    style: { width: '90px', height: '105px', padding: '5px' },
-    data: {
-      label: 'Ruby Shannon',
-      avatar: 'https://www.online-tribute.com/memorial/uploads/tree/page-0-7-1696518909.jpg',
-    }
-  },
-  {
-    id: 'child2',
-    position: { x: 135, y: 490 }, // ниже 'you'
-    style: { width: '90px', height: '105px', padding: '5px' },
-    data: {
-      label: 'Ellia Liz Shannon',
-      avatar: 'https://randomuser.me/api/portraits/women/5.jpg',
-    }
-  },
-  {
-    id: 'brother',
-    position: { x: 375, y: 331 },
-    style: { width: '90px', height: '105px', padding: '5px', },
-    data: {
-      label: 'Robert Richardson',
-      avatar: 'https://randomuser.me/api/portraits/men/46.jpg',
-    }
-  },
+  })
 
-  {
-    id: 'brother2',
-    position: { x: 485, y: 331 },
-    style: { width: '90px', height: '105px', padding: '5px', },
-    data: {
-      label: 'Anabel Richardson',
-      avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-    }
-  },
-
-
-]
-
-
-
-// Связи (ребра)
-const edges = ref([
-
-  // Родители → ты (сверху вниз)
-  {
-    id: 'mom-you',
-    source: 'mom',
-    target: 'you',
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-  {
-    id: 'dad-you',
-    source: 'dad',
-    target: 'you',
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-
-  // Бабушки и дедушки → мама (сверху вниз)
-  {
-    id: 'grandma_mom-mom',
-    source: 'grandma_mom',
-    target: 'mom',
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-  {
-    id: 'grandpa_mom-mom',
-    source: 'grandpa_mom',
-    target: 'mom',
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-
-  // Бабушки и дедушки → папа (сверху вниз)
-  {
-    id: 'grandma_dad-dad',
-    source: 'grandma_dad',
-    target: 'dad',
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-  {
-    id: 'grandpa_dad-dad',
-    source: 'grandpa_dad',
-    target: 'dad',
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-
-  // Супружеская связь (горизонтально слева направо)
-  {
-    id: 'you-wife',
-    source: 'you',
-    target: 'wife',
-    type: 'marriage',
-    sourcePosition: Position.Left,
-    targetPosition: Position.Right,
-    sourceHandle: 'source-left',
-    targetHandle: 'target-right'
-  },
-
-  // Ты и жена → дети (сверху вниз)
-  {
-    id: 'you-child',
-    source: 'you',
-    target: 'child',
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-  {
-    id: 'you-child2',
-    source: 'you',
-    target: 'child2',
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-  // { 
-  //   id: 'wife-child', 
-  //   source: 'wife', 
-  //   target: 'child', 
-  //   type: 'special',
-  //   sourcePosition: Position.Bottom,
-  //   targetPosition: Position.Top,
-  //   sourceHandle: 'source-bottom',
-  //   targetHandle: 'target-top'
-  // },
-  // { 
-  //   id: 'wife-child2', 
-  //   source: 'wife', 
-  //   target: 'child2', 
-  //   type: 'special',
-  //   sourcePosition: Position.Bottom,
-  //   targetPosition: Position.Top,
-  //   sourceHandle: 'source-bottom',
-  //   targetHandle: 'target-top'
-  // },
-
-  // Родители → братья (сверху вниз)
-  {
-    id: 'mom-brother',
-    source: 'mom',
-    target: 'brother',
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-  // { 
-  //   id: 'dad-brother', 
-  //   source: 'dad', 
-  //   target: 'brother', 
-  //   type: 'special',
-  //   sourcePosition: Position.Bottom,
-  //   targetPosition: Position.Top,
-  //   sourceHandle: 'source-bottom',
-  //   targetHandle: 'target-top'
-  // },
-  {
-    id: 'mom-brother2',
-    source: 'mom',
-    target: 'brother2',
-    type: 'special',
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    sourceHandle: 'source-bottom',
-    targetHandle: 'target-top'
-  },
-  // { 
-  //   id: 'dad-brother2', 
-  //   source: 'dad', 
-  //   target: 'brother2', 
-  //   type: 'special',
-  //   sourcePosition: Position.Bottom,
-  //   targetPosition: Position.Top,
-  //   sourceHandle: 'source-bottom',
-  //   targetHandle: 'target-top'
-  // },
-
-  // Дополнительные горизонтальные связи (по желанию)
-
-  // Связь между дедушкой и бабушкой по папиной линии
-  // { 
-  //   id: 'grandpa_dad-grandma_dad', 
-  //   source: 'grandpa_dad', 
-  //   target: 'grandma_dad', 
-  //   type: 'marriage',
-  //   sourcePosition: Position.Right,
-  //   targetPosition: Position.Left,
-  //   sourceHandle: 'source-right',
-  //   targetHandle: 'target-left'
-  // },
-
-  // Связь между дедушкой и бабушкой по маминой линии
-  // { 
-  //   id: 'grandpa_mom-grandma_mom', 
-  //   source: 'grandpa_mom', 
-  //   target: 'grandma_mom', 
-  //   type: 'marriage',
-  //   sourcePosition: Position.Right,
-  //   targetPosition: Position.Left,
-  //   sourceHandle: 'source-right',
-  //   targetHandle: 'target-left'
-  // },
-
-  // Связь между родителями (горизонтально)
-  // { 
-  //   id: 'dad-mom', 
-  //   source: 'dad', 
-  //   target: 'mom', 
-  //   type: 'marriage',
-  //   sourcePosition: Position.Right,
-  //   targetPosition: Position.Left,
-  //   sourceHandle: 'source-right',
-  //   targetHandle: 'target-left'
-  // },
-
-  // Связи между братьями (горизонтально сверху к верху для визуального единства)
-  // { 
-  //   id: 'you-brother', 
-  //   source: 'you', 
-  //   target: 'brother', 
-  //   // type: 'sibling',
-  //   sourcePosition: Position.Top,
-  //   targetPosition: Position.Top,
-  //   sourceHandle: 'source-top',
-  //   targetHandle: 'target-top'
-  // },
-  // { 
-  //   id: 'brother-brother2', 
-  //   source: 'brother', 
-  //   target: 'brother2', 
-  //   // type: 'sibling',
-  //   sourcePosition: Position.Right,
-  //   targetPosition: Position.Left,
-  //   sourceHandle: 'source-right',
-  //   targetHandle: 'target-left'
-  // }
-
-
-  // { id: 'dad-brother', source: 'dad', target: 'brother', type: 'special' },
-
-])
+  // Filter: only include edges where both source and target nodes exist
+  return allEdges.filter(e => ids.has(e.source) && ids.has(e.target))
+})
 
 // Animation directive
 const vScrollAnimate = {
-  mounted(el, binding) {
+  mounted(el: any, binding: any) {
     const { delay = 0, direction = 'up', offset = 100 } = binding.value || {}
     el.style.opacity = '0'
     el.style.transition = 'all 0.6s ease-out'
@@ -382,8 +232,8 @@ const vScrollAnimate = {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setTimeout(() => {
-              entry.target.style.opacity = '1'
-              entry.target.style.transform = 'translate(0, 0)'
+              ; (entry.target as HTMLElement).style.opacity = '1'
+                ; (entry.target as HTMLElement).style.transform = 'translate(0, 0)'
             }, delay)
             observer.unobserve(entry.target)
           }
@@ -394,7 +244,7 @@ const vScrollAnimate = {
     observer.observe(el)
     el._observer = observer
   },
-  unmounted(el) {
+  unmounted(el: any) {
     if (el._observer) el._observer.disconnect()
   }
 }
