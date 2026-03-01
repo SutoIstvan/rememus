@@ -39,8 +39,14 @@
                     <!-- Image Container -->
                     <div class="image-container" :class="{ 'ml-auto': feature.reverse }">
                         <div :class="{ 'image-grid lg:ml-auto': feature.reverse }">
-                            <img v-if="resolveImage(feature)" :src="resolveImage(feature)" :alt="feature.title"
-                                class="feature-image rounded-lg" />
+                            <FancyboxWrapper v-if="resolveImage(feature)">
+                                <a :href="resolveImage(feature)" :data-fancybox="`timeline-${feature.id ?? index}`"
+                                    :data-caption="feature.title"
+                                    class="block overflow-hidden rounded-lg group cursor-pointer">
+                                    <img :src="resolveImage(feature)" :alt="feature.title"
+                                        class="feature-image rounded-lg transform group-hover:scale-105 transition-transform duration-500 ease-out" />
+                                </a>
+                            </FancyboxWrapper>
                         </div>
                     </div>
                 </div>
@@ -61,8 +67,10 @@ import {
     FileText,
     Star,
 } from 'lucide-vue-next'
+import FancyboxWrapper from '@/components/Fancybox.vue'
 
 export default {
+    components: { FancyboxWrapper },
     name: 'TimelineViewFeatures',
 
     props: {

@@ -41,8 +41,14 @@
                                 </div>
                                 <!-- Photo on the right -->
                                 <div v-if="resolvePhoto(comment)" class="comment-photo-wrap">
-                                    <img :src="resolvePhoto(comment) || undefined" :alt="comment.name"
-                                        class="comment-photo" />
+                                    <FancyboxWrapper>
+                                        <a :href="resolvePhoto(comment) || undefined"
+                                            :data-fancybox="`comment-${comment.id}`" :data-caption="comment.name"
+                                            class="block overflow-hidden rounded-lg group cursor-pointer">
+                                            <img :src="resolvePhoto(comment) || undefined" :alt="comment.name"
+                                                class="comment-photo transform group-hover:scale-105 transition-transform duration-500 ease-out" />
+                                        </a>
+                                    </FancyboxWrapper>
                                 </div>
                             </div>
                         </div>
@@ -126,6 +132,7 @@
 import { ref, computed } from 'vue'
 import { MessageCircle, X, Image as ImageIcon } from 'lucide-vue-next'
 import axios from 'axios'
+import FancyboxWrapper from '@/components/Fancybox.vue'
 
 const props = defineProps<{
     comments: any[]

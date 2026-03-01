@@ -30,6 +30,7 @@
         "vue-tsc": "^2.2.4"
     },
     "dependencies": {
+        "@fancyapps/ui": "^6.1.12",
         "@inertiajs/vue3": "^2.1.0",
         "@internationalized/date": "^3.10.1",
         "@tanstack/vue-table": "^8.21.3",
