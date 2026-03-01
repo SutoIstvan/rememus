@@ -22,9 +22,7 @@
     <section v-if="memorial.timeline_enabled && timelineFeatures.length > 0" id="timelines"
       class="pt-[30px] bg-white dark:bg-black">
       <div class="lp:!max-w-[1290px] xl:max-w-[1140px] lg:max-w-[960px] mx-auto px-4 md:px-6 lg:px-8">
-        <div class="text-center mx-auto">
-          <span class="badge badge-green mb-10">Timeline</span>
-        </div>
+
         <TimelineView :features="timelineFeatures" />
       </div>
     </section>

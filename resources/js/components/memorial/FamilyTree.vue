@@ -7,6 +7,7 @@ import { Position } from '@vue-flow/core'
 import SpecialNode from '@/components/SpecialNode.vue'
 import SpecialEdge from '@/components/SpecialEdge.vue'
 import MarriageEdge from '@/components/MarriageEdge.vue'
+import BlurReveal from '@/components/ui/blur-reveal/BlurReveal.vue'
 
 const props = defineProps({
   familyData: {
@@ -255,11 +256,13 @@ const vScrollAnimate = {
 
   <div
     class="flex min-h-screen flex-col items-center bg-white p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
-    <div class="text-center space-y-5 mx-auto mt-10 md:mt-[70px]">
-      <span v-scroll-animate="{ delay: 200 }" class="badge badge-green">
-        Family Tree
-      </span>
-    </div>
+    <BlurReveal :duration="1" :delay="0.15" blur="16px" :y-offset="16">
+      <div class="text-center space-y-5 mx-auto mt-10 md:mt-[70px]">
+        <span v-scroll-animate="{ delay: 200 }" class="badge badge-green">
+          Family Tree
+        </span>
+      </div>
+    </BlurReveal>
     <div
       class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
 

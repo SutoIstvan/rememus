@@ -24,31 +24,31 @@
 
                 <!-- Comments list -->
                 <div v-else class="mb-10">
-                    <div class="columns-1 gap-4 md:columns-2 lg:columns-3">
-                        <div v-for="comment in visibleComments" :key="comment.id"
-                            class="comment-card break-inside-avoid mb-4">
-                            <div class="comment-inner">
-                                <!-- Body -->
-                                <div class="comment-body">
-                                    <div class="flex items-center gap-3 mb-2">
+                    <!-- 3-column masonry с правильным порядком чтения (1,2,3/4,5,6) -->
+                    <div class="flex gap-4 items-start">
+                        <div v-for="(col, colIdx) in masonryColumns" :key="colIdx" class="flex flex-col gap-4 flex-1">
+                            <div v-for="comment in col" :key="comment.id" class="comment-card">
+                                <div class="comment-inner">
+                                    <!-- Строка 1: аватар + имя + дата -->
+                                    <div class="flex items-center gap-3 mb-3">
                                         <div class="comment-avatar">{{ initials(comment.name) }}</div>
                                         <div>
                                             <p class="comment-name">{{ comment.name }}</p>
                                             <p class="comment-date">{{ formatDate(comment.created_at) }}</p>
                                         </div>
                                     </div>
-                                    <p class="comment-text">{{ comment.content }}</p>
-                                </div>
-                                <!-- Photo on the right -->
-                                <div v-if="resolvePhoto(comment)" class="comment-photo-wrap">
-                                    <FancyboxWrapper>
-                                        <a :href="resolvePhoto(comment) || undefined"
-                                            :data-fancybox="`comment-${comment.id}`" :data-caption="comment.name"
-                                            class="block overflow-hidden rounded-lg group cursor-pointer">
-                                            <img :src="resolvePhoto(comment) || undefined" :alt="comment.name"
-                                                class="comment-photo transform group-hover:scale-105 transition-transform duration-500 ease-out" />
-                                        </a>
-                                    </FancyboxWrapper>
+                                    <!-- Строка 2: текст обтекает фото (float right) -->
+                                    <div class="comment-body">
+                                        <FancyboxWrapper v-if="resolvePhoto(comment)">
+                                            <a :href="resolvePhoto(comment) || undefined"
+                                                :data-fancybox="`comment-${comment.id}`" :data-caption="comment.name"
+                                                class="comment-photo-wrap block overflow-hidden rounded-lg group cursor-pointer">
+                                                <img :src="resolvePhoto(comment) || undefined" :alt="comment.name"
+                                                    class="comment-photo transform group-hover:scale-105 transition-transform duration-500 ease-out" />
+                                            </a>
+                                        </FancyboxWrapper>
+                                        <p class="comment-text">{{ comment.content }}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -148,7 +148,18 @@ const sortedComments = computed(() =>
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     )
 )
+const NUM_COLS = 3
 const visibleComments = computed(() => sortedComments.value.slice(0, visibleCount.value))
+
+// Распределяем комментарии по колонкам в порядке чтения (1,2,3 / 4,5,6)
+// Элемент с индексом i попадает в колонку i % NUM_COLS
+const masonryColumns = computed(() => {
+    const cols: any[][] = Array.from({ length: NUM_COLS }, () => [])
+    visibleComments.value.forEach((comment: any, i: number) => {
+        cols[i % NUM_COLS].push(comment)
+    })
+    return cols
+})
 function loadMore() {
     visibleCount.value += PAGE_SIZE
 }
@@ -251,34 +262,34 @@ function formatDate(dateStr: string): string {
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-    display: flex;
-    flex-direction: column;
 }
 
 .comment-inner {
-    display: flex;
-    gap: 0.75rem;
-    align-items: flex-start;
     padding: 1.25rem;
 }
 
+/* clearfix-контейнер для обтекания текста вокруг фото */
+.comment-body::after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
 .comment-photo-wrap {
+    float: right;
+    margin-left: 0.75rem;
+    margin-bottom: 0.25rem;
+    width: 90px;
+    height: 90px;
+    border-radius: 8px;
     overflow: hidden;
     flex-shrink: 0;
-    width: 100px;
-    height: 100px;
-    border-radius: 8px;
 }
 
 .comment-photo {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-.comment-body {
-    flex: 1;
-    min-width: 0;
 }
 
 .comment-avatar {

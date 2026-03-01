@@ -68,6 +68,7 @@ import {
     Star,
 } from 'lucide-vue-next'
 import FancyboxWrapper from '@/components/Fancybox.vue'
+import BlurReveal from '@/components/ui/blur-reveal/BlurReveal.vue'
 
 export default {
     components: { FancyboxWrapper },

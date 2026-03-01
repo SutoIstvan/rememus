@@ -3,21 +3,25 @@
         class="pt-[30px] md:pt-10 lg:pt-[70px] xl:pt-[80px] pb-16 md:pb-20 lg:pb-[90px] xl:pb-[100px] bg-white dark:bg-black">
         <div class="lp:!max-w-[1290px] xl:max-w-[1140px] lg:max-w-[960px] mx-auto px-4 md:px-6 lg:px-8">
             <div class="text-center space-y-5 mx-auto">
-                <span v-scroll-animate="{ delay: 200 }" class="badge badge-green">
-                    {{ memorial.badgeText }}
-                </span>
+                <BlurReveal :duration="1" :delay="0.15" blur="16px" :y-offset="16">
+                    <span class="badge badge-green">
+                        {{ memorial.badgeText }}
+                    </span>
+                </BlurReveal>
 
                 <section class="max-w-2xl mx-auto mt-1">
                     <!-- Additional content можно добавить здесь -->
                 </section>
 
                 <div class="text-gray-700">
-                    <h4 v-scroll-animate="{ delay: 250 }" class="mb-3 max-w-[700px] mx-auto text-center mb-10">
-                        {{ memorial.quote }}
-                    </h4>
-                    <p v-scroll-animate="{ delay: 300 }" class="dropcap text-start text-lg"
-                        v-html="memorial.description">
-                    </p>
+                    <BlurReveal :duration="1" :delay="0.15" blur="16px" :y-offset="16"
+                        class="mb-3 max-w-[700px] mx-auto text-center mb-10">
+                        <h4>{{ memorial.quote }}</h4>
+                    </BlurReveal>
+                    <BlurReveal :duration="1" :delay="0.15" blur="16px" :y-offset="16">
+                        <p class="dropcap text-start text-lg" v-html="memorial.description">
+                        </p>
+                    </BlurReveal>
                 </div>
             </div>
         </div>
@@ -25,6 +29,7 @@
 </template>
 
 <script setup lang="ts">
+import BlurReveal from '@/components/ui/blur-reveal/BlurReveal.vue'
 // Определяем props от Laravel контроллера
 defineProps({
     memorial: {
@@ -45,62 +50,43 @@ defineProps({
 
 // Директива для анимаций
 const vScrollAnimate = {
-    mounted(el, binding) {
+    mounted(el: HTMLElement, binding: { value?: { delay?: number; direction?: string; offset?: number } }) {
         const { delay = 0, direction = 'up', offset = 100 } = binding.value || {}
 
-        // Начальное состояние
         el.style.opacity = '0'
         el.style.transition = 'all 0.6s ease-out'
 
         switch (direction) {
-            case 'up':
-                el.style.transform = 'translateY(30px)'
-                break
-            case 'down':
-                el.style.transform = 'translateY(-30px)'
-                break
-            case 'left':
-                el.style.transform = 'translateX(-30px)'
-                break
-            case 'right':
-                el.style.transform = 'translateX(30px)'
-                break
-            default:
-                el.style.transform = 'translateY(30px)'
+            case 'up': el.style.transform = 'translateY(30px)'; break
+            case 'down': el.style.transform = 'translateY(-30px)'; break
+            case 'left': el.style.transform = 'translateX(-30px)'; break
+            case 'right': el.style.transform = 'translateX(30px)'; break
+            default: el.style.transform = 'translateY(30px)'
         }
 
-        if (delay > 0) {
-            el.style.transitionDelay = `${delay}ms`
-        }
+        if (delay > 0) el.style.transitionDelay = `${delay}ms`
 
-        // Создаем observer
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
                         setTimeout(() => {
-                            entry.target.style.opacity = '1'
-                            entry.target.style.transform = 'translate(0, 0)'
+                            (entry.target as HTMLElement).style.opacity = '1'
+                                ; (entry.target as HTMLElement).style.transform = 'translate(0, 0)'
                         }, delay)
                         observer.unobserve(entry.target)
                     }
                 })
             },
-            {
-                root: null,
-                rootMargin: `0px 0px -${offset}px 0px`,
-                threshold: 0.1
-            }
+            { root: null, rootMargin: `0px 0px -${offset}px 0px`, threshold: 0.1 }
         )
 
         observer.observe(el)
-        el._observer = observer
+            ; (el as any)._observer = observer
     },
 
-    unmounted(el) {
-        if (el._observer) {
-            el._observer.disconnect()
-        }
+    unmounted(el: HTMLElement) {
+        if ((el as any)._observer) (el as any)._observer.disconnect()
     }
 }
 </script>
