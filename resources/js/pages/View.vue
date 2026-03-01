@@ -18,7 +18,7 @@
       :memorial="memorial" />
 
     <!-- Timeline section -->
-    <section v-if="memorial.timeline_enabled && timelineFeatures.length > 0"
+    <section v-if="memorial.timeline_enabled && timelineFeatures.length > 0" id="timelines"
       class="pt-[30px] md:pt-10 lg:pt-[70px] xl:pt-[80px] pb-16 bg-white dark:bg-black">
       <div class="lp:!max-w-[1290px] xl:max-w-[1140px] lg:max-w-[960px] mx-auto px-4 md:px-6 lg:px-8">
         <div class="text-center space-y-5 mx-auto mb-10">
@@ -75,7 +75,7 @@ const biographyData = computed(() => {
   return {
     badgeText: m.motto ? 'Motto' : 'In Memory',
     quote: m.motto || '',
-    description: m.biography || '',
+    description: (m.biography || '').replace(/\n/g, '<br>'),
   }
 })
 
