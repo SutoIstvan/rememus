@@ -11,8 +11,8 @@
         <div class="lg:col-span-4 col-span-12">
           <div v-scroll-animate="{ direction: 'up', delay: 300 }" class="xl:max-w-[306px]">
             <figure>
-              <img src="/images/shared/light-logo.svg" class="dark:hidden" alt="NextSass" />
-              <img src="/images/shared/dark-logo.svg" class="hidden dark:block" alt="NextSass" />
+              <img src="/images/front/shared/main-logo-4.png" width="160" class="dark:hidden" alt="Rememus" />
+              <img src="/images/front/shared/main-logo-4.png" width="160" class="hidden dark:block" alt="Rememus" />
             </figure>
             <p class="mt-4 mb-7 text-secondary dark:text-accent">
               {{ companyDescription }}

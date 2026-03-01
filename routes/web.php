@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MemorialController;
 use App\Http\Controllers\AvatarUploadController;
 use App\Http\Controllers\BiographyController;
+use App\Http\Controllers\CommentController;
 use Inertia\Inertia;
 
 use App\Http\Controllers\DashboardMemorialController;
@@ -32,6 +33,10 @@ Route::get('/memorial/create', function () {
 // Public memorial view page (no auth required)
 Route::get('/memorial/{memorial}', [MemorialController::class, 'show'])
     ->name('memorial.show');
+
+// Public comment submission (no auth required, pending moderation)
+Route::post('/memorial/{memorial}/comments', [CommentController::class, 'store'])
+    ->name('memorial.comments.store');
 
 
 

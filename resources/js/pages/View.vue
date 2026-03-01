@@ -2,6 +2,7 @@
   <div class="bg-white dark:bg-black overflow-x-hidden">
     <Navigation />
 
+
     <!-- Header with person info -->
     <Header :person="headerData" />
 
@@ -19,14 +20,18 @@
 
     <!-- Timeline section -->
     <section v-if="memorial.timeline_enabled && timelineFeatures.length > 0" id="timelines"
-      class="pt-[30px] md:pt-10 lg:pt-[70px] xl:pt-[80px] pb-16 bg-white dark:bg-black">
+      class="pt-[30px] bg-white dark:bg-black">
       <div class="lp:!max-w-[1290px] xl:max-w-[1140px] lg:max-w-[960px] mx-auto px-4 md:px-6 lg:px-8">
-        <div class="text-center space-y-5 mx-auto mb-10">
-          <span class="badge badge-green">Timeline</span>
+        <div class="text-center mx-auto">
+          <span class="badge badge-green mb-10">Timeline</span>
         </div>
         <TimelineView :features="timelineFeatures" />
       </div>
     </section>
+
+    <!-- Comments section -->
+    <Comments v-if="memorial.comments_enabled !== false" id="commemorations" :comments="memorial.comments ?? []"
+      :comments-enabled="memorial.comments_enabled ?? true" :memorial-slug="memorial.slug" />
 
     <Footer />
   </div>
@@ -41,6 +46,7 @@ import Footer from '@/components/memorial/Footer.vue'
 import Header from '@/components/memorial/Header.vue'
 import Biography from '@/components/memorial/Biography.vue'
 import TimelineView from '@/components/memorial/TimeLine/ViewFeatures.vue'
+import Comments from '@/components/memorial/Comments.vue'
 
 const props = defineProps<{
   memorial: any
@@ -60,9 +66,16 @@ const headerData = computed(() => {
     return d.substring(0, 10)
   }
 
+  const bg = m.background_image
+    ? (m.background_image.startsWith('http') || m.background_image.startsWith('/')
+      ? m.background_image
+      : `/storage/${m.background_image}`)
+    : null
+
   return {
     name: m.name || 'Unknown',
     image: photo,
+    background: bg,
     birthYear: formatDate(m.birth_date),
     deathYear: formatDate(m.death_date),
     location: m.birth_place || m.grave_location || '',

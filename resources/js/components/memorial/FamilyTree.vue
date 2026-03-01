@@ -254,7 +254,7 @@ const vScrollAnimate = {
 
 
   <div
-    class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
+    class="flex min-h-screen flex-col items-center bg-white p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
     <div class="text-center space-y-5 mx-auto mt-10 md:mt-[70px]">
       <span v-scroll-animate="{ delay: 200 }" class="badge badge-green">
         Family Tree

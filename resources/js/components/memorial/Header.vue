@@ -1,6 +1,9 @@
 <template>
-    <section
-        class="hero-section pt-[190px] md:pt-[230px] lg:pt-[230px] xl:pt-[220px] bg-[url('/images/front/hero-bg.png')] bg-no-repeat bg-cover bg-top relative z-0">
+
+    <Head :title="person.name" />
+
+    <section :style="{ backgroundImage: `url(${person.background || '/images/front/hero-bg.png'})` }"
+        class="hero-section pt-[190px] md:pt-[230px] lg:pt-[230px] xl:pt-[220px] bg-no-repeat bg-cover bg-top relative z-0">
         <!-- Hero Title Content -->
         <div
             class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 flex flex-col items-center space-y-[124px] relative z-10 mb-[100px] lg:mb-[130px] xl:mb-[210px]">
@@ -61,6 +64,7 @@
 <script setup lang="ts">
 import BlurReveal from '@/components/ui/blur-reveal/BlurReveal.vue'
 import { MapPin, Calendar } from "lucide-vue-next";
+import { Head } from '@inertiajs/vue3';
 
 // Определяем props от Laravel контроллера
 defineProps({
@@ -69,6 +73,7 @@ defineProps({
         default: () => ({
             name: 'Arnold Shannon',
             image: '/images/front/testimonial-1.jpg',
+            background: null,
             birthYear: '1975 jan 15',
             deathYear: '2023 mar 23',
             location: 'Jacksonville, Florida'

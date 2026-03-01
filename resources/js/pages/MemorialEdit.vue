@@ -403,7 +403,7 @@ const handleGalleryDelete = (ids: number[]) => {
 
 <template>
 
-    <Head title="Edit Memorial" />
+    <Head :title="form.name" />
 
     <div class="bg-white dark:bg-black min-h-screen">
         <form @submit.prevent="submit" class="space-y-8">

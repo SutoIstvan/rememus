@@ -67,6 +67,7 @@ class Memorial extends Model
         'timeline_enabled',
         'features_enabled',
         'burial_location_enabled',
+        'comments_enabled',
     ];
 
     protected $casts = [
@@ -77,6 +78,7 @@ class Memorial extends Model
         'timeline_enabled' => 'boolean',
         'features_enabled' => 'boolean',
         'burial_location_enabled' => 'boolean',
+        'comments_enabled' => 'boolean',
     ];
 
     // Указываем, что для маршрутов используется slug
@@ -145,6 +147,11 @@ class Memorial extends Model
     public function family(): HasMany
     {
         return $this->hasMany(Family::class);
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(\App\Models\Comment::class);
     }
 
     /**

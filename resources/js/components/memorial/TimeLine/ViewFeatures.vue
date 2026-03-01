@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="">
         <div v-for="(feature, index) in features" :key="feature.id ?? index" class="feature-item">
             <div class="feature-content" :class="{ 'reverse': feature.reverse }">
                 <!-- Text Section -->
@@ -109,7 +109,7 @@ export default {
             if (feature.date_from) {
                 return this.formatSingleDate(feature.date_from)
             }
-            return 'нет выбраной даты'
+            return 'Date not selected'
         },
 
         formatSingleDate(dateString) {
@@ -118,7 +118,7 @@ export default {
             const [year, month, day] = dateOnly.split('-').map(Number)
             const date = new Date(year, month - 1, day)
             if (isNaN(date.getTime())) return dateString
-            return date.toLocaleDateString('ru-RU', {
+            return date.toLocaleDateString('en-US', {
                 day: '2-digit',
                 month: 'long',
                 year: 'numeric',

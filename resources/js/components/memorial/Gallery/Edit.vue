@@ -87,12 +87,30 @@ onMounted(() => {
     if (props.initialImages) {
         images.value = props.initialImages.map(img => ({
             id: img.id,
-            src: `/storage/${img.image_path}`, // Assuming storage path
+            src: `/storage/${img.image_path}`,
             rotation: 0,
             isExisting: true
         }))
     }
 })
+
+// Re-sync when Inertia updates the prop after a successful save
+// (avoids duplicate/stale entries from temporary FileReader previews)
+watch(
+    () => props.initialImages,
+    (newImages) => {
+        if (newImages) {
+            images.value = newImages.map(img => ({
+                id: img.id,
+                src: `/storage/${img.image_path}`,
+                rotation: 0,
+                isExisting: true
+            }))
+            deletedImageIds.value = []
+        }
+    },
+    { deep: true }
+)
 
 onUnmounted(() => {
     window.removeEventListener('resize', updateWindowWidth)

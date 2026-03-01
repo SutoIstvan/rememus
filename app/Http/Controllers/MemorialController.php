@@ -225,6 +225,11 @@ class MemorialController extends Controller
     {
         $memorial->load(['family', 'images', 'timeline']);
 
+        // Only load approved comments
+        $memorial->load(['comments' => function ($query) {
+            $query->where('status', 'approved')->orderBy('created_at', 'desc');
+        }]);
+
         return \Inertia\Inertia::render('View', [
             'memorial' => $memorial
         ]);
