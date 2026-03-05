@@ -104,18 +104,26 @@ const timelineFeatures = computed(() => {
 })
 
 // ── Gallery images ────────────────────────────────────────────
+const resolve = (p: string | null | undefined): string | null => {
+  if (!p) return null
+  if (p.startsWith('http') || p.startsWith('/storage')) return p
+  if (p.startsWith('storage/')) return '/' + p
+  return `/storage/${p}`
+}
+
 const galleryImages = computed(() => {
   const imgs: any[] = props.memorial.images ?? []
   return imgs
     .slice()
     .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
     .map((img) => {
-      const p = img.image_path
-      if (!p) return null
-      if (p.startsWith('http') || p.startsWith('/storage')) return p
-      if (p.startsWith('storage/')) return '/' + p
-      return `/storage/${p}`
+      const path = resolve(img.image_path)
+      if (!path) return null
+      return {
+        path,
+        thumb: resolve(img.thumb_path) ?? path,
+      }
     })
-    .filter(Boolean) as string[]
+    .filter(Boolean) as { path: string; thumb: string }[]
 })
 </script>

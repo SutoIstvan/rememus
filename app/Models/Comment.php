@@ -13,7 +13,8 @@ class Comment extends Model
         'content',
         'status',
         'memorial_id',
-        'photo'
+        'photo',
+        'photo_thumb',
     ];
 
     public function memorial(): BelongsTo
@@ -21,31 +22,13 @@ class Comment extends Model
         return $this->belongsTo(Memorial::class);
     }
 
-    /**
-     * Получить URL фотографии комментария
-     */
-    public function getPhotoUrlAttribute()
+    public function getPhotoUrlAttribute(): ?string
     {
-        if (!$this->photo) {
-            return null;
-        }
-
-        $path = $this->memorial->slug . '/comments/' . $this->photo;
-
-        if (Storage::disk('memorial')->exists($path)) {
-            // Возвращаем относительный путь или используйте asset() если нужно
-            return '/storage/memorial/' . $path;
-            // Альтернативно: return asset('storage/memorial/' . $path);
-        }
-
-        return null;
+        return $this->photo ? Storage::url($this->photo) : null;
     }
 
-    /**
-     * Проверить, есть ли фото у комментария
-     */
-    public function hasPhoto()
+    public function getPhotoThumbUrlAttribute(): ?string
     {
-        return !empty($this->photo) && $this->photo_url !== null;
+        return $this->photo_thumb ? Storage::url($this->photo_thumb) : null;
     }
 }

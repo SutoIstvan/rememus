@@ -23,7 +23,7 @@
                             <figure class="shadow-lg absolute lg:right-0 lg:bottom-0 w-[300px]
                                     max-lg:left-1/2 max-lg:-translate-x-1/2 max-lg:top-[-100px]
                                     bg-white dark:bg-background-9 rounded-[10px] overflow-hidden p-1">
-                                <img :src="person.image" :alt="person.name"
+                                <img :src="person.image" :alt="person.name" loading="lazy"
                                     class="w-[300px] h-[300px] object-cover rounded-[10px]" />
                             </figure>
                         </div>

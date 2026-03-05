@@ -14,10 +14,10 @@
           <div v-for="(img, imgIndex) in column" :key="imgIndex"
             v-scroll-animate="{ delay: (colIndex * 100) + (imgIndex * 150), direction: 'up' }"
             class="group cursor-pointer relative overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300">
-            <a :href="img" data-fancybox="gallery" :data-caption="`Image ${colIndex * 4 + imgIndex + 1}`">
-              <img
+            <a :href="img.path" data-fancybox="gallery" :data-caption="`Image ${colIndex * 4 + imgIndex + 1}`">
+              <img loading="lazy"
                 class="w-full h-full object-cover rounded-lg transform group-hover:scale-105 transition-transform duration-500 ease-out"
-                :src="img" :alt="`Image ${colIndex * 4 + imgIndex + 1}`" />
+                :src="img.thumb" :alt="`Image ${colIndex * 4 + imgIndex + 1}`" />
               <div
                 class="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-lg pointer-events-none">
               </div>
@@ -34,32 +34,37 @@ import { computed } from 'vue'
 import FancyboxWrapper from '@/components/Fancybox.vue'
 import BlurReveal from '@/components/ui/blur-reveal/BlurReveal.vue'
 
+interface GalleryImage {
+  path: string
+  thumb: string
+}
+
 const props = withDefaults(defineProps<{
-  initialImages?: string[]
+  initialImages?: GalleryImage[]
 }>(), {
   initialImages: undefined,
 })
 
-const defaultImages = [
-  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-1.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-2.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-3.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-4.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-5.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-6.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-7.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-8.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-9.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-10.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-11.jpg",
+const defaultImages: GalleryImage[] = [
+  { path: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image.jpg", thumb: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image.jpg" },
+  { path: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-1.jpg", thumb: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-1.jpg" },
+  { path: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-2.jpg", thumb: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-2.jpg" },
+  { path: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-3.jpg", thumb: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-3.jpg" },
+  { path: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-4.jpg", thumb: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-4.jpg" },
+  { path: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-5.jpg", thumb: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-5.jpg" },
+  { path: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-6.jpg", thumb: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-6.jpg" },
+  { path: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-7.jpg", thumb: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-7.jpg" },
+  { path: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-8.jpg", thumb: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-8.jpg" },
+  { path: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-9.jpg", thumb: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-9.jpg" },
+  { path: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-10.jpg", thumb: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-10.jpg" },
+  { path: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-11.jpg", thumb: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-11.jpg" },
 ]
 
 const images = computed(() => props.initialImages?.length ? props.initialImages : defaultImages)
 
 // Разделяем картинки на 4 колонки
 const columns = computed(() => {
-  const cols: string[][] = []
+  const cols: GalleryImage[][] = []
   for (let i = 0; i < 4; i++) {
     cols.push(images.value.slice(i * 3, i * 3 + 3))
   }

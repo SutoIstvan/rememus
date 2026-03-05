@@ -15,6 +15,7 @@ class Family extends Model
         'name',
         'role',
         'avatar',
+        'avatar_thumb',
         'qr_code',
         'position',
         'node_id',

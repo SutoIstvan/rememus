@@ -98,6 +98,12 @@ class Memorial extends Model
     // Генерация уникального slug
     protected function generateUniqueSlug($name)
     {
+        return self::generateUniqueSlugStatic($name, $this->id);
+    }
+
+    // Статический метод — используется в контроллере до создания записи
+    public static function generateUniqueSlugStatic(string $name, ?int $excludeId = null): string
+    {
         $slug = Str::slug($name);
         $originalSlug = $slug;
         $count = 1;
@@ -105,9 +111,8 @@ class Memorial extends Model
         while (true) {
             $query = static::where('slug', $slug);
 
-            // При обновлении исключаем текущую запись
-            if ($this->id) {
-                $query->where('id', '!=', $this->id);
+            if ($excludeId) {
+                $query->where('id', '!=', $excludeId);
             }
 
             if (!$query->exists()) {

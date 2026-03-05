@@ -15,6 +15,7 @@ class Timeline extends Model
         'location',
         'related_person',
         'media',
+        'media_thumb',
         'order',
         'date_from',
         'date_to',

@@ -43,7 +43,8 @@
                                             <a :href="resolvePhoto(comment) || undefined"
                                                 :data-fancybox="`comment-${comment.id}`" :data-caption="comment.name"
                                                 class="comment-photo-wrap block overflow-hidden rounded-lg group cursor-pointer">
-                                                <img :src="resolvePhoto(comment) || undefined" :alt="comment.name"
+                                                <img :src="resolvePhotoThumb(comment) || undefined" :alt="comment.name"
+                                                    loading="lazy"
                                                     class="comment-photo transform group-hover:scale-105 transition-transform duration-500 ease-out" />
                                             </a>
                                         </FancyboxWrapper>
@@ -236,6 +237,17 @@ function resolvePhoto(comment: any): string | null {
     if (p.startsWith('http') || p.startsWith('/storage')) return p
     if (p.startsWith('storage/')) return '/' + p
     return `/storage/${p}`
+}
+
+function resolvePhotoThumb(comment: any): string | null {
+    const t = comment.photo_thumb
+    if (t) {
+        if (t.startsWith('http') || t.startsWith('/storage')) return t
+        if (t.startsWith('storage/')) return '/' + t
+        return `/storage/${t}`
+    }
+    // Fallback to full photo
+    return resolvePhoto(comment)
 }
 
 function initials(name: string): string {

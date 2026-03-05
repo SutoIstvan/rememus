@@ -124,7 +124,12 @@ onMounted(() => {
         // Looking at HeaderCreate (not shown but assumed), it usually takes v-model:image. 
         // We might need to handle existing image display? 
         // For now, let's assume standard behavior: if no new file, backend keeps old.
-        form.background_url = m.background_image // If string
+        // background_url только если это внешний URL (http/https), не путь в storage
+        if (m.background_image && (m.background_image.startsWith('http') || m.background_image.startsWith('/'))) {
+            form.background_url = m.background_image
+        } else {
+            form.background_url = null
+        }
         form.motto = m.motto || ''
         form.biography = m.biography || ''
 

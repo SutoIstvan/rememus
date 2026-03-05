@@ -4,16 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Memorial;
+use App\Services\ImageService;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
+    public function __construct(private ImageService $imageService) {}
+
     /**
      * Store a new comment (pending moderation).
      */
     public function store(Request $request, Memorial $memorial)
     {
-        // Check if comments are enabled for this memorial
         if (!($memorial->comments_enabled ?? true)) {
             return response()->json(['message' => 'Comments are disabled for this memorial.'], 403);
         }
@@ -25,8 +27,19 @@ class CommentController extends Controller
         ]);
 
         $photoPath = null;
+        $photoThumb = null;
+
         if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('memorials/comments', 'public');
+            // Full (1000px) + thumb (300px), both scaleDown
+            $result = $this->imageService->processAndStoreWithThumb(
+                $request->file('photo'),
+                $memorial->slug,
+                'comments',
+                1000,
+                300
+            );
+            $photoPath  = $result['path'];
+            $photoThumb = $result['thumb'];
         }
 
         Comment::create([
@@ -34,6 +47,7 @@ class CommentController extends Controller
             'name'        => $validated['name'],
             'content'     => $validated['content'],
             'photo'       => $photoPath,
+            'photo_thumb' => $photoThumb,
             'status'      => 'pending',
         ]);
 

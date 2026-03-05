@@ -43,7 +43,7 @@
                                 <a :href="resolveImage(feature)" :data-fancybox="`timeline-${feature.id ?? index}`"
                                     :data-caption="feature.title"
                                     class="block overflow-hidden rounded-lg group cursor-pointer">
-                                    <img :src="resolveImage(feature)" :alt="feature.title"
+                                    <img :src="resolveThumb(feature)" :alt="feature.title" loading="lazy"
                                         class="feature-image rounded-lg transform group-hover:scale-105 transition-transform duration-500 ease-out" />
                                 </a>
                             </FancyboxWrapper>
@@ -149,7 +149,7 @@ export default {
             return FileText
         },
 
-        /* ===== ИЗОБРАЖЕНИЕ ===== */
+        /* ===== ИЗОБРАЖЕНИЕ (full) ===== */
         resolveImage(feature) {
             const src = feature.image || feature.media
             if (!src) return null
@@ -161,6 +161,18 @@ export default {
                 return `/storage/${src}`
             }
             return null
+        },
+
+        /* ===== THUMBNAIL ===== */
+        resolveThumb(feature) {
+            // Prefer media_thumb, fall back to full image
+            const thumb = feature.media_thumb
+            if (thumb) {
+                if (thumb.startsWith('http') || thumb.startsWith('/storage')) return thumb
+                if (thumb.startsWith('storage/')) return '/' + thumb
+                return `/storage/${thumb}`
+            }
+            return this.resolveImage(feature)
         },
     },
 }
