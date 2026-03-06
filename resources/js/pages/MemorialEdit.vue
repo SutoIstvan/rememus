@@ -690,7 +690,7 @@ const handleGalleryDelete = (ids: number[]) => {
                     <div v-if="!sectionsEnabled.comments" class="absolute inset-0 bg-white/10 z-10 cursor-not-allowed">
                     </div>
                     <div :class="{ 'opacity-80 blur-sm': !sectionsEnabled.comments }" class="px-4 md:px-6 lg:px-8">
-                        <div class="mx-auto w-[760px]">
+                        <div class="mx-auto w-full max-w-[760px]">
 
                             <!-- Empty state -->
                             <div v-if="localComments.length === 0"
@@ -704,7 +704,7 @@ const handleGalleryDelete = (ids: number[]) => {
                             <!-- Comment cards -->
                             <div v-else class="flex flex-col gap-3">
                                 <div v-for="comment in visibleComments" :key="comment.id"
-                                    class="border rounded-xl p-4 bg-gray-50 dark:bg-gray-900 flex gap-4 items-start">
+                                    class="border border-gray-300 rounded-xl p-4 flex gap-4 items-start">
 
                                     <!-- Avatar -->
                                     <div

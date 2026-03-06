@@ -67,7 +67,7 @@ class ImageService
 
         Image::read($file->getRealPath())
             ->scaleDown(width: $maxPx, height: $maxPx)
-            ->toWebp(quality: 85)
+            ->toWebp(quality: 90)
             ->save($absolutePath);
 
         return $relativePath;

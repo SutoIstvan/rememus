@@ -9,7 +9,7 @@
 
     <!-- Галерея с Fancybox -->
     <FancyboxWrapper :fancybox-options="{ groupAll: true }">
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+      <div class="px-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         <div v-for="(column, colIndex) in columns" :key="colIndex" class="grid gap-4">
           <div v-for="(img, imgIndex) in column" :key="imgIndex"
             v-scroll-animate="{ delay: (colIndex * 100) + (imgIndex * 150), direction: 'up' }"

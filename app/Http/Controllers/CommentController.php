@@ -70,7 +70,7 @@ class CommentController extends Controller
                 $request->file('photo'),
                 $memorial->slug,
                 'comments',
-                1000,
+                1200,
                 300
             );
             $photoPath  = $result['path'];

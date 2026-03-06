@@ -154,7 +154,7 @@ class MemorialController extends Controller
                 if ($request->hasFile("family_tree.$index.avatar")) {
                     $result = $this->imageService->processAndStoreWithThumb(
                         $request->file("family_tree.$index.avatar"),
-                        $slug, 'family', 400, 100
+                        $slug, 'family', 400, 200
                     );
                     $avatar = $result['path'];
                     $avatarThumb = $result['thumb'];
@@ -179,7 +179,7 @@ class MemorialController extends Controller
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $index => $photo) {
                 $result = $this->imageService->processAndStoreWithThumb(
-                    $photo, $slug, 'gallery', 1200, 400
+                    $photo, $slug, 'gallery', 1200, 600
                 );
                 Image::create([
                     'memorial_id' => $memorial->id,
@@ -199,7 +199,7 @@ class MemorialController extends Controller
                 if ($request->hasFile("timeline.$index.media")) {
                     $result = $this->imageService->processAndStoreWithThumb(
                         $request->file("timeline.$index.media"),
-                        $slug, 'timeline', 1200, 400
+                        $slug, 'timeline', 1200, 600
                     );
                     $media = $result['path'];
                     $mediaThumb = $result['thumb'];
@@ -457,7 +457,7 @@ class MemorialController extends Controller
                         );
                         $result = $this->imageService->processAndStoreWithThumb(
                             $request->file("family_tree.$index.avatar"),
-                            $slug, 'family', 400, 100
+                            $slug, 'family', 400, 200
                         );
                         $updateData['avatar']       = $result['path'];
                         $updateData['avatar_thumb'] = $result['thumb'];
@@ -471,7 +471,7 @@ class MemorialController extends Controller
                     if ($request->hasFile("family_tree.$index.avatar")) {
                         $result = $this->imageService->processAndStoreWithThumb(
                             $request->file("family_tree.$index.avatar"),
-                            $slug, 'family', 400, 100
+                            $slug, 'family', 400, 200
                         );
                         $avatar = $result['path'];
                         $avatarThumb = $result['thumb'];
@@ -531,7 +531,7 @@ class MemorialController extends Controller
                         );
                         $result = $this->imageService->processAndStoreWithThumb(
                             $request->file("timeline.$index.media"),
-                            $slug, 'timeline', 1200, 400
+                            $slug, 'timeline', 1200, 600
                         );
                         $updateData['media']       = $result['path'];
                         $updateData['media_thumb'] = $result['thumb'];
@@ -545,7 +545,7 @@ class MemorialController extends Controller
                     if ($request->hasFile("timeline.$index.media")) {
                         $result = $this->imageService->processAndStoreWithThumb(
                             $request->file("timeline.$index.media"),
-                            $slug, 'timeline', 1200, 400
+                            $slug, 'timeline', 1200, 600
                         );
                         $media = $result['path'];
                         $mediaThumb = $result['thumb'];
@@ -588,7 +588,7 @@ class MemorialController extends Controller
             $maxOrder = $memorial->images()->max('order') ?? 0;
             foreach ($request->file('gallery') as $index => $photo) {
                 $result = $this->imageService->processAndStoreWithThumb(
-                    $photo, $slug, 'gallery', 1200, 400
+                    $photo, $slug, 'gallery', 1200, 600
                 );
                 Image::create([
                     'memorial_id' => $memorial->id,
