@@ -246,12 +246,21 @@ class MemorialController extends Controller
     {
         $memorial->load(['family', 'images', 'timeline']);
 
-        $memorial->load(['comments' => function ($query) {
-            $query->where('status', 'approved')->orderBy('created_at', 'desc');
-        }]);
+        // Load only approved comments via query (avoids conflict with 'comments' fillable attribute)
+        $approvedComments = $memorial->comments()
+            ->where('status', 'approved')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($comment) {
+                return array_merge($comment->toArray(), [
+                    'photo_url'       => $comment->photo_url,
+                    'photo_thumb_url' => $comment->photo_thumb_url,
+                ]);
+            });
 
         return \Inertia\Inertia::render('View', [
-            'memorial' => $memorial
+            'memorial'         => $memorial,
+            'approvedComments' => $approvedComments,
         ]);
     }
 
@@ -266,8 +275,18 @@ class MemorialController extends Controller
 
         $memorial->load(['family', 'images', 'timeline']);
 
+        // Load comments via query (avoids conflict with 'comments' fillable attribute)
+        $commentsCollection = $memorial->comments()->orderBy('created_at', 'desc')->get();
+        $comments = $commentsCollection->map(function ($comment) {
+            return array_merge($comment->toArray(), [
+                'photo_url'       => $comment->photo_url,
+                'photo_thumb_url' => $comment->photo_thumb_url,
+            ]);
+        });
+
         return \Inertia\Inertia::render('MemorialEdit', [
-            'memorial' => $memorial
+            'memorial'  => $memorial,
+            'comments'  => $comments,
         ]);
     }
 
@@ -342,6 +361,7 @@ class MemorialController extends Controller
             'timeline_enabled'        => 'nullable|boolean',
             'features_enabled'        => 'nullable|boolean',
             'burial_location_enabled' => 'nullable|boolean',
+            'comments_enabled'        => 'nullable|boolean',
         ]);
 
         $slug = $memorial->slug;
@@ -371,6 +391,7 @@ class MemorialController extends Controller
             'timeline_enabled'        => $validated['timeline_enabled'] ?? true,
             'features_enabled'        => $validated['features_enabled'] ?? true,
             'burial_location_enabled' => $validated['burial_location_enabled'] ?? true,
+            'comments_enabled'        => $validated['comments_enabled'] ?? true,
         ];
 
         // Profile photo

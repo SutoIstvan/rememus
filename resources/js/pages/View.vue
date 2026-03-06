@@ -28,8 +28,8 @@
     </section>
 
     <!-- Comments section -->
-    <Comments v-if="memorial.comments_enabled !== false" id="commemorations" :comments="memorial.comments ?? []"
-      :comments-enabled="memorial.comments_enabled ?? true" :memorial-slug="memorial.slug" />
+    <Comments v-if="!!memorial.comments_enabled" id="commemorations" :comments="approvedComments ?? []"
+      :comments-enabled="true" :memorial-slug="memorial.slug" />
 
     <Footer />
   </div>
@@ -48,6 +48,7 @@ import Comments from '@/components/memorial/Comments.vue'
 
 const props = defineProps<{
   memorial: any
+  approvedComments: any[]
 }>()
 
 // ── Header data ──────────────────────────────────────────────

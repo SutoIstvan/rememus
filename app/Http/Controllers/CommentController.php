@@ -12,6 +12,41 @@ class CommentController extends Controller
     public function __construct(private ImageService $imageService) {}
 
     /**
+     * Approve a comment (admin only).
+     */
+    public function approve(Memorial $memorial, Comment $comment)
+    {
+        if (\Illuminate\Support\Facades\Auth::id() !== $memorial->admin_id) {
+            return response()->json(['message' => 'Forbidden.'], 403);
+        }
+
+        $comment->update(['status' => 'approved']);
+
+        return response()->json(['message' => 'Comment approved.', 'comment' => $comment]);
+    }
+
+    /**
+     * Delete a comment and its associated files (admin only).
+     */
+    public function adminDestroy(Memorial $memorial, Comment $comment)
+    {
+        if (\Illuminate\Support\Facades\Auth::id() !== $memorial->admin_id) {
+            return response()->json(['message' => 'Forbidden.'], 403);
+        }
+
+        if ($comment->photo) {
+            \Illuminate\Support\Facades\Storage::delete($comment->photo);
+        }
+        if ($comment->photo_thumb) {
+            \Illuminate\Support\Facades\Storage::delete($comment->photo_thumb);
+        }
+
+        $comment->delete();
+
+        return response()->json(['message' => 'Comment deleted.']);
+    }
+
+    /**
      * Store a new comment (pending moderation).
      */
     public function store(Request $request, Memorial $memorial)

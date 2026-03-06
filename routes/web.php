@@ -60,6 +60,12 @@ Route::middleware(['auth'])->group(function () {
     // Генерация биографии и девиза через OpenAI
     Route::post('/memorial/{memorial}/generate-biography', [BiographyController::class, 'generate'])
         ->name('memorial.generate-biography');
+
+    // Admin comment moderation
+    Route::patch('/memorial/{memorial}/comments/{comment}/approve', [CommentController::class, 'approve'])
+        ->name('memorial.comments.approve');
+    Route::delete('/memorial/{memorial}/comments/{comment}', [CommentController::class, 'adminDestroy'])
+        ->name('memorial.comments.adminDestroy');
 });
 
 Route::post('/upload', [AvatarUploadController::class, 'upload']);

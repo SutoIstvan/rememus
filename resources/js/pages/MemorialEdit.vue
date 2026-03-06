@@ -4,7 +4,7 @@ import { ref, watch, onMounted, computed } from 'vue'
 import { toast } from "vue-sonner"
 import { Toaster } from '@/components/ui/sonner'
 import { Head } from '@inertiajs/vue3';
-import { Sparkles, Loader2 } from 'lucide-vue-next'
+import { Sparkles, Loader2, CheckCircle, Trash2, MessageCircle } from 'lucide-vue-next'
 
 import 'vue-sonner/style.css'
 
@@ -24,6 +24,7 @@ import { Textarea } from '@/components/ui/textarea'
 
 const props = defineProps<{
     memorial: any
+    comments: any[]
 }>()
 
 // Храним File объекты аватаров отдельно
@@ -37,6 +38,7 @@ const sectionsEnabled = ref({
     timeline: true,
     features: true,
     burialLocation: true,
+    comments: true,
 })
 
 // Форма
@@ -80,6 +82,7 @@ const form = useForm({
     timeline_enabled: true,
     features_enabled: true,
     burial_location_enabled: true,
+    comments_enabled: true,
 
     // Deleted items
     deleted_gallery_ids: [] as number[]
@@ -139,13 +142,15 @@ onMounted(() => {
         form.timeline_enabled = !!m.timeline_enabled
         form.features_enabled = !!m.features_enabled
         form.burial_location_enabled = !!m.burial_location_enabled
+        form.comments_enabled = m.comments_enabled !== undefined ? !!m.comments_enabled : true
 
         sectionsEnabled.value = {
             familyTree: form.family_tree_enabled,
             gallery: form.gallery_enabled,
             timeline: form.timeline_enabled,
             features: form.features_enabled,
-            burialLocation: form.burial_location_enabled
+            burialLocation: form.burial_location_enabled,
+            comments: form.comments_enabled,
         }
 
         // Family Tree - init handled by FamilyTreeEdit via initialData prop
@@ -188,6 +193,7 @@ watch(sectionsEnabled, (newVal) => {
     form.timeline_enabled = newVal.timeline
     form.features_enabled = newVal.features
     form.burial_location_enabled = newVal.burialLocation
+    form.comments_enabled = newVal.comments
 }, { deep: true })
 
 // Синхронизация имени с деревом (Logic from Create)
@@ -223,6 +229,61 @@ watch(() => form.image, (newImage) => {
 // ... (Copying sync logic from Create.vue if desired, but might be safer to let user edit manually in Edit mode to avoid overwriting their custom changes).
 // Decision: OMIT auto-sync in Edit mode to prevent overwriting user's manual edits.
 import { update as updateMemorial } from '@/routes/memorial'
+
+// ── Comments moderation ───────────────────────────────────────
+const localComments = ref<any[]>(
+    props.comments
+        ? [...props.comments].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        : []
+)
+
+const COMMENTS_PAGE_SIZE = 5
+const commentsVisibleCount = ref(COMMENTS_PAGE_SIZE)
+const visibleComments = computed(() => localComments.value.slice(0, commentsVisibleCount.value))
+function loadMoreComments() {
+    commentsVisibleCount.value += COMMENTS_PAGE_SIZE
+}
+
+async function approveComment(comment: any) {
+    const { default: axios } = await import('axios')
+    try {
+        await axios.patch(`/memorial/${props.memorial.slug || props.memorial.id}/comments/${comment.id}/approve`)
+        const found = localComments.value.find(c => c.id === comment.id)
+        if (found) found.status = 'approved'
+        toast.success('Comment approved')
+    } catch {
+        toast.error('Failed to approve comment')
+    }
+}
+
+async function deleteComment(comment: any) {
+    if (!confirm('Delete this comment permanently?')) return
+    const { default: axios } = await import('axios')
+    try {
+        await axios.delete(`/memorial/${props.memorial.slug || props.memorial.id}/comments/${comment.id}`)
+        localComments.value = localComments.value.filter(c => c.id !== comment.id)
+        toast.success('Comment deleted')
+    } catch {
+        toast.error('Failed to delete comment')
+    }
+}
+
+function commentInitials(name: string): string {
+    return name.split(' ').slice(0, 2).map((w: string) => w[0]?.toUpperCase() ?? '').join('')
+}
+
+function commentDate(dateStr: string): string {
+    if (!dateStr) return ''
+    return new Date(dateStr).toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' })
+}
+
+function resolveCommentPhoto(comment: any): string | null {
+    const p = comment.photo_thumb_url || comment.photo_url || comment.photo
+    if (!p) return null
+    if (p.startsWith('http') || p.startsWith('/storage')) return p
+    if (p.startsWith('storage/')) return '/' + p
+    return `/storage/${p}`
+}
 
 const isGenerating = ref(false)
 
@@ -292,6 +353,7 @@ form.transform((data) => {
     formData.append('timeline_enabled', data.timeline_enabled ? '1' : '0')
     formData.append('features_enabled', data.features_enabled ? '1' : '0')
     formData.append('burial_location_enabled', data.burial_location_enabled ? '1' : '0')
+    formData.append('comments_enabled', data.comments_enabled ? '1' : '0')
 
     // Gallery
     if (data.gallery_enabled && data.gallery.length > 0) {
@@ -601,6 +663,100 @@ const handleGalleryDelete = (ids: number[]) => {
                             :grave-photo="form.gravePhoto || (memorial.grave_photo ? `/storage/${memorial.grave_photo}` : null)"
                             @update:grave-photo="(file) => form.gravePhoto = file"
                             :disabled="!sectionsEnabled.burialLocation" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comments Moderation Section -->
+            <div class="space-y-4">
+                <div class="px-4 md:px-6 lg:px-8 flex items-center justify-between">
+                    <div class="mx-auto mt-10 md:mt-[7px] w-[760px]">
+                        <div class="grid grid-cols-[1fr_auto_1fr] items-center">
+                            <div></div>
+                            <div class="text-center">
+                                <span class="badge badge-green">Commemorations</span>
+                            </div>
+                            <div class="flex justify-end items-center space-x-1">
+                                <Label for="comments-toggle" class="cursor-pointer">
+                                    {{ sectionsEnabled.comments ? 'Active' : 'Disabled' }}
+                                </Label>
+                                <Switch id="comments-toggle" v-model="sectionsEnabled.comments" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative transition-all duration-300"
+                    :class="sectionsEnabled.comments ? 'h-auto' : 'h-[260px] overflow-hidden'">
+                    <div v-if="!sectionsEnabled.comments" class="absolute inset-0 bg-white/10 z-10 cursor-not-allowed">
+                    </div>
+                    <div :class="{ 'opacity-80 blur-sm': !sectionsEnabled.comments }" class="px-4 md:px-6 lg:px-8">
+                        <div class="mx-auto w-[760px]">
+
+                            <!-- Empty state -->
+                            <div v-if="localComments.length === 0"
+                                class="flex flex-col items-center justify-center py-10 gap-3 mt-2">
+                                <div class="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center">
+                                    <MessageCircle class="w-6 h-6 text-gray-400" />
+                                </div>
+                                <p class="text-sm text-gray-400">No commemorations yet.</p>
+                            </div>
+
+                            <!-- Comment cards -->
+                            <div v-else class="flex flex-col gap-3">
+                                <div v-for="comment in visibleComments" :key="comment.id"
+                                    class="border rounded-xl p-4 bg-gray-50 dark:bg-gray-900 flex gap-4 items-start">
+
+                                    <!-- Avatar -->
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-sm font-semibold text-gray-600 dark:text-gray-300 flex-shrink-0">
+                                        {{ commentInitials(comment.name) }}
+                                    </div>
+
+                                    <!-- Content -->
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center gap-2 flex-wrap mb-1">
+                                            <span class="font-semibold text-sm text-gray-800 dark:text-gray-100">{{
+                                                comment.name }}</span>
+                                            <span class="text-xs text-gray-400">{{ commentDate(comment.created_at)
+                                                }}</span>
+                                            <span v-if="comment.status === 'pending'"
+                                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-700">Pending</span>
+                                            <span v-else
+                                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700">Approved</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300 whitespace-pre-wrap">{{
+                                            comment.content }}</p>
+                                        <img v-if="resolveCommentPhoto(comment)" :src="resolveCommentPhoto(comment)!"
+                                            class="mt-2 rounded-lg h-16 w-16 object-cover" alt="comment photo" />
+                                    </div>
+
+                                    <!-- Actions -->
+                                    <div class="flex flex-col gap-2 flex-shrink-0">
+                                        <button v-if="comment.status === 'pending'" type="button"
+                                            @click="approveComment(comment)"
+                                            class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-500 text-white hover:bg-green-600 transition-colors">
+                                            <CheckCircle class="w-3.5 h-3.5" />
+                                            Approve
+                                        </button>
+                                        <button type="button" @click="deleteComment(comment)"
+                                            class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium bg-red-100 text-red-600 hover:bg-red-200 transition-colors">
+                                            <Trash2 class="w-3.5 h-3.5" />
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Load more -->
+                                <div v-if="commentsVisibleCount < localComments.length"
+                                    class="flex justify-center pt-2">
+                                    <button type="button" @click="loadMoreComments"
+                                        class="px-5 py-2 rounded-full border border-gray-200 text-sm text-gray-500 hover:border-gray-400 hover:text-gray-700 hover:bg-gray-50 transition-all">
+                                        Load more ({{ localComments.length - commentsVisibleCount }} remaining)
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>
