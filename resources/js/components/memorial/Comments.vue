@@ -68,64 +68,67 @@
         </div>
 
         <!-- Modal -->
-        <Transition name="modal">
-            <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
-                <div class="modal-box">
-                    <div class="modal-header">
-                        <h3 class="modal-title">Leave a Commemoration</h3>
-                        <button @click="closeModal" class="modal-close">
-                            <X class="w-5 h-5" />
-                        </button>
-                    </div>
-
-                    <!-- Success message -->
-                    <div v-if="submitted" class="success-banner">
-                        ✅ Thank you! Your comment has been submitted for moderation.
-                    </div>
-
-                    <form v-else @submit.prevent="submitComment" class="modal-form">
-                        <!-- Name -->
-                        <div class="form-group">
-                            <label class="form-label">Your name *</label>
-                            <input v-model="form.name" type="text" class="form-input" placeholder="Иван Иванов" required
-                                maxlength="255" />
-                        </div>
-
-                        <!-- Content -->
-                        <div class="form-group">
-                            <label class="form-label">Your Commemoration *</label>
-                            <textarea v-model="form.content" class="form-input form-textarea"
-                                placeholder="Share your memories..." required maxlength="2000" rows="4" />
-                        </div>
-
-                        <!-- Photo upload -->
-                        <div class="form-group">
-                            <label class="form-label"> Photo (optional)</label>
-                            <div class="photo-upload-area" @click="triggerPhotoInput">
-                                <img v-if="photoPreview" :src="photoPreview" class="photo-preview-img" alt="preview" />
-                                <div v-else class="photo-upload-placeholder">
-                                    <ImageIcon class="w-6 h-6 text-gray-400 mx-auto mb-1" />
-                                    <span class="text-xs text-gray-400">Click to upload photo</span>
-                                </div>
-                            </div>
-                            <input ref="photoInput" type="file" accept="image/*" class="hidden"
-                                @change="onPhotoChange" />
-                            <button v-if="form.photo" type="button" @click="removePhoto" class="remove-photo-btn">×
-                                Remove photo</button>
-                        </div>
-
-                        <!-- Error -->
-                        <p v-if="error" class="form-error">{{ error }}</p>
-
-                        <!-- Submit -->
-                        <button type="submit" class="btn-submit" :disabled="loading">
-                            <span v-if="loading" class="loading-dots">Sending...</span>
-                            <span v-else>Send</span>
-                        </button>
-                    </form>
+        <Dialog :open="showModal" @update:open="showModal = $event">
+            <DialogContent class="sm:max-w-[500px]">
+                <div class="flex flex-col space-y-1.5 text-center sm:text-left">
+                    <DialogTitle class="text-lg font-semibold leading-none tracking-tight">Leave a Commemoration</DialogTitle>
+                    <DialogDescription class="sr-only">Form to leave a commemoration</DialogDescription>
                 </div>
-            </div>
-        </Transition>
+
+                <!-- Success message -->
+                <div v-if="submitted" class="success-banner my-4">
+                    ✅ Thank you! Your comment has been submitted for moderation.
+                </div>
+
+                <form v-else @submit.prevent="submitComment" class="space-y-4 py-4">
+                    <!-- Name -->
+                    <div class="space-y-2">
+                        <Input v-model="form.name" type="text" placeholder="Your name *" required maxlength="255" />
+                    </div>
+
+                    <!-- Content -->
+                    <div class="space-y-2">
+                        <textarea v-model="form.content" class="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            placeholder="Share your memories... *" required maxlength="2000" rows="4"></textarea>
+                    </div>
+
+                    <!-- Photo upload -->
+                    <div class="space-y-2">
+                        <div class="flex flex-col gap-3">
+                            <div class="relative">
+                                <input ref="photoInput" type="file" accept="image/*" @change="onPhotoChange"
+                                    class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                                <Button variant="ghost" size="icon"
+                                    class="absolute top-1/2 right-2 size-8 -translate-y-1/2 pointer-events-none">
+                                    <ImageIcon class="w-4 h-4 text-gray-500" />
+                                    <span class="sr-only">Photo</span>
+                                </Button>
+                            </div>
+
+                            <div v-if="photoPreview" class="relative">
+                                <img :src="photoPreview" class="rounded-lg max-h-28 w-full object-cover border" alt="Preview" />
+                                <button type="button" @click="removePhoto" class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-80 hover:opacity-100">
+                                    <X class="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error -->
+                    <p v-if="error" class="text-sm font-medium text-red-500">{{ error }}</p>
+
+                    <!-- Submit -->
+                    <div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 pt-1">
+                        <Button type="button" variant="outline" @click="closeModal" class="mt-2 sm:mt-0">
+                            Cancel
+                        </Button>
+                        <Button type="submit" :disabled="loading">
+                            {{ loading ? 'Sending...' : 'Send' }}
+                        </Button>
+                    </div>
+                </form>
+            </DialogContent>
+        </Dialog>
     </section>
 </template>
 
@@ -134,6 +137,10 @@ import { ref, computed } from 'vue'
 import { MessageCircle, X, Image as ImageIcon } from 'lucide-vue-next'
 import axios from 'axios'
 import FancyboxWrapper from '@/components/Fancybox.vue'
+
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 const props = defineProps<{
     comments: any[]
@@ -222,6 +229,7 @@ async function submitComment() {
         submitted.value = true
         form.value = { name: '', content: '', photo: null }
         photoPreview.value = ''
+        if (photoInput.value) photoInput.value.value = ''
     } catch (e: any) {
         const msg = e.response?.data?.message || e.message || 'Произошла ошибка. Попробуйте ещё раз.'
         error.value = msg
@@ -233,7 +241,7 @@ async function submitComment() {
 // ── Helpers ───────────────────────────────────────────────────
 function resolvePhoto(comment: any): string | null {
     const p = comment.photo
-    if (!p) return null
+    if (!p || p === 'null') return null
     if (p.startsWith('http') || p.startsWith('/storage')) return p
     if (p.startsWith('storage/')) return '/' + p
     return `/storage/${p}`
@@ -241,7 +249,7 @@ function resolvePhoto(comment: any): string | null {
 
 function resolvePhotoThumb(comment: any): string | null {
     const t = comment.photo_thumb
-    if (t) {
+    if (t && t !== 'null') {
         if (t.startsWith('http') || t.startsWith('/storage')) return t
         if (t.startsWith('storage/')) return '/' + t
         return `/storage/${t}`
@@ -369,185 +377,4 @@ function formatDate(dateStr: string): string {
     background: #f9fafb;
 }
 
-/* ── Modal ──────────────────────────────────────────────────── */
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-}
-
-.modal-box {
-    background: white;
-    border-radius: 16px;
-    width: 100%;
-    max-width: 520px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid #f3f4f6;
-}
-
-.modal-title {
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.modal-close {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #6b7280;
-    padding: 4px;
-    border-radius: 6px;
-    display: flex;
-}
-
-.modal-close:hover {
-    background: #f3f4f6;
-}
-
-/* ── Form ───────────────────────────────────────────────────── */
-.modal-form {
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.375rem;
-}
-
-.form-label {
-    font-size: 13px;
-    font-weight: 500;
-    color: #374151;
-}
-
-.form-input {
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 0.6rem 0.875rem;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.form-input:focus {
-    border-color: #6366f1;
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
-}
-
-.form-textarea {
-    resize: vertical;
-    min-height: 100px;
-    font-family: inherit;
-}
-
-.form-error {
-    font-size: 13px;
-    color: #ef4444;
-}
-
-/* ── Photo upload ───────────────────────────────────────────── */
-.photo-upload-area {
-    border: 1.5px dashed #d1d5db;
-    border-radius: 8px;
-    min-height: 90px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    overflow: hidden;
-    transition: border-color 0.2s;
-}
-
-.photo-upload-area:hover {
-    border-color: #6366f1;
-}
-
-.photo-upload-placeholder {
-    text-align: center;
-    padding: 1rem;
-}
-
-.photo-preview-img {
-    width: 100%;
-    max-height: 200px;
-    object-fit: cover;
-}
-
-.remove-photo-btn {
-    background: none;
-    border: none;
-    font-size: 12px;
-    color: #ef4444;
-    cursor: pointer;
-    margin-top: 4px;
-    padding: 0;
-}
-
-/* ── Submit ─────────────────────────────────────────────────── */
-.btn-submit {
-    background: #111827;
-    color: white;
-    font-size: 14px;
-    font-weight: 500;
-    padding: 0.75rem;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    transition: background 0.2s;
-    width: 100%;
-}
-
-.btn-submit:hover:not(:disabled) {
-    background: #374151;
-}
-
-.btn-submit:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-/* ── Success ────────────────────────────────────────────────── */
-.success-banner {
-    margin: 1.5rem;
-    padding: 1rem;
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    border-radius: 8px;
-    font-size: 14px;
-    color: #15803d;
-    text-align: center;
-}
-
-/* ── Modal transitions ──────────────────────────────────────── */
-.modal-enter-active,
-.modal-leave-active {
-    transition: opacity 0.25s ease, transform 0.25s ease;
-}
-
-.modal-enter-from,
-.modal-leave-to {
-    opacity: 0;
-    transform: scale(0.95);
-}
 </style>

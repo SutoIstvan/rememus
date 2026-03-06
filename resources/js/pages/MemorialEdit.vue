@@ -279,7 +279,7 @@ function commentDate(dateStr: string): string {
 
 function resolveCommentPhoto(comment: any): string | null {
     const p = comment.photo_thumb_url || comment.photo_url || comment.photo
-    if (!p) return null
+    if (!p || p === 'null') return null
     if (p.startsWith('http') || p.startsWith('/storage')) return p
     if (p.startsWith('storage/')) return '/' + p
     return `/storage/${p}`

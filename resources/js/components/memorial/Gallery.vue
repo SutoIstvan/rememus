@@ -64,10 +64,10 @@ const images = computed(() => props.initialImages?.length ? props.initialImages 
 
 // Разделяем картинки на 4 колонки
 const columns = computed(() => {
-  const cols: GalleryImage[][] = []
-  for (let i = 0; i < 4; i++) {
-    cols.push(images.value.slice(i * 3, i * 3 + 3))
-  }
+  const cols: GalleryImage[][] = [[], [], [], []]
+  images.value.forEach((img, index) => {
+    cols[index % 4].push(img)
+  })
   return cols
 })
 
