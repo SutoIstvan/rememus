@@ -75,7 +75,7 @@ const toggleHobby = (value: string) => {
 
 <template>
   <div class="space-y-10 max-w-3xl mx-auto">
-    <div class="text-center space-y-5 mx-auto mt-10 md:mt-[70px]">
+    <div class="text-center space-y-5 mx-auto mt-1 md:mt-[70px]">
       <span class="badge badge-green">
         Memories
       </span>

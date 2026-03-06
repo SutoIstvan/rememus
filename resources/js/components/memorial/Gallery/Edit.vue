@@ -193,7 +193,7 @@ const handleFileUpload = (event: Event) => {
     const input = event.target as HTMLInputElement
     const files = Array.from(input.files || [])
 
-    const maxPhotos = 10
+    const maxPhotos = 12
     const availableSlots = maxPhotos - images.value.length
 
     if (availableSlots <= 0) {

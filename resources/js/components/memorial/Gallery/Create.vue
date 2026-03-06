@@ -159,7 +159,7 @@ const handleFileUpload = (event: Event) => {
     const files = Array.from(input.files || [])
 
     // Ограничение: максимум 10 фото
-    const maxPhotos = 10
+    const maxPhotos = 12
     const availableSlots = maxPhotos - images.value.length
 
     if (availableSlots <= 0) {

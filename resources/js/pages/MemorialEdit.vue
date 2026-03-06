@@ -21,6 +21,7 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { Dialog, DialogScrollContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 
 const props = defineProps<{
     memorial: any
@@ -237,7 +238,7 @@ const localComments = ref<any[]>(
         : []
 )
 
-const COMMENTS_PAGE_SIZE = 5
+const COMMENTS_PAGE_SIZE = 3
 const commentsVisibleCount = ref(COMMENTS_PAGE_SIZE)
 const visibleComments = computed(() => localComments.value.slice(0, commentsVisibleCount.value))
 function loadMoreComments() {
@@ -505,19 +506,52 @@ const handleGalleryDelete = (ids: number[]) => {
                             <Textarea id="biography" v-model="form.biography" placeholder="Write a biography..."
                                 class="min-h-[150px]" />
                         </div>
-                        <!-- Generate button -->
-                        <div class="mt-3">
-                            <button type="button" @click="generateContent" :disabled="isGenerating" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
-                                       bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md
-                                       hover:from-violet-700 hover:to-indigo-700 hover:shadow-lg hover:-translate-y-px
-                                       disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0">
+
+                        <!-- <p class="mt-2 text-xs text-gray-400 text-right">Uses AI to generate based on name, dates,
+                            family tree,
+                            timeline & features.</p> -->
+
+                        <!-- Buttons -->
+                        <div class="mt-3 flex flex-wrap items-center justify-end gap-3">
+                            <button type="button" @click="generateContent" :disabled="isGenerating"
+                                class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2">
                                 <Loader2 v-if="isGenerating" class="size-4 animate-spin" />
-                                <Sparkles v-else class="size-4" />
+                                <!-- <Sparkles v-else class="size-4" /> -->
                                 {{ isGenerating ? 'Generating...' : '✨ Generate Biography & Motto' }}
                             </button>
-                            <p class="mt-1 text-xs text-gray-400">Uses AI to generate based on name, dates, family tree,
-                                timeline & features.</p>
+
+                            <!-- Memories Modal -->
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <button type="button"
+                                        class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2">
+                                        Memories
+                                    </button>
+                                </DialogTrigger>
+                                <DialogScrollContent class="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+                                    <DialogHeader>
+                                        <DialogTitle class="hidden">Memories</DialogTitle>
+                                        <DialogDescription class="hidden">Provide the person's memories and traits.
+                                        </DialogDescription>
+                                    </DialogHeader>
+
+                                    <div class="relative pb-4">
+                                        <div v-if="!sectionsEnabled.features"
+                                            class="absolute inset-0 bg-black/50 z-10 cursor-not-allowed rounded-lg">
+                                        </div>
+                                        <div :class="{ 'opacity-50 blur-sm': !sectionsEnabled.features }">
+                                            <FeaturesCreate v-model:characteristics="form.characteristics"
+                                                v-model:hobbies="form.hobbies" v-model:custom-traits="form.customTraits"
+                                                v-model:additional-hobbies="form.additionalHobbies"
+                                                v-model:retirement="form.retirement" v-model:habits="form.habits"
+                                                v-model:stories="form.stories" v-model:wisdom="form.wisdom"
+                                                :disabled="!sectionsEnabled.features" />
+                                        </div>
+                                    </div>
+                                </DialogScrollContent>
+                            </Dialog>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -616,57 +650,6 @@ const handleGalleryDelete = (ids: number[]) => {
                 </div>
             </div>
 
-            <!-- Features Section -->
-            <div class="space-y-4">
-                <div class="relative">
-                    <div v-if="!sectionsEnabled.features" class="absolute inset-0 bg-black/50 z-10 cursor-not-allowed">
-                    </div>
-                    <div :class="{ 'opacity-50 blur-sm': !sectionsEnabled.features }">
-                        <FeaturesCreate v-model:characteristics="form.characteristics" v-model:hobbies="form.hobbies"
-                            v-model:custom-traits="form.customTraits"
-                            v-model:additional-hobbies="form.additionalHobbies" v-model:retirement="form.retirement"
-                            v-model:habits="form.habits" v-model:stories="form.stories" v-model:wisdom="form.wisdom"
-                            :disabled="!sectionsEnabled.features" />
-                    </div>
-                </div>
-            </div>
-
-            <!-- Burial Location Section -->
-            <div class="space-y-4">
-                <div class="px-4 md:px-6 lg:px-8 flex items-center justify-between">
-                    <div class="mx-auto mt-10 md:mt-[7px] w-[760px]">
-                        <div class="grid grid-cols-[1fr_auto_1fr] items-center">
-                            <div></div>
-                            <div class="text-center">
-                                <span class="badge badge-green">
-                                    Burial Location
-                                </span>
-                            </div>
-                            <div class="flex justify-end items-center space-x-1">
-                                <Label for="burial-location-toggle" class="cursor-pointer">
-                                    {{ sectionsEnabled.burialLocation ? 'Active' : 'Disabled' }}
-                                </Label>
-                                <Switch id="burial-location-toggle" v-model="sectionsEnabled.burialLocation" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="relative transition-all duration-300"
-                    :class="sectionsEnabled.burialLocation ? 'h-auto' : 'h-[260px] overflow-hidden'">
-                    <div v-if="!sectionsEnabled.burialLocation"
-                        class="absolute inset-0 bg-white/10 z-10 cursor-not-allowed">
-                    </div>
-                    <div :class="{ 'opacity-80 blur-sm': !sectionsEnabled.burialLocation }">
-                        <BurialLocationCreate v-model:grave-location="form.grave_location"
-                            v-model:grave-parcel="form.graveParcel" v-model:grave-line="form.graveLine"
-                            v-model:grave-number="form.graveNumber" v-model:coordinates="form.coordinates"
-                            :grave-photo="form.gravePhoto || (memorial.grave_photo ? `/storage/${memorial.grave_photo}` : null)"
-                            @update:grave-photo="(file) => form.gravePhoto = file"
-                            :disabled="!sectionsEnabled.burialLocation" />
-                    </div>
-                </div>
-            </div>
-
             <!-- Comments Moderation Section -->
             <div class="space-y-4">
                 <div class="px-4 md:px-6 lg:px-8 flex items-center justify-between">
@@ -718,16 +701,19 @@ const handleGalleryDelete = (ids: number[]) => {
                                             <span class="font-semibold text-sm text-gray-800 dark:text-gray-100">{{
                                                 comment.name }}</span>
                                             <span class="text-xs text-gray-400">{{ commentDate(comment.created_at)
-                                                }}</span>
+                                            }}</span>
                                             <span v-if="comment.status === 'pending'"
                                                 class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-700">Pending</span>
                                             <span v-else
                                                 class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700">Approved</span>
                                         </div>
-                                        <p class="text-sm text-gray-600 dark:text-gray-300 whitespace-pre-wrap">{{
-                                            comment.content }}</p>
-                                        <img v-if="resolveCommentPhoto(comment)" :src="resolveCommentPhoto(comment)!"
-                                            class="mt-2 rounded-lg h-16 w-16 object-cover" alt="comment photo" />
+                                        <p class="mt-1 flex text-sm text-gray-600 dark:text-gray-300">
+                                            <img v-if="resolveCommentPhoto(comment)"
+                                                :src="resolveCommentPhoto(comment)!"
+                                                class="me-2 rounded-lg h-16 w-16 object-cover" alt="comment photo" />
+                                            {{ comment.content }}
+                                        </p>
+
                                     </div>
 
                                     <!-- Actions -->
@@ -757,6 +743,42 @@ const handleGalleryDelete = (ids: number[]) => {
                             </div>
 
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Burial Location Section -->
+            <div class="space-y-4">
+                <div class="px-4 md:px-6 lg:px-8 flex items-center justify-between">
+                    <div class="mx-auto mt-10 md:mt-[7px] w-[760px]">
+                        <div class="grid grid-cols-[1fr_auto_1fr] items-center">
+                            <div></div>
+                            <div class="text-center">
+                                <span class="badge badge-green">
+                                    Burial Location
+                                </span>
+                            </div>
+                            <div class="flex justify-end items-center space-x-1">
+                                <Label for="burial-location-toggle" class="cursor-pointer">
+                                    {{ sectionsEnabled.burialLocation ? 'Active' : 'Disabled' }}
+                                </Label>
+                                <Switch id="burial-location-toggle" v-model="sectionsEnabled.burialLocation" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative transition-all duration-300"
+                    :class="sectionsEnabled.burialLocation ? 'h-auto' : 'h-[260px] overflow-hidden'">
+                    <div v-if="!sectionsEnabled.burialLocation"
+                        class="absolute inset-0 bg-white/10 z-10 cursor-not-allowed">
+                    </div>
+                    <div :class="{ 'opacity-80 blur-sm': !sectionsEnabled.burialLocation }">
+                        <BurialLocationCreate v-model:grave-location="form.grave_location"
+                            v-model:grave-parcel="form.graveParcel" v-model:grave-line="form.graveLine"
+                            v-model:grave-number="form.graveNumber" v-model:coordinates="form.coordinates"
+                            :grave-photo="form.gravePhoto || (memorial.grave_photo ? `/storage/${memorial.grave_photo}` : null)"
+                            @update:grave-photo="(file) => form.gravePhoto = file"
+                            :disabled="!sectionsEnabled.burialLocation" />
                     </div>
                 </div>
             </div>
