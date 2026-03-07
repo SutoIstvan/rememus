@@ -87,7 +87,7 @@ defineProps({
   },
   copyrightText: {
     type: String,
-    default: 'Copyright ©NextSaaS – smart application for modern business'
+    default: 'Copyright © Rememus.com – modern memorials'
   }
 })
 

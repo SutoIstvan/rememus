@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white dark:bg-black overflow-x-hidden">
-    <Navigation />
+    <Navigation :navigation-items="navItems" />
     <Header id="biography" />
     <Biography />
     <Gallery id="gallery" />
@@ -16,4 +16,10 @@ import FamilyTree from '@/components/memorial/FamilyTree.vue'
 import Footer from '@/components/memorial/Footer.vue'
 import Header from '@/components/memorial/Header.vue'
 import Biography from '@/components/memorial/Biography.vue'
+
+const navItems = [
+  { label: 'History', route: 'history' },
+  { label: 'Gallery', route: 'gallery' },
+  { label: 'Family tree', route: 'family-tree' },
+]
 </script>

@@ -35,9 +35,10 @@
       </nav>
 
       <!-- Desktop CTA Button -->
-      <div class="xl:flex hidden items-center justify-center">
-        <Link href="/dashboard" class="btn btn-md btn-secondary hover:btn-primary dark:btn-accent">
-          <span>Dashboard</span>
+      <div v-if="memorial" class="xl:flex hidden items-center justify-center">
+        <Link :href="`/memorial/${memorial.id}/edit`"
+          class="btn btn-md btn-secondary hover:btn-primary dark:btn-accent">
+          <span>Edit</span>
         </Link>
       </div>
 
@@ -80,10 +81,10 @@
             </ul>
 
             <!-- Mobile CTA -->
-            <div class="mt-6 pt-6 border-t border-stroke-2 dark:border-stroke-6">
-              <Link href="/register" @click="toggleMobileMenu"
+            <div v-if="memorial" class="mt-6 pt-6 border-t border-stroke-2 dark:border-stroke-6">
+              <Link :href="`/memorial/${memorial.id}/edit`" @click="toggleMobileMenu"
                 class="btn btn-md btn-secondary hover:btn-primary dark:btn-accent w-full justify-center">
-                <span>{{ ctaButton.text }}</span>
+                <span>Edit</span>
               </Link>
             </div>
           </nav>
@@ -129,6 +130,10 @@ const props = defineProps({
       text: 'Edit',
       route: 'register'
     })
+  },
+  memorial: {
+    type: Object,
+    default: null
   }
 })
 

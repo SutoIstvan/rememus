@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white dark:bg-black overflow-x-hidden">
-    <Navigation />
+    <Navigation :navigation-items="navItems" :memorial="memorial" />
 
 
     <!-- Header with person info -->
@@ -50,6 +50,26 @@ const props = defineProps<{
   memorial: any
   approvedComments: any[]
 }>()
+
+// ── Navigation data ───────────────────────────────────────────
+const navItems = computed(() => {
+  const items = [
+    { label: 'History', route: 'history' }
+  ]
+  if (props.memorial.gallery_enabled && galleryImages.value.length > 0) {
+    items.push({ label: 'Gallery', route: 'gallery' })
+  }
+  if (props.memorial.family_tree_enabled) {
+    items.push({ label: 'Family tree', route: 'family-tree' })
+  }
+  if (props.memorial.timeline_enabled && timelineFeatures.value.length > 0) {
+    items.push({ label: 'Timelines', route: 'timelines' })
+  }
+  if (props.memorial.comments_enabled) {
+    items.push({ label: 'Commemorations', route: 'commemorations' })
+  }
+  return items
+})
 
 // ── Header data ──────────────────────────────────────────────
 const headerData = computed(() => {
