@@ -127,7 +127,7 @@ export default {
             const [year, month, day] = dateOnly.split('-').map(Number)
             const date = new Date(year, month - 1, day)
             if (isNaN(date.getTime())) return dateString
-            return date.toLocaleDateString('en-US', {
+            return date.toLocaleDateString('en-GB', {
                 day: '2-digit',
                 month: 'long',
                 year: 'numeric',

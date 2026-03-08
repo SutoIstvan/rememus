@@ -82,7 +82,17 @@ const headerData = computed(() => {
 
   const formatDate = (d: string | null) => {
     if (!d) return '?'
-    return d.substring(0, 10)
+    const dateOnly = d.split('T')[0]
+    const parts = dateOnly.split('-')
+    if (parts.length !== 3) return d.substring(0, 10)
+    const [year, month, day] = parts.map(Number)
+    const date = new Date(year, month - 1, day)
+    if (isNaN(date.getTime())) return d.substring(0, 10)
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+    })
   }
 
   const bg = m.background_image
