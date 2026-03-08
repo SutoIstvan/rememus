@@ -9,10 +9,23 @@ use Inertia\Inertia;
 
 use App\Http\Controllers\DashboardMemorialController;
 use App\Http\Controllers\DashboardUserController;
+use App\Models\Memorial;
 
-Route::get('/', function () {
+Route::get('/home', function () {
     return Inertia::render('Memorial');
 })->name('home');
+
+Route::get('/', function () {
+    $memorials1 = Memorial::find(1);
+    $memorials2 = Memorial::find(2);
+    $memorials3 = Memorial::find(3);
+    $memorials4 = Memorial::find(4);
+    return view('index', compact('memorials1', 'memorials2', 'memorials3', 'memorials4'));
+})->name('index');
+
+Route::get('/pricing', function () {
+    return view('pricing');
+})->name('pricing');
 
 Route::get('dashboard', [DashboardMemorialController::class, 'index'])
     ->middleware(['auth', 'verified'])
