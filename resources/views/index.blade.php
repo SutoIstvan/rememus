@@ -2,7 +2,6 @@
 
 @section('content')
 
-@dump($memorials1->name)
   <main>
     <!-- =========================
     hero section
@@ -1217,94 +1216,32 @@ Pricing section
             </div>
           </form>
 
-              @if($memorials1)
-                <!-- memorial members  -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 items-center gap-6 justify-center">
-                    <a href="{{ route('memorial.show', $memorials1) }}">
-                        <div data-ns-animate data-delay="0.4" class="w-[298px] h-[312px] space-y-[34px] mx-auto">
+            @if($memorials->count())
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 items-center gap-6 justify-center">
 
-                            <figure class="size-[156px] rounded-full bg-[#d5dbe3] flex items-center justify-center overflow-hidden mx-auto">
-                                <img src="{{ $memorials1->photo }}" class="object-cover size-full" alt="profile img" loading="lazy"/>
-                            </figure>
+                @foreach($memorials as $memorial)
+                <a href="{{ route('memorial.show', $memorial) }}">
+                    <div data-ns-animate data-delay="0.4" class="w-[298px] h-[312px] space-y-[34px] mx-auto">
 
-                            <div class="space-y-[27px]">
-                                <div class="text-center">
-                                    <h3 class="text-heading-5">{{ $memorials1->name }}</h3>
-                                    <p class="text-tagline-2">{{ $memorials1->birth_place }}</p>
-                                </div>
+                        <figure class="size-[156px] rounded-full bg-[#d5dbe3] flex items-center justify-center overflow-hidden mx-auto">
+                            <img src="{{ $memorial->photo }}" class="object-cover size-full" alt="profile img" loading="lazy"/>
+                        </figure>
+
+                        <div class="space-y-[27px]">
+                            <div class="text-center">
+                                <h3 class="text-heading-5">{{ $memorial->name }}</h3>
+                                <p class="text-tagline-2">{{ $memorial->birth_place }}</p>
                             </div>
-
                         </div>
-                    </a>
-                </div>
-              @endif
 
-              @if($memorials2)
-                <!-- memorial members  -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 items-center gap-6 justify-center">
-                    <a href="{{ route('memorial.show', $memorials2) }}">
-                        <div data-ns-animate data-delay="0.4" class="w-[298px] h-[312px] space-y-[34px] mx-auto">
+                    </div>
+                </a>
+                @endforeach
 
-                            <figure class="size-[156px] rounded-full bg-[#d5dbe3] flex items-center justify-center overflow-hidden mx-auto">
-                                <img src="{{ $memorials2->photo }}" class="object-cover size-full" alt="profile img" loading="lazy"/>
-                            </figure>
-
-                            <div class="space-y-[27px]">
-                                <div class="text-center">
-                                    <h3 class="text-heading-5">{{ $memorials2->name }}</h3>
-                                    <p class="text-tagline-2">{{ $memorials2->birth_place }}</p>
-                                </div>
-                            </div>
-
-                        </div>
-                    </a>
-                </div>
-              @endif
-
-              @if($memorials3)
-                <!-- memorial members  -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 items-center gap-6 justify-center">
-                    <a href="{{ route('memorial.show', $memorials3) }}">
-                        <div data-ns-animate data-delay="0.4" class="w-[298px] h-[312px] space-y-[34px] mx-auto">
-
-                            <figure class="size-[156px] rounded-full bg-[#d5dbe3] flex items-center justify-center overflow-hidden mx-auto">
-                                <img src="{{ $memorials3->photo }}" class="object-cover size-full" alt="profile img" loading="lazy"/>
-                            </figure>
-
-                            <div class="space-y-[27px]">
-                                <div class="text-center">
-                                    <h3 class="text-heading-5">{{ $memorials3->name }}</h3>
-                                    <p class="text-tagline-2">{{ $memorials3->birth_place }}</p>
-                                </div>
-                            </div>
-
-                        </div>
-                    </a>
-                </div>
-              @endif
+            </div>
+            @endif
 
 
-              @if($memorials4)
-                <!-- memorial members  -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 items-center gap-6 justify-center">
-                    <a href="{{ route('memorial.show', $memorials4) }}">
-                        <div data-ns-animate data-delay="0.4" class="w-[298px] h-[312px] space-y-[34px] mx-auto">
-
-                            <figure class="size-[156px] rounded-full bg-[#d5dbe3] flex items-center justify-center overflow-hidden mx-auto">
-                                <img src="{{ $memorials4->photo }}" class="object-cover size-full" alt="profile img" loading="lazy"/>
-                            </figure>
-
-                            <div class="space-y-[27px]">
-                                <div class="text-center">
-                                    <h3 class="text-heading-5">{{ $memorials4->name }}</h3>
-                                    <p class="text-tagline-2">{{ $memorials4->birth_place }}</p>
-                                </div>
-                            </div>
-
-                        </div>
-                    </a>
-                </div>
-              @endif
 
           </div>
 

@@ -16,11 +16,9 @@ Route::get('/home', function () {
 })->name('home');
 
 Route::get('/', function () {
-    $memorials1 = Memorial::find(1);
-    $memorials2 = Memorial::find(2);
-    $memorials3 = Memorial::find(3);
-    $memorials4 = Memorial::find(4);
-    return view('index', compact('memorials1', 'memorials2', 'memorials3', 'memorials4'));
+    $memorials = Memorial::latest()->take(4)->get();
+
+    return view('index', compact('memorials'));
 })->name('index');
 
 Route::get('/pricing', function () {
