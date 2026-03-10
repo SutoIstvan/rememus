@@ -29,6 +29,10 @@ Route::get('/help', function () {
     return view('help');
 })->name('help');
 
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
+
 Route::get('dashboard', [DashboardMemorialController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');

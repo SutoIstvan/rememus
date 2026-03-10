@@ -161,7 +161,7 @@
 
           </li>
           <li class="relative nav-item cursor-pointer py-2.5" data-menu="platform-mega-menu-v2">
-            <a href="#"
+            <a href="{{ route('help') }}"
               class="flex items-center gap-1 px-4 py-2 border border-transparent hover:border-stroke-2 dark:hover:border-stroke-7 rounded-full text-tagline-1 font-normal text-secondary/60 hover:text-secondary transition-all duration-200 dark:text-accent/60 dark:hover:text-accent">
               <span>Help</span>
               <span class="nav-arrow block origin-center transition-all duration-300 translate-y-px">
@@ -182,72 +182,83 @@
                     <div class="col-span-12 xl:col-span-12">
                       <div>
                         <p class="text-tagline-2 font-medium text-secondary/60 dark:text-accent/60 p-3">
-                          Overview
+                          Help Center
                         </p>
                         <ul>
                           <li>
-                            <a href="./help#step1" class="relative block group p-3">
+                            <a href="./help#step-1" class="relative block group p-3">
                               <div
                                 class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 {=$class}">
                               </div>
 
                               <span class="text-tagline-1 font-normal text-secondary dark:text-accent relative z-10">
-                                Features & Capabilities
+                                Getting Started
                               </span>
                             </a>
                           </li>
                           <li>
-                            <a href="./help#step2" class="relative block group p-3">
+                            <a href="./help#step-2" class="relative block group p-3">
                               <div
                                 class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 {=$class}">
                               </div>
 
                               <span class="text-tagline-1 font-normal text-secondary dark:text-accent relative z-10">
-                                Process & Workflow
+                                Gallery
                               </span>
                             </a>
                           </li>
                           <li>
-                            <a href="./help#step3" class="relative block group p-3">
+                            <a href="./help#step-3" class="relative block group p-3">
                               <div
                                 class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 {=$class}">
                               </div>
 
                               <span class="text-tagline-1 font-normal text-secondary dark:text-accent relative z-10">
-                                Security & Compliance
+                                Family Tree
                               </span>
                             </a>
                           </li>
                           <li>
-                            <a href="./help#step4" class="relative block group p-3">
+                            <a href="./help#step-4" class="relative block group p-3">
                               <div
                                 class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 {=$class}">
                               </div>
 
                               <span class="text-tagline-1 font-normal text-secondary dark:text-accent relative z-10">
-                                Our Brandkit
+                                TimeLine
                               </span>
                             </a>
                           </li>
                           <li>
-                            <a href="./help#step5" class="relative block group p-3">
+                            <a href="./help#step-5" class="relative block group p-3">
                               <div
                                 class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 {=$class}">
                               </div>
 
                               <span class="text-tagline-1 font-normal text-secondary dark:text-accent relative z-10">
-                                Download App
+                                Memory
                               </span>
                             </a>
                           </li>
                           <li>
-                            <a href="./help#step6" class="relative block group p-3">
+                            <a href="./help#step-6" class="relative block group p-3">
                               <div
                                 class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 {=$class}">
                               </div>
 
                               <span class="text-tagline-1 font-normal text-secondary dark:text-accent relative z-10">
-                                Press
+                                Burial Location
+                              </span>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="./help#step-7" class="relative block group p-3">
+                              <div
+                                class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 {=$class}">
+                              </div>
+
+                              <span class="text-tagline-1 font-normal text-secondary dark:text-accent relative z-10">
+                                Commemorations
                               </span>
                             </a>
                           </li>
@@ -258,17 +269,17 @@
                   </div>
                   <div class="col-span-12 lg:col-span-8 grid grid-cols-12 gap-x-6">
                     <div class="col-span-12 xl:col-span-6">
-                      <a href="./ai-software-blog-details.html" class="block">
+                      <a href="./help#step-1" class="block">
                         <article
                           class="p-3 border border-stroke-1 dark:border-background-7 rounded-2xl space-y-3 group">
                           <figure class="rounded-lg overflow-hidden">
-                            <img src="./images/ns-img-424.jpg" alt="Featured"
+                            <img src="./images/ns-img-425.jpg" alt="Featured"
                               class="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-500 ease-in-out" />
                           </figure>
                           <div class="space-y-14">
                             <div>
                               <p class="text-heading-6 font-normal text-secondary dark:text-accent">
-                                Merge Unified
+                                Первые шаги
                               </p>
                               <p class="text-tagline-1 font-normal text-secondary/60 dark:text-accent/60">
                                 One API. Countless product <br />
@@ -276,7 +287,7 @@
                               </p>
                             </div>
                             <div>
-                              <a href="./ai-software-blog-details.html"
+                              <a href="./help#step-1"
                                 class="bg-secondary group group-hover:bg-primary-500 transition-all duration-500 ease-in-out ring-[6px] ring-background-12 dark:ring-background-7 rounded-full w-16 relative overflow-hidden flex items-center justify-center space-y-5 h-9.5 px-5 py-2">
                                 <figure class="size-6 relative items-center justify-center overflow-hidden">
                                   <img src="./images/icons/new-arrow-white.svg" alt="new-arrow"
@@ -291,17 +302,17 @@
                       </a>
                     </div>
                     <div class="col-span-12 xl:col-span-6">
-                      <a href="./ai-software-blog-details.html" class="block">
+                      <a href="./help#step-3" class="block">
                         <article
                           class="p-3 border border-stroke-1 dark:border-background-7 rounded-2xl space-y-3 group">
                           <figure class="rounded-lg overflow-hidden">
-                            <img src="./images/ns-img-425.jpg" alt="Featured"
+                            <img src="./images/ns-img-420.jpg" alt="Featured"
                               class="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-500 ease-in-out" />
                           </figure>
                           <div class="space-y-14">
                             <div>
                               <p class="text-heading-6 font-normal text-secondary dark:text-accent">
-                                Combine Unified
+                                Семейное дерево
                               </p>
                               <p class="text-tagline-1 font-normal text-secondary/60 dark:text-accent/60">
                                 One API. Countless product <br />
@@ -309,7 +320,7 @@
                               </p>
                             </div>
                             <div>
-                              <a href="./ai-software-blog-details.html"
+                              <a href="./help#step-3"
                                 class="bg-secondary group group-hover:bg-primary-500 transition-all duration-500 ease-in-out ring-[6px] ring-background-12 dark:ring-background-7 rounded-full w-16 relative overflow-hidden flex items-center justify-center space-y-5 h-9.5 px-5 py-2">
                                 <figure class="size-6 relative items-center justify-center overflow-hidden">
                                   <img src="./images/icons/new-arrow-white.svg" alt="new-arrow"
@@ -338,7 +349,7 @@
             </a>
           </li>
           <li class="relative nav-item cursor-pointer py-2.5">
-            <a href="./ai-software-pricing.html"
+            <a href="{{ route('contact') }}"
               class="flex items-center gap-1 px-4 py-2 border border-transparent hover:border-stroke-2 dark:hover:border-stroke-7 rounded-full text-tagline-1 font-normal text-secondary/60 hover:text-secondary transition-all duration-200 dark:text-accent/60 dark:hover:text-accent">
               <span>Contact</span>
             </a>
