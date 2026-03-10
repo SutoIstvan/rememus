@@ -1,988 +1,205 @@
 @extends('layouts.app')
 
 @section('content')
-<main>
-<section class="xl:pt-[170px] pt-[140px] xl:pb-28 lg:pb-20 pb-16">
-  <div class="main-container">
-    <div class="space-y-4 text-center lg:text-left">
-      <h1 data-ns-animate data-delay="0.1" class="font-normal">Создание страницы</h1>
-      <p
-        data-ns-animate
-        data-delay="0.2"
-        class="lg:max-w-full sm:max-w-[550px] max-w-full mx-auto lg:mx-0"
-      >
-        Подробное руководство по каждому шагу создания
-        <br class="hidden lg:block" />
-        мемориальной страницы для ваших близких.
-      </p>
-    </div>
-  </div>
-</section>
+<div class="w-full bg-white pt-[100px]" style="box-shadow:0 2px 40px rgba(0,0,0,0.07);">
+    <div class="grid grid-cols-1 md:grid-cols-2">
 
-      <section class="py-16 lg:py-20 xl:py-28">
-  <div class="main-container">
-    <div class="grid grid-cols-12 items-start gap-y-6 lg:gap-x-6 lg:gap-y-0">
-      <div
-        data-ns-animate
-        data-delay="0.1"
-        class="sticky top-28 col-span-12 space-y-8 lg:col-span-3"
-      >
-        <div class="relative z-0 space-y-3">
-          <p class="text-tagline-2 text-secondary dark:text-accent font-medium">Оглавление</p>
-          <div class="relative z-0 space-y-1">
-            <a
-              href="#step-1"
-              data-month-link="step-1"
-              class="month-link group text-secondary text-tagline-1 dark:text-accent bg-background-12 dark:!bg-background-6 relative z-0 flex items-center justify-start rounded-[10px] px-6 py-3.5 font-normal"
-            >
-              <div
-  class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 group-hover:bg-background-12 dark:group-hover:!bg-background-6"
-></div>
-
-              <span class="relative z-10">Главная информация</span>
-            </a>
-            <a
-              href="#step-2"
-              data-month-link="step-2"
-              class="month-link group text-secondary text-tagline-1 dark:text-accent relative z-0 flex items-center justify-start rounded-[10px] px-6 py-3.5 font-normal"
-            >
-              <div
-  class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 group-hover:bg-background-12 dark:group-hover:!bg-background-6"
-></div>
-
-              <span class="relative z-10">Фотогалерея</span>
-            </a>
-            <a
-              href="#step-3"
-              data-month-link="step-3"
-              class="month-link group text-secondary text-tagline-1 dark:text-accent relative z-0 flex items-center justify-start rounded-[10px] px-6 py-3.5 font-normal"
-            >
-              <div
-  class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 group-hover:bg-background-12 dark:group-hover:!bg-background-6"
-></div>
-
-              <span class="relative z-10">Семейное дерево</span>
-            </a>
-            <a
-              href="#step-4"
-              data-month-link="step-4"
-              class="month-link group text-secondary text-tagline-1 dark:text-accent relative z-0 flex items-center justify-start rounded-[10px] px-6 py-3.5 font-normal"
-            >
-              <div
-  class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 group-hover:bg-background-12 dark:group-hover:!bg-background-6"
-></div>
-
-              <span class="relative z-10">Временная шкала</span>
-            </a>
-            <a
-              href="#step-5"
-              data-month-link="step-5"
-              class="month-link group text-secondary text-tagline-1 dark:text-accent relative z-0 flex items-center justify-start rounded-[10px] px-6 py-3.5 font-normal"
-            >
-              <div
-  class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 group-hover:bg-background-12 dark:group-hover:!bg-background-6"
-></div>
-
-              <span class="relative z-10">Память</span>
-            </a>
-            <a
-              href="#step-6"
-              data-month-link="step-6"
-              class="month-link group text-secondary text-tagline-1 dark:text-accent relative z-0 flex items-center justify-start rounded-[10px] px-6 py-3.5 font-normal"
-            >
-              <div
-  class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 group-hover:bg-background-12 dark:group-hover:!bg-background-6"
-></div>
-
-              <span class="relative z-10">Место захоронения</span>
-            </a>
-            <a
-              href="#step-7"
-              data-month-link="step-7"
-              class="month-link group text-secondary text-tagline-1 dark:text-accent relative z-0 flex items-center justify-start rounded-[10px] px-6 py-3.5 font-normal"
-            >
-              <div
-  class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 group-hover:bg-background-12 dark:group-hover:!bg-background-6"
-></div>
-
-              <span class="relative z-10">Слова памяти</span>
-            </a>
-          </div>
+      <!-- LEFT: Gallery -->
+      <div class="bg-stone-50">
+        <div class="aspect-square overflow-hidden">
+          <img id="main-img"
+            src="https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-03-product-01.jpg"
+            alt="Angled view"
+            class="w-full h-full object-cover img-fade" />
+        </div>
+        <div class="flex gap-2 p-4 bg-white border-t border-stone-100">
+          <button onclick="switchImage(this, 0)"
+            class="thumb active flex-1 aspect-square overflow-hidden"
+            data-src="https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-03-product-01.jpg">
+            <img src="https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-03-product-01.jpg" class="w-full h-full object-cover" alt="Angled"/>
+          </button>
+          <button onclick="switchImage(this, 1)"
+            class="thumb opacity-50 flex-1 aspect-square overflow-hidden"
+            data-src="https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-03-product-02.jpg">
+            <img src="https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-03-product-02.jpg" class="w-full h-full object-cover" alt="Front"/>
+          </button>
+          <button onclick="switchImage(this, 2)"
+            class="thumb opacity-50 flex-1 aspect-square overflow-hidden"
+            data-src="https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-03-product-03.jpg">
+            <img src="https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-03-product-03.jpg" class="w-full h-full object-cover" alt="Back"/>
+          </button>
+          <button onclick="switchImage(this, 3)"
+            class="thumb opacity-50 flex-1 aspect-square overflow-hidden"
+            data-src="https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-03-product-04.jpg">
+            <img src="https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-03-product-04.jpg" class="w-full h-full object-cover" alt="Open"/>
+          </button>
         </div>
       </div>
-      <div class="col-span-12 space-y-2 lg:col-span-9">
-        <div
-          id="step-1"
-          data-month="step-1"
-          data-ns-animate
-          data-delay="0.1"
-          class="month-card bg-background-2 dark:bg-background-6 border-stroke-1 dark:border-background-7 rounded-[20px] border p-5 lg:p-8"
-        >
-          <div class="mb-14 space-y-4">
-            <h3>
-              1. Главная информация
-            </h3>
-            <span
-              class="bg-background-12 dark:bg-background-7 border-stroke-1 dark:border-background-7 text-tagline-1 text-secondary dark:text-accent inline-flex rounded-full border px-5 py-2 font-normal"
-              >Основа профиля</span
-            >
-          </div>
-          <div>
-            <p class="text-heading-5 text-secondary dark:text-accent mb-3 font-normal">Первые шаги</p>
-            <p>Заполните базовые данные о человеке, чтобы создать основу мемориальной страницы.</p>
-            <p class="text-heading-6 text-secondary dark:text-accent mt-6 mb-4 font-normal">
-              Что можно заполнить:
-            </p>
-            <ul class="mt-4 mb-10.5 space-y-3">
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Выбор фото профиля человека.
-                </p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Ввод имени.
-                </p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Выбор даты рождения и даты смерти.
-                </p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Ввод места рождения.
-                </p>
-              </li>
-            </ul>
-            <ul>
-              <li class="flex items-center gap-x-2 mt-4">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Выбор фотографии бекграунда (обложки) из предложенных существующих вариантов или загрузка своей собственной картинки.
-                </p>
-              </li>
-            </ul>
-            <p class="text-sm mt-5 mb-10 text-gray-500 italic">* Блок главной информации всегда отображается и не имеет кнопки отключения.</p>
 
-            <figure class="overflow-hidden rounded-[20px]">
-              <img
-                src="./images/ns-img-381.jpg"
-                alt="Главная информация"
-                class="h-full w-full object-cover"
-              />
-            </figure>
-          </div>
-        </div>
-        <div
-          id="step-2"
-          data-month="step-2"
-          data-ns-animate
-          data-delay="0.2"
-          class="month-card bg-background-2 dark:bg-background-6 border-stroke-1 dark:border-background-7 rounded-[20px] border p-5 lg:p-8"
-        >
-          <div class="mb-14 space-y-4">
-            <h3>
-              2. Фотогалерея
-            </h3>
-            <span
-              class="bg-background-12 dark:bg-background-7 border-stroke-1 dark:border-background-7 text-tagline-1 text-secondary dark:text-accent inline-flex rounded-full border px-5 py-2 font-normal"
-              >Медиа</span
-            >
-          </div>
-          <div>
-            <p class="text-heading-5 text-secondary dark:text-accent mb-3 font-normal">Память в снимках</p>
-            <p>Загружайте фотографии, чтобы сохранить визуальные воспоминания.</p>
-            <p class="text-heading-6 text-secondary dark:text-accent mt-6 mb-4 font-normal">
-              Возможности
-            </p>
-            <ul class="mt-4 mb-6 space-y-3">
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">Можно загрузить до 12 фотографий в галерею памяти.</p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Встроенный инструмент переворота фото, если снимок загрузился вверх ногами.
-                </p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  New integration for common call storage providers.
-                </p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Expanded webhook retry policy and dead-letter queue.
-                </p>
-              </li>
-            </ul>
-            <p class="text-heading-5 text-secondary dark:text-accent mb-3 font-normal">Migration</p>
-            <ul class="mb-8">
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  v1 endpoints remain available for 90 days plan migration for automated exports.
-                </p>
-              </li>
-            </ul>
+      <!-- RIGHT: Info -->
+      <div class="flex flex-col p-8 lg:p-12">
 
-            <figure class="overflow-hidden rounded-[12px]">
-              <img
-                src="./images/ns-img-382.jpg"
-                alt="changelog"
-                class="h-full w-full object-cover"
-              />
-            </figure>
+        <!-- Header -->
+        <div class="mb-6">
+          <p class="text-xs tracking-widest uppercase text-stone-400 mb-3">Canvas Collection</p>
+          <h1 class="serif text-4xl font-light text-stone-900 leading-tight mb-3">Zip Tote Basket</h1>
+          <div class="flex items-center justify-between mt-3">
+            <!-- Stars -->
+            <div class="flex items-center gap-1">
+              <svg class="w-4 h-4 text-stone-800" viewBox="0 0 20 20" fill="currentColor"><path d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"/></svg>
+              <svg class="w-4 h-4 text-stone-800" viewBox="0 0 20 20" fill="currentColor"><path d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"/></svg>
+              <svg class="w-4 h-4 text-stone-800" viewBox="0 0 20 20" fill="currentColor"><path d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"/></svg>
+              <svg class="w-4 h-4 text-stone-800" viewBox="0 0 20 20" fill="currentColor"><path d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"/></svg>
+              <svg class="w-4 h-4 text-stone-200" viewBox="0 0 20 20" fill="currentColor"><path d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"/></svg>
+              <span class="ml-2 text-xs text-stone-400 tracking-widest uppercase">4 / 5</span>
+            </div>
+            <span class="serif text-3xl font-light text-stone-800">$140</span>
           </div>
         </div>
-        <div
-          id="step-3"
-          data-month="step-3"
-          data-ns-animate
-          data-delay="0.3"
-          class="month-card bg-background-2 dark:bg-background-6 border-stroke-1 dark:border-background-7 rounded-[20px] border p-5 lg:p-8"
-        >
-          <div class="mb-14 space-y-4">
-            <h3>
-              3. Семейное дерево
-            </h3>
-            <span
-              class="bg-background-12 dark:bg-background-7 border-stroke-1 dark:border-background-7 text-tagline-1 text-secondary dark:text-accent inline-flex rounded-full border px-5 py-2 font-normal"
-              >Родственные связи</span
-            >
-          </div>
-          <div>
-            <p class="text-heading-5 text-secondary dark:text-accent mb-3 font-normal">Связь поколений</p>
-            <p>Укажите членов семьи, чтобы воссоздать историю рода.</p>
-            <p class="text-heading-6 text-secondary dark:text-accent mt-6 mb-4 font-normal">
-              Опции семейного дерева:
-            </p>
-            <ul class="mt-4 mb-6 space-y-3">
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Кого можно добавить: бабушек, дедушек, маму, папу, сожителя (жену/мужа), братьев, сестер, детей.
-                </p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  К каждому родственнику можно загрузить фото (аватарку).
-                </p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Если у родственника уже есть своя мемориальная страница на сайте, можно указать её код для связи профилей.
-                </p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Блок можно отключить, если вы не хотите отображать семейное дерево.
-                </p>
-              </li>
-            </ul>
 
-            <figure class="overflow-hidden rounded-[12px]">
-              <img
-                src="./images/ns-img-383.jpg"
-                alt="changelog"
-                class="h-full w-full object-cover"
-              />
-            </figure>
-          </div>
-        </div>
-        <div
-          id="step-4"
-          data-month="step-4"
-          data-ns-animate
-          data-delay="0.1"
-          class="month-card bg-background-2 dark:bg-background-6 border-stroke-1 dark:border-background-7 rounded-[20px] border p-5 lg:p-8"
-        >
-          <div class="mb-14 space-y-4">
-            <h3>
-              4. Временная шкала
-            </h3>
-            <span
-              class="bg-background-12 dark:bg-background-7 border-stroke-1 dark:border-background-7 text-tagline-1 text-secondary dark:text-accent inline-flex rounded-full border px-5 py-2 font-normal"
-              >События жизни</span
-            >
-          </div>
-          <div>
-            <p class="text-heading-5 text-secondary dark:text-accent mb-3 font-normal">Хронология</p>
-            <p>Добавляйте важные вехи из жизни человека: учеба, работа, свадьба, рождение детей и другие значимые события.</p>
-            <p class="text-heading-6 text-secondary dark:text-accent mt-6 mb-4 font-normal">
-              Функционал:
-            </p>
-            <ul class="mt-4 mb-10.5 space-y-3">
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Возможность создавать, редактировать и удалять любые события.
-                </p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  К каждому событию можно прикрепить фотографию.
-                </p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Указание точных дат начала и окончания события.
-                </p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Блок легко отключается, если его отображение на странице не требуется.
-                </p>
-              </li>
-            </ul>
-            <figure class="overflow-hidden rounded-[20px]">
-              <img
-                src="./images/ns-img-381.jpg"
-                alt="changelog"
-                class="h-full w-full object-cover"
-              />
-            </figure>
-          </div>
-        </div>
-        <div
-          id="step-5"
-          data-month="step-5"
-          data-ns-animate
-          data-delay="0.2"
-          class="month-card bg-background-2 dark:bg-background-6 border-stroke-1 dark:border-background-7 rounded-[20px] border p-5 lg:p-8"
-        >
-          <div class="mb-14 space-y-4">
-            <h3>
-              5. Память (Характеристики)
-            </h3>
-            <span
-              class="bg-background-12 dark:bg-background-7 border-stroke-1 dark:border-background-7 text-tagline-1 text-secondary dark:text-accent inline-flex rounded-full border px-5 py-2 font-normal"
-              >AI Генерация</span
-            >
-          </div>
-          <div>
-            <p class="text-heading-5 text-secondary dark:text-accent mb-3 font-normal">Интеллектуальная биография</p>
-            <p>Укажите черты характера и интересы. На их основе искусственный интеллект сможет написать красивую биографию.</p>
-            <p class="text-heading-6 text-secondary dark:text-accent mt-6 mb-4 font-normal">
-              Особенности раздела:
-            </p>
-            <ul class="mt-4 mb-6 space-y-3">
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">Добавьте заметки о хобби, привычках, любимых книгах, жизненных принципах и других примечаниях.</p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Нажмите кнопку &laquo;Generate Biography & Motto&raquo;, и AI сформирует детальный текст биографии и короткий девиз на основе введенных характеристик. Генерацию можно деактивировать.
-                </p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Все сгенерированные тексты можно отредактировать самостоятельно перед публикацией. Так же весь блок можно отключить для отображения.
-                </p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Expanded webhook retry policy and dead-letter queue.
-                </p>
-              </li>
-            </ul>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Блок можно отключить, если вы не хотите его использовать.
-                </p>
-              </li>
-            </ul>
+        <div class="w-8 h-px bg-stone-200 mb-6"></div>
 
-            <figure class="overflow-hidden rounded-[12px]">
-              <img
-                src="./images/ns-img-382.jpg"
-                alt="changelog"
-                class="h-full w-full object-cover"
-              />
-            </figure>
-          </div>
-        </div>
-        <div
-          id="step-6"
-          data-month="step-6"
-          data-ns-animate
-          data-delay="0.3"
-          class="month-card bg-background-2 dark:bg-background-6 border-stroke-1 dark:border-background-7 rounded-[20px] border p-5 lg:p-8"
-        >
-          <div class="mb-14 space-y-4">
-            <h3>
-              6. Место захоронения
-            </h3>
-            <span
-              class="bg-background-12 dark:bg-background-7 border-stroke-1 dark:border-background-7 text-tagline-1 text-secondary dark:text-accent inline-flex rounded-full border px-5 py-2 font-normal"
-              >Навигация</span
-            >
-          </div>
-          <div>
-            <p class="text-heading-5 text-secondary dark:text-accent mb-3 font-normal">Как найти</p>
-            <p>Укажите детали места захоронения, чтобы близким было легче найти памятник.</p>
-            <p class="text-heading-6 text-secondary dark:text-accent mt-6 mb-4 font-normal">
-              Что можно заполнить:
-            </p>
-            <ul class="mt-4 mb-6 space-y-3">
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Укажите адрес кладбища, номер сектора (ряда) и номер места.
-                </p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Добавьте точные GPS-координаты для удобной навигации на картах.
-                </p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Загрузите фотографию памятника с включенными геоданными. Система автоматически извлечет координаты из фото. На странице есть встроенная инструкция, как включить геометки на iOS и Android.
-                </p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Блок легко отключается, если вы не хотите разглашать эту информацию.
-                </p>
-              </li>
-            </ul>
+        <!-- Description -->
+        <p class="text-sm text-stone-500 leading-relaxed mb-8">
+          The Zip Tote Basket is the perfect midpoint between shopping tote and comfy backpack.
+          With convertible straps, you can hand carry, shoulder sling, or backpack this convenient
+          and spacious bag. The zip top and durable canvas construction keeps your goods protected for all-day use.
+        </p>
 
-            <figure class="overflow-hidden rounded-[12px]">
-              <img
-                src="./images/ns-img-383.jpg"
-                alt="changelog"
-                class="h-full w-full object-cover"
-              />
-            </figure>
+        <!-- Color -->
+        <div class="mb-8">
+          <p class="text-xs tracking-widest uppercase text-stone-400 mb-3">
+            Color — <span id="color-label" class="text-stone-700">Washed Black</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="selectColor(this, 'Washed Black')"
+              class="color-btn active w-7 h-7 rounded-full"
+              style="background:#2c2c2c;"></button>
+            <button onclick="selectColor(this, 'White')"
+              class="color-btn w-7 h-7 rounded-full"
+              style="background:#f5f5f0; border:1px solid #d6d3d1;"></button>
+            <button onclick="selectColor(this, 'Washed Gray')"
+              class="color-btn w-7 h-7 rounded-full"
+              style="background:#9e9e99;"></button>
           </div>
         </div>
-        <div
-          id="step-7"
-          data-month="step-7"
-          data-ns-animate
-          data-delay="0.1"
-          class="month-card bg-background-2 dark:bg-background-6 border-stroke-1 dark:border-background-7 rounded-[20px] border p-5 lg:p-8"
-        >
-          <div class="mb-14 space-y-4">
-            <h3>
-              7. Слова памяти
-            </h3>
-            <span
-              class="bg-background-12 dark:bg-background-7 border-stroke-1 dark:border-background-7 text-tagline-1 text-secondary dark:text-accent inline-flex rounded-full border px-5 py-2 font-normal"
-              >Для посетителей</span
-            >
+
+        <!-- Buttons -->
+        <div class="flex gap-3 mb-8">
+          <button id="add-btn" onclick="addToBag()"
+            class="add-btn flex-1 py-3.5 text-white text-xs tracking-widest uppercase"
+            style="background:#1c1917; letter-spacing:0.2em;">
+            Add to bag
+          </button>
+          <button id="like-btn" onclick="toggleLike()"
+            class="like-btn w-12 h-12 flex items-center justify-center border border-stone-200">
+            <svg id="like-icon" class="w-5 h-5" viewBox="0 0 24 24"
+              fill="none" stroke="#a8a29e" stroke-width="1.5">
+              <path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Accordions -->
+        <div class="border-t border-stone-100 mt-auto">
+
+          <div class="border-b border-stone-100">
+            <button onclick="toggleAcc(this)" class="w-full flex items-center justify-between py-4 text-left group">
+              <span class="text-xs tracking-widest uppercase text-stone-500 group-hover:text-stone-900 transition-colors">Features</span>
+              <svg class="acc-icon w-4 h-4 text-stone-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="accordion-body">
+              <ul class="space-y-2">
+                <li class="flex items-start gap-2 text-sm text-stone-500"><span class="mt-1.5 w-1 h-1 rounded-full bg-stone-300 shrink-0"></span>Multiple strap configurations</li>
+                <li class="flex items-start gap-2 text-sm text-stone-500"><span class="mt-1.5 w-1 h-1 rounded-full bg-stone-300 shrink-0"></span>Spacious interior with top zip</li>
+                <li class="flex items-start gap-2 text-sm text-stone-500"><span class="mt-1.5 w-1 h-1 rounded-full bg-stone-300 shrink-0"></span>Leather handle and tabs</li>
+                <li class="flex items-start gap-2 text-sm text-stone-500"><span class="mt-1.5 w-1 h-1 rounded-full bg-stone-300 shrink-0"></span>Interior dividers</li>
+                <li class="flex items-start gap-2 text-sm text-stone-500"><span class="mt-1.5 w-1 h-1 rounded-full bg-stone-300 shrink-0"></span>Stainless strap loops</li>
+                <li class="flex items-start gap-2 text-sm text-stone-500"><span class="mt-1.5 w-1 h-1 rounded-full bg-stone-300 shrink-0"></span>Double stitched construction</li>
+                <li class="flex items-start gap-2 text-sm text-stone-500"><span class="mt-1.5 w-1 h-1 rounded-full bg-stone-300 shrink-0"></span>Water-resistant</li>
+              </ul>
+            </div>
           </div>
-          <div>
-            <p class="text-heading-5 text-secondary dark:text-accent mb-3 font-normal">Комментарии</p>
-            <p>Управление разделом, где посетители могут оставлять свои воспоминания и слова поддержки.</p>
-            <p class="text-heading-6 text-secondary dark:text-accent mt-6 mb-4 font-normal">
-              Функции раздела:
-            </p>
-            <ul class="mt-4 mb-10.5 space-y-3">
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Любой гость страницы может оставить свои слова соболезнования в специальном блоке.
-                </p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Все комментарии подлежат модерации. Вы можете просматривать, одобрять для публикации или удалять записи.
-                </p>
-              </li>
-              <li class="flex items-center gap-x-2">
-                <span
-                  class="bg-secondary dark:bg-accent flex size-5 shrink-0 items-center justify-center rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="7"
-                    viewBox="0 0 10 7"
-                    fill="none"
-                  >
-                    <path
-                      d="M4.31661 6.75605L9.74905 1.42144C10.0836 1.0959 10.0836 0.569702 9.74905 0.244158C9.41446 -0.081386 8.87363 -0.081386 8.53904 0.244158L3.7116 4.99012L1.46096 2.78807C1.12636 2.46253 0.585538 2.46253 0.250945 2.78807C-0.0836483 3.11362 -0.0836483 3.63982 0.250945 3.96536L3.1066 6.75605C3.27347 6.91841 3.49253 7 3.7116 7C3.93067 7 4.14974 6.91841 4.31661 6.75605Z"
-                      class="fill-accent dark:fill-secondary"
-                    />
-                  </svg>
-                </span>
-                <p class="text-secondary/80 dark:text-accent/80">
-                  Если вы не хотите, чтобы люди могли оставлять комментарии, этот блок можно полностью отключить в настройках.
-                </p>
-              </li>
-            </ul>
-            <figure class="overflow-hidden rounded-[20px]">
-              <img
-                src="./images/ns-img-381.jpg"
-                alt="Слова памяти"
-                class="h-full w-full object-cover"
-              />
-            </figure>
+
+          <div class="border-b border-stone-100">
+            <button onclick="toggleAcc(this)" class="w-full flex items-center justify-between py-4 text-left group">
+              <span class="text-xs tracking-widest uppercase text-stone-500 group-hover:text-stone-900 transition-colors">Care</span>
+              <svg class="acc-icon w-4 h-4 text-stone-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="accordion-body">
+              <ul class="space-y-2">
+                <li class="flex items-start gap-2 text-sm text-stone-500"><span class="mt-1.5 w-1 h-1 rounded-full bg-stone-300 shrink-0"></span>Spot clean as needed</li>
+                <li class="flex items-start gap-2 text-sm text-stone-500"><span class="mt-1.5 w-1 h-1 rounded-full bg-stone-300 shrink-0"></span>Hand wash with mild soap</li>
+                <li class="flex items-start gap-2 text-sm text-stone-500"><span class="mt-1.5 w-1 h-1 rounded-full bg-stone-300 shrink-0"></span>Machine wash interior dividers</li>
+                <li class="flex items-start gap-2 text-sm text-stone-500"><span class="mt-1.5 w-1 h-1 rounded-full bg-stone-300 shrink-0"></span>Treat handle and tabs with leather conditioner</li>
+              </ul>
+            </div>
           </div>
+
         </div>
       </div>
     </div>
-  </div>
-</section>
-</main>
+</div>
+
+<script>
+    // Gallery
+    function switchImage(btn, idx) {
+      const mainImg = document.getElementById('main-img');
+      mainImg.src = btn.dataset.src;
+      mainImg.classList.remove('img-fade');
+      void mainImg.offsetWidth;
+      mainImg.classList.add('img-fade');
+      document.querySelectorAll('.thumb').forEach(t => {
+        t.classList.remove('active');
+        t.classList.add('opacity-50');
+      });
+      btn.classList.add('active');
+      btn.classList.remove('opacity-50');
+    }
+
+    // Colors
+    function selectColor(btn, label) {
+      document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('color-label').textContent = label;
+    }
+
+    // Add to bag
+    function addToBag() {
+      const btn = document.getElementById('add-btn');
+      btn.textContent = '✓ Added';
+      btn.style.background = '#78716c';
+      setTimeout(() => {
+        btn.textContent = 'Add to bag';
+        btn.style.background = '#1c1917';
+      }, 1800);
+    }
+
+    // Like
+    let liked = false;
+    function toggleLike() {
+      liked = !liked;
+      const icon = document.getElementById('like-icon');
+      const btn = document.getElementById('like-btn');
+      if (liked) {
+        icon.setAttribute('fill', '#1c1917');
+        icon.setAttribute('stroke', '#1c1917');
+        btn.style.borderColor = '#1c1917';
+      } else {
+        icon.setAttribute('fill', 'none');
+        icon.setAttribute('stroke', '#a8a29e');
+        btn.style.borderColor = '#e7e5e4';
+      }
+    }
+
+    // Accordion
+    function toggleAcc(btn) {
+      const body = btn.nextElementSibling;
+      const icon = btn.querySelector('.acc-icon');
+      const isOpen = body.classList.contains('open');
+      body.classList.toggle('open', !isOpen);
+      icon.classList.toggle('open', !isOpen);
+    }
+  </script>
+
 @endsection

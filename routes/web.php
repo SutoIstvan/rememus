@@ -25,6 +25,10 @@ Route::get('/pricing', function () {
     return view('pricing');
 })->name('pricing');
 
+Route::get('/help', function () {
+    return view('help');
+})->name('help');
+
 Route::get('dashboard', [DashboardMemorialController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');

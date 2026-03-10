@@ -186,7 +186,7 @@
                         </p>
                         <ul>
                           <li>
-                            <a href="./ai-software-features.html" class="relative block group p-3">
+                            <a href="./help#step1" class="relative block group p-3">
                               <div
                                 class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 {=$class}">
                               </div>
@@ -197,7 +197,7 @@
                             </a>
                           </li>
                           <li>
-                            <a href="./ai-software-process.html" class="relative block group p-3">
+                            <a href="./help#step2" class="relative block group p-3">
                               <div
                                 class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 {=$class}">
                               </div>
@@ -208,7 +208,7 @@
                             </a>
                           </li>
                           <li>
-                            <a href="./ai-software-security.html" class="relative block group p-3">
+                            <a href="./help#step3" class="relative block group p-3">
                               <div
                                 class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 {=$class}">
                               </div>
@@ -219,7 +219,7 @@
                             </a>
                           </li>
                           <li>
-                            <a href="./ai-software-brandkit.html" class="relative block group p-3">
+                            <a href="./help#step4" class="relative block group p-3">
                               <div
                                 class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 {=$class}">
                               </div>
@@ -230,7 +230,7 @@
                             </a>
                           </li>
                           <li>
-                            <a href="./ai-software-download.html" class="relative block group p-3">
+                            <a href="./help#step5" class="relative block group p-3">
                               <div
                                 class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 {=$class}">
                               </div>
@@ -241,7 +241,7 @@
                             </a>
                           </li>
                           <li>
-                            <a href="./ai-software-press.html" class="relative block group p-3">
+                            <a href="./help#step6" class="relative block group p-3">
                               <div
                                 class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-background-3 dark:bg-background-7 opacity-0 group-hover:opacity-100 rounded-[10px] z-0 transition-all duration-400 {=$class}">
                               </div>
