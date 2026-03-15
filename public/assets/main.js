@@ -2431,23 +2431,20 @@ const commonAnimation = {
         }
         rafId = requestAnimationFrame(() => {
           let activeCard = null;
-          let minDistance = Infinity;
-          const viewportTop = window.scrollY || window.pageYOffset;
-          const viewportBottom = viewportTop + window.innerHeight;
-          const viewportCenter = viewportTop + window.innerHeight * 0.3;
+          const offsetTop = 200; // Increased to 200 for a 50px precision tolerance when scrolling to top - 150
           monthCards.forEach((card) => {
-            const rect = card.getBoundingClientRect();
-            const cardTop = rect.top + viewportTop;
-            const cardBottom = cardTop + rect.height;
-            const cardCenter = cardTop + rect.height / 2;
-            if (cardTop <= viewportBottom && cardBottom >= viewportTop) {
-              const distance = Math.abs(cardCenter - viewportCenter);
-              if (distance < minDistance) {
-                minDistance = distance;
-                activeCard = card;
-              }
+            if (card.getBoundingClientRect().top <= offsetTop) {
+              activeCard = card;
             }
           });
+          
+          if (!activeCard && monthCards.length > 0) {
+            activeCard = monthCards[0];
+          }
+
+          if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 10) {
+            activeCard = monthCards[monthCards.length - 1];
+          }
           const newActiveCardId = activeCard ? activeCard.getAttribute("data-month") : null;
           if (newActiveCardId !== activeCardId) {
             activeCardId = newActiveCardId;
@@ -2472,7 +2469,7 @@ const commonAnimation = {
           const targetId = this.getAttribute("data-month-link");
           const targetCard = document.getElementById(targetId);
           if (targetCard) {
-            const offsetTop = targetCard.offsetTop - 200;
+            const offsetTop = targetCard.getBoundingClientRect().top + window.scrollY - 150;
             window.scrollTo({
               top: offsetTop,
               behavior: "smooth"
@@ -2480,31 +2477,7 @@ const commonAnimation = {
           }
         });
       });
-      if ("IntersectionObserver" in window) {
-        const observerOptions = {
-          root: null,
-          rootMargin: "-20% 0px -60% 0px",
-          threshold: [0, 0.1, 0.3, 0.5, 0.7, 1]
-        };
-        const observer = new IntersectionObserver((entries) => {
-          updateActiveLink2();
-        }, observerOptions);
-        monthCards.forEach((card) => {
-          observer.observe(card);
-        });
-      } else {
-        let scrollTimeout;
-        window.addEventListener(
-          "scroll",
-          function() {
-            if (scrollTimeout) {
-              clearTimeout(scrollTimeout);
-            }
-            scrollTimeout = setTimeout(updateActiveLink2, 10);
-          },
-          { passive: true }
-        );
-      }
+      window.addEventListener("scroll", updateActiveLink2, { passive: true });
       updateActiveLink2();
     }
   }
