@@ -81,6 +81,9 @@ class MemorialController extends Controller
             'burial_location_enabled' => 'nullable|boolean',
         ]);
 
+        // Allow extra time for large image processing (no global php.ini change needed)
+        set_time_limit(0);
+
         // We need the slug first — generate it so we can use it for folder names
         $slug = Memorial::generateUniqueSlugStatic($validated['name']);
 
@@ -363,6 +366,9 @@ class MemorialController extends Controller
             'burial_location_enabled' => 'nullable|boolean',
             'comments_enabled'        => 'nullable|boolean',
         ]);
+
+        // Allow extra time for large image processing
+        set_time_limit(0);
 
         $slug = $memorial->slug;
 

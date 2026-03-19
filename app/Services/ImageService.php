@@ -106,16 +106,17 @@ class ImageService
             }
         }
 
-        // Full size — read once, save, then read again for thumb
+        // Full size — read once
         $image = Image::read($file->getRealPath());
+
+        // Thumbnail — clone before scaling (avoid re-reading from disk)
+        $thumb = $image->clone();
 
         $image->scaleDown(width: $maxPx, height: $maxPx)
             ->toWebp(quality: 85)
             ->save($absolutePath);
 
-        // Thumbnail — re-read original to avoid quality loss from chaining
-        Image::read($file->getRealPath())
-            ->scaleDown(width: $thumbMaxPx, height: $thumbMaxPx)
+        $thumb->scaleDown(width: $thumbMaxPx, height: $thumbMaxPx)
             ->toWebp(quality: 75)
             ->save($thumbAbsolutePath);
 

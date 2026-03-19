@@ -109,7 +109,7 @@ class Memorial extends Model
         $count = 1;
 
         while (true) {
-            $query = static::where('slug', $slug);
+            $query = static::withTrashed()->where('slug', $slug);
 
             if ($excludeId) {
                 $query->where('id', '!=', $excludeId);
