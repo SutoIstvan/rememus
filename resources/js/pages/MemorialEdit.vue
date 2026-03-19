@@ -460,10 +460,9 @@ const handleAvatarFilesUpdate = (files: Map<string, File>) => {
     })
 }
 
-const handleGalleryUpdate = (galleryFiles: File[]) => {
-    form.gallery = galleryFiles
-}
-
+// Gallery photos are now uploaded immediately to the server via GalleryPhotoController.
+// We no longer collect files for form submission — only deletion IDs are still tracked
+// so that MemorialController.update() can clean up removed images on save.
 const handleGalleryDelete = (ids: number[]) => {
     deletedGalleryIds.value = ids
 }
@@ -613,8 +612,11 @@ const handleGalleryDelete = (ids: number[]) => {
                     <div v-if="!sectionsEnabled.gallery" class="absolute inset-0 bg-white/10 z-10 cursor-not-allowed">
                     </div>
                     <div :class="{ 'opacity-80 blur-sm': !sectionsEnabled.gallery }">
-                        <GalleryEdit :disabled="!sectionsEnabled.gallery" :initial-images="memorial?.images"
-                            @update:gallery-files="handleGalleryUpdate" @delete:gallery-images="handleGalleryDelete" />
+                        <GalleryEdit
+                            :disabled="!sectionsEnabled.gallery"
+                            :initial-images="memorial?.images"
+                            :memorial-id="memorial.id"
+                            @delete:gallery-images="handleGalleryDelete" />
                     </div>
                 </div>
             </div>

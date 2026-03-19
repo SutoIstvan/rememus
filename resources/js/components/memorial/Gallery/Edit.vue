@@ -19,31 +19,54 @@
                 <template #item="{ element }">
                     <div class="h-30 rounded-md relative group hover:cursor-pointer"
                         :class="{ 'border-0 border-red-500': drag }">
-                        <img :src="element.src" :style="{ transform: `rotate(${element.rotation}deg)` }"
-                            class="w-full h-30 object-cover rounded-md transition-transform duration-300"
-                            alt="Uploaded photo" />
-                        <!-- Drag Handle Icon -->
-                        <div
-                            class="drag-handle absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-70 transition-opacity bg-black bg-opacity-30 rounded-md">
-                            <GripHorizontal class="w-6 h-6 text-white" />
-                        </div>
-                        <!-- Rotate Icon -->
-                        <button type="button"
-                            class="absolute top-1 left-1 bg-gray-200 text-grey rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:text-white hover:bg-blue-600 hover:cursor-pointer"
-                            @click="rotateImage(element.id)" title="Rotate 90°">
-                            <RotateCw class="w-4 h-4" />
-                        </button>
-                        <!-- Delete Icon -->
-                        <button type="button"
-                            class="absolute top-1 right-1 bg-gray-200 text-grey rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:text-white hover:bg-red-600 hover:cursor-pointer"
-                            @click="removeImage(element.id)" title="Delete">
-                            <Trash2 class="w-4 h-4" />
-                        </button>
+
+                        <!-- Uploading: show only Skeleton, no image underneath -->
+                        <template v-if="element.status === 'uploading'">
+                            <Skeleton class="w-full h-30 rounded-md" />
+                        </template>
+
+                        <!-- Error state -->
+                        <template v-else-if="element.status === 'error'">
+                            <div class="w-full h-30 flex flex-col items-center justify-center gap-1 bg-red-100 rounded-md">
+                                <AlertCircle class="w-5 h-5 text-red-500" />
+                                <button type="button"
+                                    class="text-xs text-red-600 underline hover:text-red-800"
+                                    @click="retryUpload(element)">
+                                    Retry
+                                </button>
+                            </div>
+                        </template>
+
+                        <!-- Done: show thumbnail with controls -->
+                        <template v-else>
+                            <img :src="element.src" :style="{ transform: `rotate(${element.rotation}deg)` }"
+                                class="w-full h-30 object-cover rounded-md transition-transform duration-300"
+                                alt="Uploaded photo" />
+
+                            <!-- Drag Handle -->
+                            <div
+                                class="drag-handle absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-70 transition-opacity bg-black bg-opacity-30 rounded-md">
+                                <GripHorizontal class="w-6 h-6 text-white" />
+                            </div>
+                            <!-- Rotate -->
+                            <button type="button"
+                                class="absolute top-1 left-1 bg-gray-200 text-grey rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:text-white hover:bg-blue-600 hover:cursor-pointer"
+                                @click="rotateImage(element.id)" title="Rotate 90°">
+                                <RotateCw class="w-4 h-4" />
+                            </button>
+                            <!-- Delete -->
+                            <button type="button"
+                                class="absolute top-1 right-1 bg-gray-200 text-grey rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:text-white hover:bg-red-600 hover:cursor-pointer"
+                                @click="removeImage(element.id)" title="Delete">
+                                <Trash2 class="w-4 h-4" />
+                            </button>
+                        </template>
                     </div>
                 </template>
             </draggable>
-            <div v-for="n in placeholderCount" :key="`placeholder-${n}`" class="h-20 sm:!h-30 rounded-md bg-muted">
-            </div>
+
+            <!-- Empty gray placeholders to keep the grid full -->
+            <div v-for="n in placeholderCount" :key="`placeholder-${n}`" class="h-20 sm:!h-30 rounded-md bg-muted" />
         </div>
     </div>
 </template>
@@ -51,22 +74,27 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import draggable from 'vuedraggable'
-import { GripHorizontal, Trash2, Upload, RotateCw } from 'lucide-vue-next'
+import { GripHorizontal, Trash2, Upload, RotateCw, AlertCircle } from 'lucide-vue-next'
+import { Skeleton } from '@/components/ui/skeleton'
+
+type UploadStatus = 'uploading' | 'done' | 'error'
 
 interface ImageItem {
-    id: number | string // can be string for existing db ids
-    src: string
-    file?: File // Optional because existing images don't have File objects
+    id: number | string          // server ID once uploaded; local temp ID while uploading
+    tempId?: string              // local temp ID (used for matching during upload)
+    src: string                  // objectURL (preview) or thumb_url after upload
+    file?: File                  // only while status === 'uploading' (for retry)
     rotation: number
-    isExisting?: boolean
+    isExisting?: boolean         // loaded from server on mount
+    status: UploadStatus
 }
 
 const props = defineProps<{
     initialImages?: { id: number; image_path: string; order: number }[]
+    memorialId: number | string
 }>()
 
 const emit = defineEmits<{
-    (e: 'update:gallery-files', files: File[]): void
     (e: 'delete:gallery-images', ids: number[]): void
 }>()
 
@@ -74,28 +102,25 @@ const images = ref<ImageItem[]>([])
 const drag = ref(false)
 const fileInput = ref<HTMLInputElement | null>(null)
 const windowWidth = ref(window.innerWidth)
+
+// Track deleted server image IDs so parent form still sends deleted_gallery_ids
 const deletedImageIds = ref<number[]>([])
 
-const updateWindowWidth = () => {
-    windowWidth.value = window.innerWidth
-}
+const updateWindowWidth = () => { windowWidth.value = window.innerWidth }
 
 onMounted(() => {
     window.addEventListener('resize', updateWindowWidth)
-
-    // Initialize with existing images
     if (props.initialImages) {
         images.value = props.initialImages.map(img => ({
             id: img.id,
             src: `/storage/${img.image_path}`,
             rotation: 0,
-            isExisting: true
+            isExisting: true,
+            status: 'done' as UploadStatus,
         }))
     }
 })
 
-// Re-sync when Inertia updates the prop after a successful save
-// (avoids duplicate/stale entries from temporary FileReader previews)
 watch(
     () => props.initialImages,
     (newImages) => {
@@ -104,7 +129,8 @@ watch(
                 id: img.id,
                 src: `/storage/${img.image_path}`,
                 rotation: 0,
-                isExisting: true
+                isExisting: true,
+                status: 'done' as UploadStatus,
             }))
             deletedImageIds.value = []
         }
@@ -114,87 +140,57 @@ watch(
 
 onUnmounted(() => {
     window.removeEventListener('resize', updateWindowWidth)
+    // Release objectURLs to avoid memory leaks
+    images.value.forEach(img => {
+        if (!img.isExisting && img.src.startsWith('blob:')) {
+            URL.revokeObjectURL(img.src)
+        }
+    })
 })
 
 const placeholderCount = computed(() => {
-    const isMobile = windowWidth.value < 640 // sm breakpoint
+    const isMobile = windowWidth.value < 640
     const maxPlaceholders = isMobile ? 4 : 6
     return images.value.length < maxPlaceholders ? maxPlaceholders - images.value.length : 0
 })
 
-const emitGalleryFiles = () => {
-    // Collect ONLY new files to be uploaded
-    const newFilesPromises = images.value
-        .filter(img => !img.isExisting && img.file)
-        .map(async (img) => {
-            if (img.rotation === 0 && img.file) {
-                return img.file
-            }
-            // Если изображение повернуто
-            if (img.file) {
-                return await rotateImageFile(img.file, img.rotation)
-            }
-            return null
-        })
+/** Upload a single file to the server and update the image item in place */
+const uploadToServer = async (item: ImageItem, file: File) => {
+    const formData = new FormData()
+    formData.append('photo', file)
+    formData.append('_token', (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '')
 
-    Promise.all(newFilesPromises).then((files) => {
-        // filter nulls
-        const validFiles = files.filter(f => f !== null) as File[]
-        emit('update:gallery-files', validFiles)
-    })
+    try {
+        const { default: axios } = await import('axios')
+        const { data } = await axios.post<{ id: number; url: string; thumb_url: string }>(
+            `/memorial/${props.memorialId}/photos`,
+            formData,
+            { headers: { 'Content-Type': 'multipart/form-data' } }
+        )
 
-    emit('delete:gallery-images', deletedImageIds.value)
-}
-
-// Функция для поворота файла изображения
-const rotateImageFile = async (file: File, rotation: number): Promise<File> => {
-    return new Promise((resolve) => {
-        const img = new Image()
-        const canvas = document.createElement('canvas')
-        const ctx = canvas.getContext('2d')
-
-        img.onload = () => {
-            // ... same rotation logic ...
-            if (rotation === 90 || rotation === 270) {
-                canvas.width = img.height
-                canvas.height = img.width
-            } else {
-                canvas.width = img.width
-                canvas.height = img.height
-            }
-
-            if (!ctx) {
-                resolve(file)
-                return
-            }
-
-            ctx.translate(canvas.width / 2, canvas.height / 2)
-            ctx.rotate((rotation * Math.PI) / 180)
-            ctx.drawImage(img, -img.width / 2, -img.height / 2)
-
-            canvas.toBlob((blob) => {
-                if (blob) {
-                    const rotatedFile = new File([blob], file.name, {
-                        type: file.type,
-                        lastModified: Date.now(),
-                    })
-                    resolve(rotatedFile)
-                } else {
-                    resolve(file)
-                }
-            }, file.type)
+        // Find the item by tempId (it may have shifted in array)
+        const found = images.value.find(i => i.tempId === item.tempId)
+        if (found) {
+            // Revoke the objectURL preview — server thumb takes over
+            if (found.src.startsWith('blob:')) URL.revokeObjectURL(found.src)
+            found.id = data.id
+            found.src = data.thumb_url
+            found.status = 'done'
+            found.file = undefined
         }
-
-        img.src = URL.createObjectURL(file)
-    })
+    } catch {
+        const found = images.value.find(i => i.tempId === item.tempId)
+        if (found) found.status = 'error'
+    }
 }
 
-const handleFileUpload = (event: Event) => {
+const handleFileUpload = async (event: Event) => {
     const input = event.target as HTMLInputElement
     const files = Array.from(input.files || [])
 
     const maxPhotos = 12
-    const availableSlots = maxPhotos - images.value.length
+    const uploadingCount = images.value.filter(i => i.status === 'uploading').length
+    const availableSlots = maxPhotos - images.value.length + uploadingCount
 
     if (availableSlots <= 0) {
         alert(`Maximum ${maxPhotos} photos allowed`)
@@ -203,61 +199,87 @@ const handleFileUpload = (event: Event) => {
     }
 
     const filesToUpload = files.slice(0, availableSlots)
+    if (fileInput.value) fileInput.value.value = ''
 
-    try {
-        filesToUpload.forEach((file, i) => {
-            if (file.size > 5 * 1024 * 1024) {
-                console.error(`File ${file.name} is too large`)
-                return
-            }
-
-            const reader = new FileReader()
-            reader.onload = (e) => {
-                images.value.push({
-                    id: Date.now() + i,
-                    src: e.target?.result as string,
-                    file: file,
-                    rotation: 0,
-                    isExisting: false
-                })
-                emitGalleryFiles()
-            }
-            reader.readAsDataURL(file)
-        })
-
-        if (fileInput.value) {
-            fileInput.value.value = ''
+    // 1. Add ALL items immediately so all skeletons appear at once
+    const itemsToUpload: { item: ImageItem; file: File }[] = []
+    for (let i = 0; i < filesToUpload.length; i++) {
+        const file = filesToUpload[i]
+        if (file.size > 5 * 1024 * 1024) {
+            console.error(`File ${file.name} exceeds 5 MB`)
+            continue
         }
-    } catch (error) {
-        console.error('File upload error:', error)
+        const tempId = `temp-${Date.now()}-${i}`
+        const item: ImageItem = {
+            id: tempId,
+            tempId,
+            src: URL.createObjectURL(file),
+            file,
+            rotation: 0,
+            isExisting: false,
+            status: 'uploading',
+        }
+        images.value.push(item)
+        itemsToUpload.push({ item, file })
+    }
+
+    // 2. Let Vue render all skeletons before uploading
+    await new Promise(r => setTimeout(r, 0))
+
+    // 3. Upload sequentially — one at a time
+    for (const { item, file } of itemsToUpload) {
+        await uploadToServer(item, file)
     }
 }
 
-const removeImage = (id: number | string) => {
+const retryUpload = async (item: ImageItem) => {
+    if (!item.file) return
+    item.status = 'uploading'
+    await uploadToServer(item, item.file)
+}
+
+const removeImage = async (id: number | string) => {
     const index = images.value.findIndex(img => img.id === id)
-    if (index !== -1) {
-        const img = images.value[index]
-        if (img.isExisting) {
-            deletedImageIds.value.push(img.id as number)
+    if (index === -1) return
+
+    const img = images.value[index]
+
+    if (img.isExisting) {
+        // Delete from server immediately
+        try {
+            const { default: axios } = await import('axios')
+            await axios.delete(`/memorial/${props.memorialId}/photos/${img.id}`)
+        } catch (err) {
+            console.error('Failed to delete photo', err)
+            return
         }
-        images.value.splice(index, 1)
-        emitGalleryFiles()
+        deletedImageIds.value.push(img.id as number)
+        emit('delete:gallery-images', deletedImageIds.value)
+    } else if (img.status === 'done') {
+        // Uploaded but not "existing" — delete from server
+        try {
+            const { default: axios } = await import('axios')
+            await axios.delete(`/memorial/${props.memorialId}/photos/${img.id}`)
+        } catch (err) {
+            console.error('Failed to delete photo', err)
+            return
+        }
     }
+
+    // Release objectURL if applicable
+    if (img.src.startsWith('blob:')) URL.revokeObjectURL(img.src)
+    images.value.splice(index, 1)
 }
 
 const rotateImage = (id: number | string) => {
-    const image = images.value.find((img) => img.id === id)
+    const image = images.value.find(img => img.id === id)
     if (image) {
-        // Rotation for existing images is only visual for now unless we implement backend rotation
-        // For new images, it affects the uploaded file
         image.rotation = (image.rotation + 90) % 360
-        emitGalleryFiles()
     }
 }
 
 const onDragEnd = () => {
     drag.value = false
-    emitGalleryFiles()
 }
 </script>
 
@@ -268,17 +290,6 @@ const onDragEnd = () => {
 
 .text-muted-foreground {
     color: #6b7280;
-}
-
-.placeholder-fade-enter-active,
-.placeholder-fade-leave-active {
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.placeholder-fade-enter-from,
-.placeholder-fade-leave-to {
-    opacity: 0;
-    transform: scale(0.8);
 }
 
 .ghost {

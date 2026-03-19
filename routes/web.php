@@ -5,6 +5,7 @@ use App\Http\Controllers\MemorialController;
 use App\Http\Controllers\AvatarUploadController;
 use App\Http\Controllers\BiographyController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\GalleryPhotoController;
 use Inertia\Inertia;
 
 use App\Http\Controllers\DashboardMemorialController;
@@ -85,6 +86,12 @@ Route::middleware(['auth'])->group(function () {
         ->name('memorial.comments.approve');
     Route::delete('/memorial/{memorial}/comments/{comment}', [CommentController::class, 'adminDestroy'])
         ->name('memorial.comments.adminDestroy');
+
+    // Immediate single-photo gallery upload / delete
+    Route::post('/memorial/{memorial}/photos', [GalleryPhotoController::class, 'store'])
+        ->name('memorial.photos.store');
+    Route::delete('/memorial/{memorial}/photos/{image}', [GalleryPhotoController::class, 'destroy'])
+        ->name('memorial.photos.destroy');
 });
 
 Route::post('/upload', [AvatarUploadController::class, 'upload']);
