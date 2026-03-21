@@ -40,9 +40,6 @@ class MemorialController extends Controller
             'family_tree.*.qr_code'   => 'nullable|string',
             'family_tree.*.position'  => 'nullable|string',
 
-            'gallery'   => 'nullable|array',
-            'gallery.*' => 'image|max:5120',
-
             'timeline'                  => 'nullable|array',
             'timeline.*.id'             => 'required|string',
             'timeline.*.title'          => 'required|string|max:255',
@@ -178,21 +175,6 @@ class MemorialController extends Controller
             }
         }
 
-        // Gallery — full (1200px) + thumb (400px)
-        if ($request->hasFile('gallery')) {
-            foreach ($request->file('gallery') as $index => $photo) {
-                $result = $this->imageService->processAndStoreWithThumb(
-                    $photo, $slug, 'gallery', 1200, 600
-                );
-                Image::create([
-                    'memorial_id' => $memorial->id,
-                    'image_path'  => $result['path'],
-                    'thumb_path'  => $result['thumb'],
-                    'order'       => $index,
-                ]);
-            }
-        }
-
         // Timeline — full (1200px) + thumb (400px)
         if (!empty($validated['timeline'])) {
             foreach ($validated['timeline'] as $index => $event) {
@@ -237,9 +219,10 @@ class MemorialController extends Controller
             \Log::warning('Biography generation failed on store: ' . $e->getMessage());
         }
 
-        return redirect()
-            ->route('memorial.edit', $memorial)
-            ->with('success', 'Memorial page created!');
+        return response()->json([
+            'slug'         => $memorial->slug,
+            'redirect_url' => route('memorial.edit', $memorial),
+        ], 201);
     }
 
     /**

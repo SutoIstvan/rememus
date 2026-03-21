@@ -789,6 +789,7 @@ const handleGalleryDelete = (ids: number[]) => {
                 <Button type="submit"
                     class="items-center gap-2 cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
                     :disabled="form.processing">
+                    <Loader2 v-if="form.processing" class="w-4 h-4 mr-2 animate-spin" />
                     {{ form.processing ? 'Updating...' : 'Update Memorial' }}
                 </Button>
             </div>

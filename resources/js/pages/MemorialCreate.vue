@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { useForm } from '@inertiajs/vue3'
+import { useForm, router } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
+import axios from 'axios'
+import { Loader2 } from 'lucide-vue-next'
 import { toast } from "vue-sonner"
 import { Toaster } from '@/components/ui/sonner'
 import { Head } from '@inertiajs/vue3';
@@ -31,6 +33,10 @@ const sectionsEnabled = ref({
   features: true,
   burialLocation: true,
 })
+
+// Прогресс загрузки галереи
+const uploadingPhotos = ref(false)
+const uploadProgress = ref({ current: 0, total: 0 })
 
 // Форма
 const form = useForm({
@@ -262,7 +268,7 @@ watch(() => avatarFiles.value, () => {
   syncFamilyToTimeline()
 }, { deep: true })
 
-const submit = () => {
+const submit = async () => {
   const formData = new FormData()
 
   // Основные поля
@@ -273,13 +279,8 @@ const submit = () => {
   formData.append('grave_location', form.grave_location)
 
   // Изображения
-  if (form.image) {
-    formData.append('image', form.image)
-  }
-  if (form.background_image) {
-    formData.append('background_image', form.background_image)
-  }
-
+  if (form.image) formData.append('image', form.image)
+  if (form.background_image) formData.append('background_image', form.background_image)
   if (form.background_url) formData.append('background_url', form.background_url)
 
   // Флаги активности секций
@@ -289,39 +290,22 @@ const submit = () => {
   formData.append('features_enabled', form.features_enabled ? '1' : '0')
   formData.append('burial_location_enabled', form.burial_location_enabled ? '1' : '0')
 
-  // Галерея (только если секция активна)
-  if (form.gallery_enabled && form.gallery.length > 0) {
-    form.gallery.forEach((file, index) => {
-      formData.append(`gallery[${index}]`, file)
-    })
-  }
-
   // Семейное дерево (только если секция активна)
   if (form.family_tree_enabled) {
     const familyTreeWithoutMainPerson = form.family_tree.filter(
       (member: any) => member.role !== 'main_person' && member.name
     )
-
     familyTreeWithoutMainPerson.forEach((member: any, index: number) => {
       formData.append(`family_tree[${index}][id]`, member.id)
       formData.append(`family_tree[${index}][name]`, member.name || '')
       formData.append(`family_tree[${index}][role]`, member.role)
       formData.append(`family_tree[${index}][qr_code]`, member.qr_code || '')
-
       if (member.position) {
-        formData.append(
-          `family_tree[${index}][position]`,
-          JSON.stringify(member.position)
-        )
+        formData.append(`family_tree[${index}][position]`, JSON.stringify(member.position))
       }
-
       const avatarFile = avatarFiles.value.get(member.id)
       if (avatarFile && member.id !== 'you') {
-        formData.append(
-          `family_tree[${index}][avatar]`,
-          avatarFile,
-          avatarFile.name
-        )
+        formData.append(`family_tree[${index}][avatar]`, avatarFile, avatarFile.name)
       }
     })
   }
@@ -335,11 +319,9 @@ const submit = () => {
       formData.append(`timeline[${index}][type]`, item.type || '')
       formData.append(`timeline[${index}][location]`, item.location || '')
       formData.append(`timeline[${index}][related_person]`, item.related_person || '')
-
       if (item.date) formData.append(`timeline[${index}][date]`, item.date)
       if (item.date_from) formData.append(`timeline[${index}][date_from]`, item.date_from)
       if (item.date_to) formData.append(`timeline[${index}][date_to]`, item.date_to)
-
       if (item.media instanceof File) {
         formData.append(`timeline[${index}][media]`, item.media)
       }
@@ -349,17 +331,11 @@ const submit = () => {
   // FEATURES (только если секция активна)
   if (form.features_enabled) {
     if (Array.isArray(form.characteristics)) {
-      form.characteristics.forEach((char, index) => {
-        formData.append(`characteristics[${index}]`, char)
-      })
+      form.characteristics.forEach((char, index) => formData.append(`characteristics[${index}]`, char))
     }
-
     if (Array.isArray(form.hobbies)) {
-      form.hobbies.forEach((hobby, index) => {
-        formData.append(`hobbies[${index}]`, hobby)
-      })
+      form.hobbies.forEach((hobby, index) => formData.append(`hobbies[${index}]`, hobby))
     }
-
     formData.append('custom_traits', form.customTraits || '')
     formData.append('additional_hobbies', form.additionalHobbies || '')
     formData.append('retirement', form.retirement || '')
@@ -374,33 +350,64 @@ const submit = () => {
     formData.append('grave_line', form.graveLine || '')
     formData.append('grave_number', form.graveNumber || '')
     formData.append('coordinates', form.coordinates || '')
-
     if (form.gravePhoto instanceof File) {
       formData.append('grave_photo', form.gravePhoto)
     }
   }
 
-  // 🔍 ОТЛАДКА: Проверяем что попало в FormData
-  console.log('=== FORMDATA CONTENTS ===')
-  for (const pair of formData.entries()) {
-    console.log(pair[0], '=', pair[1])
-  }
-  console.log('=========================')
+  // ── ШАГ 1: Создаём мемориал (без галереи) ──────────────────────────────
+  form.processing = true
+  let slug: string
+  let redirectUrl: string
 
-  form.transform(() => formData).post(memorialsStore(), {
-    forceFormData: true,
-    preserveScroll: true,
-    onSuccess: () => {
-      toast.success('Memorial saved')
-      form.reset()
-      avatarFiles.value.clear()
-    },
-    onError: (errors) => {
-      console.error('=== SUBMIT ERRORS ===', errors)
-      const errorMessages = Object.values(errors).join('\n')
-      toast.error(errorMessages || 'Unknown error', { duration: 8000 })
+  try {
+    const response = await axios.post(memorialsStore.url(), formData, {
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    })
+    slug = response.data.slug
+    redirectUrl = response.data.redirect_url
+  } catch (err: any) {
+    form.processing = false
+    const errors = err.response?.data?.errors
+    if (errors) {
+      form.setError(errors)
+      const msg = Object.values(errors).flat().join('\n')
+      toast.error(msg || 'Validation error', { duration: 8000 })
+    } else {
+      toast.error('Failed to create memorial', { duration: 8000 })
     }
-  })
+    return
+  }
+
+  // ── ШАГ 2: Загружаем фото галереи по одному ────────────────────────────
+  const galleryFiles = form.gallery_enabled && form.gallery.length > 0 ? [...form.gallery] : []
+
+  if (galleryFiles.length > 0) {
+    uploadingPhotos.value = true
+    uploadProgress.value = { current: 0, total: galleryFiles.length }
+
+    for (const file of galleryFiles) {
+      try {
+        const photoData = new FormData()
+        photoData.append('photo', file)
+        await axios.post(`/memorial/${slug}/photos`, photoData, {
+          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        })
+      } catch {
+        // Не останавливаемся — пробуем загрузить остальные
+        toast.warning(`Failed to upload one photo, skipping`, { duration: 4000 })
+      } finally {
+        uploadProgress.value.current++
+      }
+    }
+
+    uploadingPhotos.value = false
+  }
+
+  // ── Переходим на страницу редактирования ──────────────────────────────
+  form.reset()
+  avatarFiles.value.clear()
+  router.visit(redirectUrl)
 }
 
 const handleFamilyTreeUpdate = (updatedTree: any[]) => {
@@ -607,10 +614,15 @@ const handleGalleryUpdate = (galleryFiles: File[]) => {
       </div>
 
       <div class="text-center space-y-5 mx-auto mt-5 md:mt-[10px]">
+        <div v-if="uploadingPhotos" class="text-center text-sm text-gray-500 mt-2">
+          <!-- Uploading photos: {{ uploadProgress.current }} / {{ uploadProgress.total }} -->
+        </div>
         <Button type="submit"
           class="items-center gap-2 cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-          :disabled="form.processing">
-          {{ form.processing ? 'Saving...' : 'Save Memorial' }}
+          :disabled="form.processing || uploadingPhotos">
+          <Loader2 v-if="form.processing || uploadingPhotos" class="w-4 h-4 mr-2 animate-spin" />
+          {{ uploadingPhotos ? `Uploading photos ${uploadProgress.current}/${uploadProgress.total}` : form.processing
+            ? 'Saving' : 'Save Memorial' }}
         </Button>
       </div>
 
